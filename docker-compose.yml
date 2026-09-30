@@ -2,11 +2,8 @@ name: yoon-website
 
 services:
   app:
-    build:
-      # The repository parent: the site is generated from the gateway repository
-      # (../yoon-app) next to this one.
-      context: ..
-      dockerfile: website/Dockerfile
+    # Built from this repository only (the gateway files come from the gateway/ snapshot).
+    build: .
     ports:
       - "3000"
     restart: unless-stopped

@@ -5,40 +5,58 @@ on:
     branches: [main]
   pull_request:
   schedule:
-    # Daily: catch facts that drift in the gateway repository even without a
-    # website change (website/PLAN.md §8).
+    # Daily: catch facts that drift in the gateway repository even without a website change.
     - cron: "0 6 * * *"
 
 jobs:
   build:
+    # Exactly what production does: build from this repository alone (gateway/ snapshot).
     runs-on: ubuntu-latest
-    env:
-      # The gateway repository, checked out below; the site reads its facts,
-      # API contract and brand assets from here and never modifies it.
-      YOON_APP_DIR: yoon-app
     steps:
       - uses: actions/checkout@v4
-
-      # While crossben/yoonpay is private this needs a read-only token in the
-      # secret YOON_APP_READ_TOKEN; once public, github.token suffices.
-      - uses: actions/checkout@v4
-        with:
-          repository: crossben/yoonpay
-          path: yoon-app
-          token: ${{ secrets.YOON_APP_READ_TOKEN || github.token }}
-
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
-
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build
       - run: npm run check:links
-
       - uses: actions/upload-artifact@v4
         with:
           name: site
           path: out/
+
+  gateway-drift:
+    # The snapshot in gateway/ must match the gateway repository's main branch. When it
+    # does not, run `npm run sync:gateway` locally, check the build, and commit gateway/.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # While crossben/yoonpay is private this needs a read-only token in the secret
+      # YOON_APP_READ_TOKEN; once public, github.token suffices.
+      - uses: actions/checkout@v4
+        with:
+          repository: crossben/yoonpay
+          path: yoon-app-live
+          token: ${{ secrets.YOON_APP_READ_TOKEN || github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Re-sync from the gateway's main branch
+        run: YOON_APP_SOURCE=yoon-app-live node scripts/sync-gateway.mjs
+      - name: The committed snapshot is up to date
+        run: |
+          # SOURCE.json records the commit, which moves even when no snapshot file changed.
+          if ! git diff --exit-code -- gateway ':(exclude)gateway/SOURCE.json'; then
+            echo "::error::gateway/ is out of date with crossben/yoonpay. Run 'npm run sync:gateway', check 'npm run build', and commit gateway/."
+            exit 1
+          fi
+          if [ -n "$(git status --porcelain -- gateway ':(exclude)gateway/SOURCE.json')" ]; then
+            git status --porcelain -- gateway
+            echo "::error::gateway/ has files the gateway repository no longer backs. Run 'npm run sync:gateway' and commit."
+            exit 1
+          fi
+      - name: The site's facts still hold against the live gateway
+        run: YOON_APP_DIR=yoon-app-live node scripts/check-facts.mjs

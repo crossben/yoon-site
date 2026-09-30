@@ -1,6 +1,9 @@
+# Build context = this repository. Keep host builds out of the image: node_modules carries
+# platform-specific binaries (glibc vs Alpine's musl), and .next/out are stale outputs.
 node_modules
 .next
 out
-.git
 public/brand
+.git
 .env*
+*.log

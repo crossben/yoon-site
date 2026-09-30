@@ -15,8 +15,10 @@ yoon/
 ```
 
 In this plan, **paths without a `website/` prefix are paths in the gateway repository**, which the
-site reads but never modifies: locally at `../yoon-app`, in CI checked out into `yoon-app/`
-(§8). Read everything through one setting, `YOON_APP_DIR` (default `../yoon-app`), so both work.
+site reads but never modifies. **Update (after review):** the build does not read `../yoon-app`
+directly — a production host clones only this repository. It reads a committed snapshot,
+`gateway/`, refreshed with `npm run sync:gateway`; CI's `gateway-drift` job fails when the
+snapshot falls behind the gateway. See `README.md` § Refresh the gateway snapshot.
 
 ---
 

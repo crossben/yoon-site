@@ -1,5 +1,5 @@
 // Build-time reader for the gateway's API contract. The "API at a glance" list and
-// the JSON response example are generated from $YOON_APP_DIR/api/openapi.yaml —
+// the JSON response example are generated from gateway/api/openapi.yaml (the snapshot) —
 // never hand-written (website/PLAN.md §4). Server components call this while the
 // static export is generated.
 import { readFileSync } from "node:fs";
@@ -18,15 +18,16 @@ const METHODS = ["get", "post", "put", "patch", "delete"] as const;
 let cache: ReturnType<typeof parseOpenApi> | undefined;
 
 function parseOpenApi() {
-  const yoonAppDir = resolve(process.env.YOON_APP_DIR ?? "../yoon-app");
+  // The gateway snapshot (scripts/gateway.mjs); `npm run sync:gateway` refreshes it.
+  const yoonAppDir = resolve(process.env.YOON_APP_DIR ?? "gateway");
   const file = join(yoonAppDir, "api/openapi.yaml");
   let doc: any;
   try {
     doc = parse(readFileSync(file, "utf8"));
   } catch (error) {
     throw new Error(
-      `[openapi] Cannot read ${file}. The website generates its API list from the gateway\n` +
-        `repository; set YOON_APP_DIR to its location (default ../yoon-app).\n${String(error)}`,
+      `[openapi] Cannot read ${file}. The API list comes from the gateway snapshot:\n` +
+        `run \`npm run sync:gateway\`.\n${String(error)}`,
     );
   }
 

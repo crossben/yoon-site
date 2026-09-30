@@ -1,13 +1,14 @@
 // Copies the brand assets from the gateway repository into public/brand/.
 // The gateway repo is the single source of truth; never edit the copies.
-// Location of the gateway: $YOON_APP_DIR (default ../yoon-app).
+// Reads the gateway snapshot in gateway/ (scripts/gateway.mjs).
 import { copyFileSync, mkdirSync } from "node:fs";
+import { BRAND_FILES, SNAPSHOT_DIR } from "./gateway.mjs";
 import { join, resolve } from "node:path";
 
-const yoonAppDir = resolve(process.env.YOON_APP_DIR ?? "../yoon-app");
+const yoonAppDir = SNAPSHOT_DIR;
 const outDir = resolve("public/brand");
 
-const files = ["logo.svg", "logo-dark.svg", "mark.svg", "icon.svg", "social-preview.png"];
+const files = BRAND_FILES;
 
 let missing;
 try {
@@ -19,8 +20,7 @@ try {
 if (missing) {
   console.error(
     `\n[copy-brand] Could not copy brand assets from ${join(yoonAppDir, "docs/assets")}.\n` +
-      `[copy-brand] The website reads them from the gateway repository; set YOON_APP_DIR to its\n` +
-      `[copy-brand] location (default ../yoon-app) and make sure it is checked out.\n\n` +
+      `[copy-brand] They come from the gateway snapshot: run \`npm run sync:gateway\`.\n\n` +
       String(missing?.message ?? missing),
   );
   process.exit(1);

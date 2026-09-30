@@ -4,17 +4,36 @@ The one-page site for [Yoon](https://github.com/crossben/yoonpay), a self-hosted
 open-source payment gateway: **yoonpay.benhattab.pro**. English at `/`, French at
 `/fr/`. Fully static — the build produces `out/`, which any static host can serve.
 
-Everything factual on the site comes from the gateway repository (the sibling
-`yoon-app/` checkout): `content/facts.ts` cites a source for every claim, and
-`scripts/check-facts.mjs` fails the build when a source file no longer backs one.
-The site never modifies the gateway repository.
+Everything factual on the site comes from the gateway repository
+([crossben/yoonpay](https://github.com/crossben/yoonpay)): `content/facts.ts` cites a
+source for every claim, and `scripts/check-facts.mjs` fails the build when a source file
+no longer backs one. The site never modifies the gateway repository.
+
+**This repository builds on its own.** The gateway files the build reads (23 of them: the
+cited documents, `api/openapi.yaml`, the brand assets) are kept in a committed snapshot,
+`gateway/`, with the gateway commit it came from in `gateway/SOURCE.json`. No sibling
+checkout and no token are needed to build or deploy — on a VPS, in Docker, on
+Cloudflare Pages.
 
 ## Requirements
 
 - Node 24 (see `.nvmrc`)
-- The gateway repository checked out at `../yoon-app`, or point `YOON_APP_DIR`
-  at its location. The build reads `api/openapi.yaml`, `docs/assets/` and the
-  files cited in `content/facts.ts` from there.
+- To **refresh the snapshot** only: the gateway repository checked out at `../yoon-app`
+  (or set `YOON_APP_SOURCE`).
+
+## Refresh the gateway snapshot
+
+After the gateway changes (new docs, a new client, updated numbers):
+
+```sh
+npm run sync:gateway   # copies the files the site reads from ../yoon-app into gateway/
+npm run build          # facts still hold? then commit gateway/
+```
+
+Never edit files in `gateway/` by hand. The list of files lives in `scripts/gateway.mjs`
+(it never includes the gateway's `CLAUDE.md` or `AGENTS.md`: coding agents would load them
+as instructions). CI's `gateway-drift` job re-syncs from the gateway's `main` every day and
+fails when the committed snapshot is out of date.
 
 ## Develop
 
@@ -32,8 +51,7 @@ npm run typecheck  # tsc --noEmit — also enforces that EN and FR have the same
 npm run check:links
 ```
 
-`npm run build` works from a clean clone with only `npm ci` (plus the gateway
-repository next to it).
+`npm run build` works from a clean clone with only `npm ci`.
 
 ## How things are wired
 
@@ -106,18 +124,13 @@ blocks), so nothing user-facing waits on JavaScript.
 
 The build artifact `out/` is ready for any static host.
 
-- **Docker** — `docker compose up --build` in this directory (the image follows
-  the synka-sphere frontend pattern: deps → builder → runner). The runner is
-  Caddy on :3000 serving the static export with compression and immutable
-  caching for hashed assets. The build passes the gateway repository as the
-  additional context `yoon-app` (`../yoon-app`). Point a CNAME or A record for
-  `yoonpay` at the host and put HTTPS in front — or reuse the gateway's Caddy
-  setup.
+- **Docker** — `docker compose up --build` in this directory. The build context is
+  this repository alone (deps → builder → runner); the runner is Caddy on :3000
+  serving the static export with compression and immutable caching for hashed
+  assets. Point a CNAME or A record for `yoonpay` at the host and put HTTPS in
+  front — or reuse the gateway's Caddy setup.
 - **Cloudflare Pages** — connect the repository; build command `npm run build`,
-  output directory `out`, custom domain `yoonpay.benhattab.pro`. The build
-  needs the gateway repository: either reuse the CI artifact (a workflow that
-  uploads `out/`) or a build script that clones `crossben/yoonpay` first
-  (a read-only token is needed while that repository is private).
+  output directory `out`, custom domain `yoonpay.benhattab.pro`.
 - **Any web server** — upload `out/` and point a CNAME or A record for
   `yoonpay` at it. Serve `/fr/` from `out/fr/` (the build emits
   `fr/index.html`; `trailingSlash` is on, so directory URLs work as-is).
