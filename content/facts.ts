@@ -103,6 +103,7 @@ export const pispi = {
 export const clients = {
   php: { package: "yoonpay/yoon-php", requires: "PHP 8.2+, Laravel 10–13" },
   java: { package: "io.github.crossben:yoon-java", requires: "Java 17+" },
+  js: { package: "@yoonpay/yoon", requires: "Node ≥ 18 — also Bun, Deno and edge runtimes" },
 } as const;
 
 /** Licence split. Source: docs/licensing.md. */

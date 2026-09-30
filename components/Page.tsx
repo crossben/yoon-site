@@ -71,6 +71,7 @@ export default async function Page({ content }: { content: Content }) {
         ["laravel", "php"],
         ["php", "php"],
         ["java", "java"],
+        ["js", "typescript"],
         ["curl", "bash"],
       ] as const
     ).map(async ([id, lang]) => ({

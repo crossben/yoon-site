@@ -78,6 +78,16 @@ const REQUIRED_STRINGS = {
   "docs/adr/0007-no-default-telemetry.md": ["Yoon sends nothing anywhere by default"],
   "clients/php/README.md": ["composer require yoonpay/yoon-php"],
   "clients/java/README.md": ["Java 17+"],
+  "clients/js/README.md": [
+    "npm install @yoonpay/yoon",
+    "The client **never retries**",
+    "express.raw({ type: \"application/json\" })",
+  ],
+  "clients/js/src/Yoon.ts": [
+    "idempotencyKey: string",
+    "dangerouslyAllowBrowser",
+    "yoon-javascript/",
+  ],
   "examples/laravel-shop/README.md": ["no provider account, no real money"],
   "CONTRIBUTING.md": ["Contributor License Agreement"],
   "SECURITY.md": ["private vulnerability reporting"],

@@ -104,9 +104,15 @@ blocks), so nothing user-facing waits on JavaScript.
 
 ## Deploying
 
-No deploy step is configured yet — the owner picks the host (PLAN.md §10).
 The build artifact `out/` is ready for any static host.
 
+- **Docker** — `docker compose up --build` in this directory (the image follows
+  the synka-sphere frontend pattern: deps → builder → runner). The runner is
+  Caddy on :3000 serving the static export with compression and immutable
+  caching for hashed assets. The build passes the gateway repository as the
+  additional context `yoon-app` (`../yoon-app`). Point a CNAME or A record for
+  `yoonpay` at the host and put HTTPS in front — or reuse the gateway's Caddy
+  setup.
 - **Cloudflare Pages** — connect the repository; build command `npm run build`,
   output directory `out`, custom domain `yoonpay.benhattab.pro`. The build
   needs the gateway repository: either reuse the CI artifact (a workflow that

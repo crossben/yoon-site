@@ -74,6 +74,46 @@ String checkoutUrl = payment.getCheckoutUrl();   // send the customer here
 // Verify Yoon's webhooks:
 boolean authentic = WebhookSignature.verify(secret, header, rawBody);`,
 
+  js: `import { Yoon, YoonException } from "@yoonpay/yoon";
+import { yoonWebhook } from "@yoonpay/yoon/express";
+
+const yoon = new Yoon("https://pay.example.com", process.env.YOON_API_KEY);
+
+try {
+  // Tie the call to your order: a retry can never charge twice.
+  const payment = await yoon.createPayment(
+    {
+      amount: 5000,            // XOF has no minor unit: 5 000 FCFA
+      currency: "XOF",
+      country: "SN",
+      method: "wave",          // wave, orange_money, free_money, card
+      customer: { phone: "+221771234567" },
+      reference: "order_1042",
+      return_url: "https://shop.example/orders/1042",
+    },
+    "order-1042",
+  );
+
+  response.redirect(payment.checkout_url!);    // send the customer here
+} catch (e) {
+  if (e instanceof YoonException) {
+    e.problemCode;   // e.g. no_provider_for_method
+    e.isRetryable(); // true: retry with the same idempotency key
+  }
+}
+
+// Receiving Yoon's events — verified, duplicates answered, remembered only on 2xx:
+app.post(
+  "/yoon/webhook",
+  express.raw({ type: "application/json" }), // keep the raw body
+  yoonWebhook({ secret: process.env.YOON_WEBHOOK_SECRET! }),
+  (req, res) => {
+    const event = req.yoonEvent!;
+    if (event.type === "payment.succeeded") markOrderPaid(event.object.id as string);
+    res.sendStatus(200);
+  },
+)`,
+
   curl: `curl -X POST https://pay.example.com/v1/payments \\
   -H "Authorization: Bearer yk_…" \\
   -H "Idempotency-Key: $(uuidgen)" \\

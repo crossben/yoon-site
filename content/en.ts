@@ -200,10 +200,10 @@ export const en: Content = {
   code: {
     heading: "Your code",
     intro:
-      "Two client libraries, generated from the API contract, with idempotency-key-first helpers and webhook verification built in.",
+      "Three client libraries, generated from the API contract, with idempotency-key-first helpers and webhook verification built in.",
     contractNote:
-      "Both libraries are generated from api/openapi.yaml — the contract the server is tested against.",
-    tabLabels: { laravel: "Laravel", php: "PHP", java: "Java", curl: "curl" },
+      "All three libraries are generated from api/openapi.yaml — the contract the server is tested against.",
+    tabLabels: { laravel: "Laravel", php: "PHP", java: "Java", js: "TypeScript", curl: "curl" },
     responseLabel: "Yoon answers",
     copy: "Copy",
     copied: "Copied",

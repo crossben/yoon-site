@@ -212,10 +212,10 @@ export const fr: Content = {
   code: {
     heading: "Votre code",
     intro:
-      "Deux bibliothèques clientes, générées depuis le contrat d'API, avec des aides orientées clé d'idempotence et vérification des webhooks déjà en place.",
+      "Trois bibliothèques clientes, générées depuis le contrat d'API, avec des aides orientées clé d'idempotence et vérification des webhooks déjà en place.",
     contractNote:
-      "Les deux bibliothèques sont générées depuis api/openapi.yaml — le contrat contre lequel le serveur est testé.",
-    tabLabels: { laravel: "Laravel", php: "PHP", java: "Java", curl: "curl" },
+      "Les trois bibliothèques sont générées depuis api/openapi.yaml — le contrat contre lequel le serveur est testé.",
+    tabLabels: { laravel: "Laravel", php: "PHP", java: "Java", js: "TypeScript", curl: "curl" },
     responseLabel: "Yoon répond",
     copy: "Copier",
     copied: "Copié",
