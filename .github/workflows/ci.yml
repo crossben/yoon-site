@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Daily: catch facts that drift in the gateway repository even without a
+    # website change (website/PLAN.md §8).
+    - cron: "0 6 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # The gateway repository, checked out below; the site reads its facts,
+      # API contract and brand assets from here and never modifies it.
+      YOON_APP_DIR: yoon-app
+    steps:
+      - uses: actions/checkout@v4
+
+      # While crossben/yoonpay is private this needs a read-only token in the
+      # secret YOON_APP_READ_TOKEN; once public, github.token suffices.
+      - uses: actions/checkout@v4
+        with:
+          repository: crossben/yoonpay
+          path: yoon-app
+          token: ${{ secrets.YOON_APP_READ_TOKEN || github.token }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run check:links
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: out/

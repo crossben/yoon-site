@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/* Dark mode via data-theme on <html> (not a class: React owns <html className>). The inline
+   theme script in <head> sets it
+   (from localStorage, else prefers-color-scheme) before first paint. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Palette from the logo (website/PLAN.md §2). Never change a value here without
+   re-checking contrast; ratios are listed in the README. */
+:root {
+  --bg: #f4efe6; /* sand */
+  --surface: #ffffff;
+  --ink: #1d1b18;
+  --muted: #6b655b;
+  --accent: #b5532e; /* terracotta */
+  --line: #e2dacb;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #14120f;
+  --surface: #1d1b18;
+  --ink: #f4efe6;
+  --muted: #b3ab9e;
+  --accent: #d8744d;
+  --line: #2e2a25;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-line: var(--line);
+  --font-sans: var(--font-ubuntu-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  text-wrap: pretty;
+}
+
+/* Visible focus rings everywhere (website/PLAN.md §7). */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* Skip link: hidden until focused. */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 100;
+  transition: top 150ms ease;
+}
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* Shiki dual theme (see lib/shiki.ts): the token classes define
+   --shiki-light/--shiki-dark custom properties; the theme in force decides which
+   one is the colour. Backgrounds are transparent — the block supplies its own. */
+.shiki span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style, inherit);
+  font-weight: var(--shiki-light-font-weight, inherit);
+}
+html[data-theme="dark"] .shiki span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style, inherit);
+  font-weight: var(--shiki-dark-font-weight, inherit);
+}
+.shiki,
+.shiki span {
+  background-color: transparent !important;
+}
+
+/* GSAP reveals: keep final state when animations are done, and never animate
+   for reduced-motion users (GSAP code checks matchMedia before registering). */
+.reveal {
+  opacity: 1;
+}
+
+/* The hero scene and terminal have fixed dimensions (CLS < 0.05). */
+.hero-scene-container {
+  contain: strict;
+}
