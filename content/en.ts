@@ -143,7 +143,7 @@ export const en: Content = {
         title: "Your payment providers",
         body: "PayDunya, DexPay and NabooPay today, each through your own merchant account.",
         pispiRoute: "PI-SPI, through your bank's API Business",
-        plannedBadge: "planned",
+        plannedBadge: "built · next release",
       },
       rails: {
         title: "PI-SPI, operated by the BCEAO",
@@ -182,17 +182,17 @@ export const en: Content = {
       ],
     },
     use: {
-      heading: "How Yoon will use PI-SPI",
+      heading: "How Yoon uses PI-SPI",
       items: [
         "A PI-SPI provider that talks to the API Business your bank or e-money issuer exposes: the standard API the BCEAO specifies for business clients.",
         "Collect with a payment request sent to the customer's PI alias; they approve it in their own banking or wallet app.",
-        "Payouts to a PI alias, and refunds as returns of funds: a real refund API, which none of today's providers offers.",
+        "Payouts to a PI alias, and refunds as returns of funds (full amount): a real refund API, which none of the other providers offers.",
         "The same guarantees as every route: signed callbacks re-confirmed with the status API, a timeout stays unknown, amounts must match.",
         "Your code does not change: the same Yoon API, one more road.",
       ],
     },
     statusNote:
-      "Planned, not built yet. Today Yoon routes to PayDunya, DexPay and NabooPay; the PI-SPI provider is next on the roadmap.",
+      "Built on the main branch, not in a release yet, and not yet run against the PI-SPI sandbox. Released versions route to PayDunya, DexPay and NabooPay.",
     caveat:
       "Yoon cannot connect to PI-SPI directly: only licensed institutions can. In production, your own bank or e-money issuer must offer the API Business to its business clients.",
     links: { site: "PI-SPI (BCEAO)", developer: "API Business developer portal" },

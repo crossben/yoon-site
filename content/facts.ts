@@ -47,7 +47,7 @@ export const providers = [
   },
 ] as const;
 
-/** Source: README.md — "None of the three offers a refund API: refund a customer by sending a payout." */
+/** Source: README.md — "PayDunya, DexPay and NabooPay offer no refund API: refund a customer by sending a payout." */
 export const refundByPayout = true;
 
 /** Source: CHANGELOG.md § Known limitations. */
@@ -87,8 +87,9 @@ export const guaranteeSources = {
  *   - https://developer.pispi.bceao.int/ (API Business specification, version 1.5.0: an API that
  *     participants expose to their business clients — payment requests, payments, returns of
  *     funds, webhooks signed with HMAC-SHA256, OAuth2 + mTLS)
- * Yoon's PI-SPI provider is PLANNED, not built: the site must always say so. When it ships, add
- * its README line to scripts/check-facts.mjs and move `providerStatus` to "available".
+ * Yoon's PI-SPI provider is built on the gateway's main branch but NOT RELEASED and not
+ * sandbox-tested (README.md providers table, CHANGELOG.md [Unreleased], docs/providers/pispi.md):
+ * the site must always say so. When a release includes it, move `providerStatus` to "available".
  */
 export const pispi = {
   site: "https://pispi.bceao.int/",
@@ -96,14 +97,14 @@ export const pispi = {
   operator: "BCEAO",
   zone: "UEMOA",
   apiBusinessVersion: "1.5.0",
-  providerStatus: "planned",
+  providerStatus: "unreleased",
 } as const;
 
 /** Client libraries. Source: README.md § Client libraries, ADR-0018. */
 export const clients = {
   php: { package: "yoonpay/yoon-php", requires: "PHP 8.2+, Laravel 10–13" },
   java: { package: "io.github.crossben:yoon-java", requires: "Java 17+" },
-  js: { package: "@yoonpay/yoon", requires: "Node ≥ 18 — also Bun, Deno and edge runtimes" },
+  js: { package: "@yoonpay/yoon", requires: "Node ≥ 20 — also Bun, Deno and edge runtimes" },
 } as const;
 
 /** Licence split. Source: docs/licensing.md. */

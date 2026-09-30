@@ -154,7 +154,7 @@ export const fr: Content = {
         title: "Vos prestataires de paiement",
         body: "PayDunya, DexPay et NabooPay aujourd'hui, chacun via votre propre compte marchand.",
         pispiRoute: "PI-SPI, via l'API Business de votre banque",
-        plannedBadge: "prévu",
+        plannedBadge: "développé · prochaine version",
       },
       rails: {
         title: "PI-SPI, opéré par la BCEAO",
@@ -194,17 +194,17 @@ export const fr: Content = {
       ],
     },
     use: {
-      heading: "Comment Yoon utilisera PI-SPI",
+      heading: "Comment Yoon utilise PI-SPI",
       items: [
         "Un prestataire PI-SPI qui parle à l'API Business proposée par votre banque ou votre émetteur de monnaie électronique : l'API standard définie par la BCEAO pour les clients entreprises.",
         "L'encaissement par une demande de paiement envoyée à l'alias PI du client ; il la valide dans sa propre application bancaire ou de portefeuille.",
-        "Des paiements vers un alias PI, et des remboursements sous forme de retours de fonds : une vraie API de remboursement, qu'aucun prestataire actuel ne propose.",
+        "Des paiements vers un alias PI, et des remboursements sous forme de retours de fonds (montant total) : une vraie API de remboursement, qu'aucun autre prestataire ne propose.",
         "Les mêmes garanties que pour toutes les routes : callbacks signés reconfirmés auprès de l'API de statut, un délai dépassé reste « inconnu », les montants doivent correspondre.",
         "Votre code ne change pas : la même API Yoon, une route de plus.",
       ],
     },
     statusNote:
-      "Prévu, pas encore construit. Aujourd'hui, Yoon passe par PayDunya, DexPay et NabooPay ; le prestataire PI-SPI est le prochain sur la feuille de route.",
+      "Développé sur la branche principale, pas encore publié dans une version, et pas encore essayé contre la sandbox PI-SPI. Les versions publiées passent par PayDunya, DexPay et NabooPay.",
     caveat:
       "Yoon ne peut pas se connecter directement à PI-SPI : seuls les établissements agréés le peuvent. En production, votre banque ou votre émetteur de monnaie électronique doit proposer l'API Business à ses clients entreprises.",
     links: { site: "PI-SPI (BCEAO)", developer: "Portail développeur de l'API Business" },

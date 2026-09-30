@@ -29,8 +29,11 @@ export const REQUIRED_STRINGS = {
     "| PayDunya | Wave, Orange Money, Free Money, card | Wave, Orange Money, Free Money | — |",
     "| DexPay | Wave, Orange Money, Free Money, card | Wave, Orange Money | — |",
     "| NabooPay | Wave, Orange Money, Free Money, card | — | — |",
+    "| PI-SPI (BCEAO) | Payment request to a PI alias, 8 UEMOA countries | To a PI alias | Full amount |",
+    "the PI-SPI adapter is on the\n> main branch, not in a release yet",
     // Refunds
-    "None of the three offers a refund API: refund a customer by sending a payout.",
+    "PayDunya, DexPay and NabooPay offer no refund API: refund a customer by sending a payout.",
+    "PI-SPI returns the full amount of a payment",
     // Status (not sandbox-tested)
     "yet been run against the providers' sandboxes",
     // Money safety
@@ -54,6 +57,7 @@ export const REQUIRED_STRINGS = {
   ],
   "CHANGELOG.md": [
     "## [0.1.0]",
+    "New provider **PI-SPI**",
     "Senegal (XOF) only. No provider offers refunds through an API; refund by payout.",
   ],
   "docs/load-test.md": [
@@ -85,6 +89,12 @@ export const REQUIRED_STRINGS = {
   "docs/adr/0007-no-default-telemetry.md": ["Yoon sends nothing anywhere by default"],
   "clients/php/README.md": ["composer require yoonpay/yoon-php"],
   "clients/java/README.md": ["Java 17+"],
+  "docs/providers/pispi.md": [
+    "has **not yet been run against the PI-SPI sandbox**",
+    "Payment request (`POST /demandes-paiements`, category `521`, e-commerce)",
+    "A partial refund is refused",
+    "Your bank or e-money issuer must offer it",
+  ],
   "clients/js/README.md": [
     "npm install @yoonpay/yoon",
     "The client **never retries**",
