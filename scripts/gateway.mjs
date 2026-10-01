@@ -30,10 +30,10 @@ export const REQUIRED_STRINGS = {
     "| DexPay | Wave, Orange Money, Free Money, card | Wave, Orange Money | — |",
     "| NabooPay | Wave, Orange Money, Free Money, card | — | — |",
     "| PI-SPI (BCEAO) | Payment request to a PI alias, 8 UEMOA countries | To a PI alias | Full amount |",
-    "the PI-SPI adapter is on the\n> main branch, not in a release yet",
+    "the Wave (direct) and PI-SPI adapters are on the\n> main branch, not in a release yet",
     // Refunds
     "PayDunya, DexPay and NabooPay offer no refund API: refund a customer by sending a payout.",
-    "PI-SPI returns the full amount of a payment",
+    "Wave (direct) and PI-SPI return the full amount of a payment",
     // Status (not sandbox-tested)
     "yet been run against the providers' sandboxes",
     // Money safety
