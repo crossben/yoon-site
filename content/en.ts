@@ -10,7 +10,7 @@ export const en: Content = {
   meta: {
     title: "Yoon — one API for Africa's payment providers",
     description:
-      "Yoon is a self-hosted, open-source payment gateway: one API in front of PayDunya, DexPay and NabooPay, with routing, verified webhooks, idempotency, a ledger and reconciliation.",
+      "Yoon is a self-hosted, open-source payment gateway: one API in front of PayDunya, DexPay, NabooPay, Wave and PI-SPI, with routing, verified webhooks, idempotency, a ledger and reconciliation.",
   },
   header: {
     skipToContent: "Skip to content",
@@ -30,7 +30,7 @@ export const en: Content = {
   hero: {
     headline: "One API for Africa's payment providers.",
     subline:
-      "A self-hosted, open-source gateway in front of PayDunya · DexPay · NabooPay — routing, verified webhooks, idempotency, a ledger, reconciliation.",
+      "A self-hosted, open-source gateway in front of PayDunya · DexPay · NabooPay · Wave · PI-SPI — routing, verified webhooks, idempotency, a ledger, reconciliation.",
     ctaDemo: "Try the demo",
     ctaGithub: "GitHub",
     statusLine: `v${version} — adapters not yet tested against provider sandboxes.`,
@@ -122,11 +122,13 @@ export const en: Content = {
     heading: "Providers",
     columns: { provider: "Provider", collect: "Collect", payout: "Payout", refund: "Refund" },
     none: "—",
+    fullRefund: "Full amount",
     refundNote:
-      "Refunds exist in the API, but none of the three providers offers a refund API: refund a customer by sending a payout.",
+      "PayDunya, DexPay and NabooPay offer no refund API: refund a customer by sending a payout. Wave (direct) and PI-SPI refund the full amount; send a partial refund as a payout.",
     sandboxNote:
-      "The adapters are tested against simulated provider APIs built from production integrations — not yet against the providers' sandboxes.",
-    countryNote: "Senegal, XOF only.",
+      "The adapters are tested against simulated provider APIs (from production integrations, Wave's public documentation and the BCEAO specification) — not yet against the providers' sandboxes.",
+    countryNote:
+      "XOF. PayDunya, DexPay, NabooPay: Senegal. Wave: Senegal, Côte d'Ivoire, Mali, Burkina Faso. PI-SPI: the eight UEMOA countries.",
   },
   pispi: {
     heading: "Yoon and PI-SPI: layers, not competitors",
@@ -141,9 +143,9 @@ export const en: Content = {
       },
       providers: {
         title: "Your payment providers",
-        body: "PayDunya, DexPay and NabooPay today, each through your own merchant account.",
+        body: "PayDunya, DexPay, NabooPay and Wave, each through your own merchant account.",
         pispiRoute: "PI-SPI, through your bank's API Business",
-        plannedBadge: "built · next release",
+        plannedBadge: "available · not sandbox-tested",
       },
       rails: {
         title: "PI-SPI, operated by the BCEAO",
@@ -192,7 +194,7 @@ export const en: Content = {
       ],
     },
     statusNote:
-      "Built on the main branch, not in a release yet, and not yet run against the PI-SPI sandbox. Released versions route to PayDunya, DexPay and NabooPay.",
+      "Available since 0.1.0, built from the BCEAO specification and not yet run against the PI-SPI sandbox.",
     caveat:
       "Yoon cannot connect to PI-SPI directly: only licensed institutions can. In production, your own bank or e-money issuer must offer the API Business to its business clients.",
     links: { site: "PI-SPI (BCEAO)", developer: "API Business developer portal" },

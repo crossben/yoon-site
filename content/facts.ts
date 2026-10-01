@@ -29,25 +29,42 @@ export const version = "0.1.0";
 export const providers = [
   {
     id: "paydunya",
+    name: "PayDunya",
     collect: ["Wave", "Orange Money", "Free Money", "card"],
     payout: ["Wave", "Orange Money", "Free Money"],
     refund: false,
   },
   {
     id: "dexpay",
+    name: "DexPay",
     collect: ["Wave", "Orange Money", "Free Money", "card"],
     payout: ["Wave", "Orange Money"],
     refund: false,
   },
   {
     id: "naboopay",
+    name: "NabooPay",
     collect: ["Wave", "Orange Money", "Free Money", "card"],
     payout: [],
     refund: false,
   },
+  {
+    id: "wave",
+    name: "Wave (direct)",
+    collect: ["Wave"],
+    payout: ["Wave"],
+    refund: "full",
+  },
+  {
+    id: "pispi",
+    name: "PI-SPI (BCEAO)",
+    collect: ["PI alias"],
+    payout: ["PI alias"],
+    refund: "full",
+  },
 ] as const;
 
-/** Source: README.md — "PayDunya, DexPay and NabooPay offer no refund API: refund a customer by sending a payout." */
+/** Source: README.md — "PayDunya, DexPay and NabooPay offer no refund API: refund a customer by sending a payout." and "Wave (direct) and PI-SPI return the full amount of a payment". */
 export const refundByPayout = true;
 
 /** Source: CHANGELOG.md § Known limitations. */
@@ -87,9 +104,8 @@ export const guaranteeSources = {
  *   - https://developer.pispi.bceao.int/ (API Business specification, version 1.5.0: an API that
  *     participants expose to their business clients — payment requests, payments, returns of
  *     funds, webhooks signed with HMAC-SHA256, OAuth2 + mTLS)
- * Yoon's PI-SPI provider is built on the gateway's main branch but NOT RELEASED and not
- * sandbox-tested (README.md providers table, CHANGELOG.md [Unreleased], docs/providers/pispi.md):
- * the site must always say so. When a release includes it, move `providerStatus` to "available".
+ * Yoon's PI-SPI provider ships in 0.1.0 but is NOT sandbox-tested (README.md providers table,
+ * CHANGELOG.md [0.1.0], docs/providers/pispi.md): the site must always say so.
  */
 export const pispi = {
   site: "https://pispi.bceao.int/",
@@ -97,7 +113,7 @@ export const pispi = {
   operator: "BCEAO",
   zone: "UEMOA",
   apiBusinessVersion: "1.5.0",
-  providerStatus: "unreleased",
+  providerStatus: "available-not-sandbox-tested",
 } as const;
 
 /** Client libraries. Source: README.md § Client libraries, ADR-0018. */

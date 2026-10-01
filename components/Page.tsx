@@ -183,17 +183,17 @@ export default async function Page({ content }: { content: Content }) {
                   {providers.map((provider) => (
                     <tr key={provider.id} className="border-b border-line last:border-b-0">
                       <th scope="row" className="px-4 py-3 text-left font-medium">
-                        {provider.id === "paydunya"
-                          ? "PayDunya"
-                          : provider.id === "dexpay"
-                            ? "DexPay"
-                            : "NabooPay"}
+                        {provider.name}
                       </th>
                       <td className="px-4 py-3 text-muted">{provider.collect.join(", ")}</td>
                       <td className="px-4 py-3 text-muted">
                         {provider.payout.length ? provider.payout.join(", ") : "—"}
                       </td>
-                      <td className="px-4 py-3 text-muted">—</td>
+                      <td className="px-4 py-3 text-muted">
+                        {provider.refund
+                          ? content.providersTable.fullRefund
+                          : content.providersTable.none}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

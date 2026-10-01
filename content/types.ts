@@ -69,6 +69,7 @@ export type Content = {
     columns: { provider: string; collect: string; payout: string; refund: string };
     none: string;
     refundNote: string;
+    fullRefund: string;
     sandboxNote: string;
     countryNote: string;
   };

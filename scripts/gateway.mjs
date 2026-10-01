@@ -29,8 +29,8 @@ export const REQUIRED_STRINGS = {
     "| PayDunya | Wave, Orange Money, Free Money, card | Wave, Orange Money, Free Money | — |",
     "| DexPay | Wave, Orange Money, Free Money, card | Wave, Orange Money | — |",
     "| NabooPay | Wave, Orange Money, Free Money, card | — | — |",
+    "| Wave (direct) | Wave, 4 XOF countries | Wave | Full amount |",
     "| PI-SPI (BCEAO) | Payment request to a PI alias, 8 UEMOA countries | To a PI alias | Full amount |",
-    "the Wave (direct) and PI-SPI adapters are on the\n> main branch, not in a release yet",
     // Refunds
     "PayDunya, DexPay and NabooPay offer no refund API: refund a customer by sending a payout.",
     "Wave (direct) and PI-SPI return the full amount of a payment",
@@ -57,8 +57,8 @@ export const REQUIRED_STRINGS = {
   ],
   "CHANGELOG.md": [
     "## [0.1.0]",
-    "New provider **PI-SPI**",
-    "Senegal (XOF) only. No provider offers refunds through an API; refund by payout.",
+    "**PI-SPI** (`pispi`, BCEAO instant payments",
+    "PayDunya, DexPay and NabooPay: Senegal (XOF) only and no refund API (refund by payout).",
   ],
   "docs/load-test.md": [
     "| 100 | 24 000 | 0 % | 27 / 36 / 48 ms | 2 / 3 / 5 ms |",
