@@ -214,10 +214,13 @@ export const fr: Content = {
   code: {
     heading: "Votre code",
     intro:
-      "Trois bibliothèques clientes, générées depuis le contrat d'API, avec des aides orientées clé d'idempotence et vérification des webhooks déjà en place.",
+      "Des bibliothèques pour PHP, Java, JavaScript et Python — plus un bundle Symfony et un starter Spring Boot — avec des aides orientées clé d'idempotence et vérification des webhooks déjà en place.",
     contractNote:
-      "Les trois bibliothèques sont générées depuis api/openapi.yaml — le contrat contre lequel le serveur est testé.",
-    tabLabels: { laravel: "Laravel", php: "PHP", java: "Java", js: "TypeScript", curl: "curl" },
+      "Les quatre clients de langage sont générés depuis api/openapi.yaml — le contrat contre lequel le serveur est testé ; le bundle Symfony et le starter Spring Boot s'appuient sur les clients PHP et Java.",
+    clientLabels: { php: "PHP / Laravel", java: "Java", js: "JavaScript / TypeScript", symfony: "Symfony", python: "Python", spring: "Spring Boot" },
+    e2eNote:
+      "Les clients JavaScript et Python passent un scénario de bout en bout partagé, contre un vrai serveur, en CI :",
+    tabLabels: { laravel: "Laravel", php: "PHP", symfony: "Symfony", java: "Java", js: "TypeScript", python: "Python", curl: "curl" },
     responseLabel: "Yoon répond",
     copy: "Copier",
     copied: "Copié",

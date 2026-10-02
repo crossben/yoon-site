@@ -121,6 +121,9 @@ export const clients = {
   php: { package: "yoonpay/yoon-php", requires: "PHP 8.2+, Laravel 10–13" },
   java: { package: "io.github.crossben:yoon-java", requires: "Java 17+" },
   js: { package: "@yoonpay/yoon", requires: "Node ≥ 20 — also Bun, Deno and edge runtimes" },
+  symfony: { package: "yoonpay/yoon-php", requires: "Symfony 6.4 LTS and 7.x — bundle in the PHP client" },
+  python: { package: "yoonpay", requires: "Python ≥ 3.10 — Django, FastAPI and Flask helpers" },
+  spring: { package: "io.github.crossben:yoon-spring-boot-starter", requires: "Spring Boot 3.x and 4.x" },
 } as const;
 
 /** Licence split. Source: docs/licensing.md. */

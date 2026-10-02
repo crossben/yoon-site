@@ -44,6 +44,11 @@ export const REQUIRED_STRINGS = {
     // Demo
     "YOON_DEMO_ENABLED=true",
     // Clients
+    "| JavaScript / TypeScript | `@yoonpay/yoon` | [clients/js](clients/js) — Node ≥ 20",
+    "| Symfony | `yoonpay/yoon-php` | [clients/php](clients/php#symfony)",
+    "| Python | `yoonpay` | [clients/python](clients/python)",
+    "| Spring Boot | `io.github.crossben:yoon-spring-boot-starter` |",
+    "The PHP, Java, JavaScript and Python clients are generated from `api/openapi.yaml`",
     "yoonpay/yoon-php",
     "io.github.crossben:yoon-java",
     // What Yoon is not
@@ -87,8 +92,27 @@ export const REQUIRED_STRINGS = {
   "docs/adr/0017-github-and-image-namespace.md": ["github.com/crossben/yoonpay"],
   "docs/adr/0018-java-client-coordinates.md": ["io.github.crossben:yoon-java"],
   "docs/adr/0007-no-default-telemetry.md": ["Yoon sends nothing anywhere by default"],
-  "clients/php/README.md": ["composer require yoonpay/yoon-php"],
+  "clients/php/README.md": [
+    "composer require yoonpay/yoon-php",
+    "Yoon\\Symfony\\YoonBundle::class",
+    "#[YoonWebhook]",
+  ],
   "clients/java/README.md": ["Java 17+"],
+  "clients/python/README.md": [
+    "pip install yoonpay",
+    'idempotency_key="order-1042"',
+    "from yoonpay.django import yoon_webhook",
+  ],
+  "clients/java-spring-boot-starter/README.md": [
+    "yoon-spring-boot-starter",
+    "yoon.webhook-secret=${YOON_WEBHOOK_SECRET}",
+    "Spring Boot 3.x or 4.x",
+  ],
+  "clients/e2e/scenario.md": [
+    "The end-to-end scenario, shared by every client",
+    "proves every client against a real Yoon server",
+    "same idempotency key",
+  ],
   "docs/providers/pispi.md": [
     "has **not yet been run against the PI-SPI sandbox**",
     "Payment request (`POST /demandes-paiements`, category `521`, e-commerce)",

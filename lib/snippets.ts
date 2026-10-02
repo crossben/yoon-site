@@ -74,6 +74,76 @@ String checkoutUrl = payment.getCheckoutUrl();   // send the customer here
 // Verify Yoon's webhooks:
 boolean authentic = WebhookSignature.verify(secret, header, rawBody);`,
 
+  symfony: `// config/packages/yoon.yaml — the bundle ships in yoonpay/yoon-php (Yoon\\Symfony)
+yoon:
+    url: '%env(YOON_URL)%'
+    api_key: '%env(YOON_API_KEY)%'
+    webhook_secret: '%env(YOON_WEBHOOK_SECRET)%'
+
+// The client is autowired; the idempotency key ties the payment to your order.
+public function checkout(Order $order, Yoon $yoon): Response
+{
+    $payment = $yoon->createPayment([
+        'amount' => 5000,              // XOF has no minor unit: 5 000 FCFA
+        'currency' => 'XOF',
+        'country' => 'SN',
+        'method' => 'wave',            // wave, orange_money, free_money, card
+        'customer' => ['phone' => '+221771234567'],
+        'reference' => 'order_1042',
+        'return_url' => 'https://shop.example/orders/1042',
+    ], 'order-' . $order->getId());
+
+    return $this->redirect($payment->getCheckoutUrl());
+}
+
+// Receiving Yoon's events — verified + deduplicated by the #[YoonWebhook] attribute:
+final class YoonWebhookController
+{
+    #[Route('/yoon/webhook', methods: ['POST'])]
+    #[YoonWebhook]
+    public function __invoke(Event $event): Response
+    {
+        if ($event->type() === 'payment.succeeded') {
+            // mark the order paid, using $event->object()['id']
+        }
+
+        return new Response('', 204);
+    }
+}`,
+
+  python: `import os
+from yoonpay import Yoon, YoonException
+
+yoon = Yoon("https://pay.example.com", os.environ["YOON_API_KEY"])
+
+try:
+    payment = yoon.create_payment(
+        {
+            "amount": 5000,              # XOF has no minor unit: 5 000 FCFA
+            "currency": "XOF",
+            "country": "SN",
+            "method": "wave",            # wave, orange_money, free_money, card
+            "customer": {"phone": "+221771234567"},
+            "reference": "order_1042",
+            "return_url": "https://shop.example/orders/1042",
+        },
+        idempotency_key="order-1042",    # tie it to your order: a retry can never charge twice
+    )
+    redirect_to = payment.checkout_url
+except YoonException as e:
+    e.problem_code     # e.g. no_provider_for_method
+    e.is_retryable()   # True: retry with the same idempotency key
+
+# Receiving Yoon's events (Django) — verified + deduplicated by the decorator:
+from yoonpay.django import yoon_webhook
+
+@yoon_webhook
+def yoon_events(request, event):
+    if event.type == "payment.succeeded":
+        Order.objects.filter(yoon_payment_id=event.object["id"]).update(status="paid")
+
+    return HttpResponse(status=204)`,
+
   js: `import { Yoon, YoonException } from "@yoonpay/yoon";
 import { yoonWebhook } from "@yoonpay/yoon/express";
 

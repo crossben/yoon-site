@@ -1,6 +1,6 @@
 // The shape every language must fill completely. content/fr.ts is typed by this,
 // so a missing or misspelled French string fails `npm run typecheck`.
-import type { guaranteeSources, providers } from "./facts";
+import type { clients, guaranteeSources, providers } from "./facts";
 import type { codeSnippets } from "../lib/snippets";
 
 type SnippetId = keyof typeof codeSnippets;
@@ -97,6 +97,9 @@ export type Content = {
     heading: string;
     intro: string;
     contractNote: string;
+    /** Labels for the library cards, keyed like content/facts.ts `clients`. */
+    clientLabels: Record<keyof typeof clients, string>;
+    e2eNote: string;
     tabLabels: Record<SnippetId, string>;
     responseLabel: string;
     copy: string;
@@ -152,4 +155,4 @@ export type Content = {
   };
 };
 
-export type { guaranteeSources, providers };
+export type { clients, guaranteeSources, providers };

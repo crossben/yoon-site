@@ -202,10 +202,13 @@ export const en: Content = {
   code: {
     heading: "Your code",
     intro:
-      "Three client libraries, generated from the API contract, with idempotency-key-first helpers and webhook verification built in.",
+      "Client libraries for PHP, Java, JavaScript and Python — plus a Symfony bundle and a Spring Boot starter — with idempotency-key-first helpers and webhook verification built in.",
     contractNote:
-      "All three libraries are generated from api/openapi.yaml — the contract the server is tested against.",
-    tabLabels: { laravel: "Laravel", php: "PHP", java: "Java", js: "TypeScript", curl: "curl" },
+      "The four language clients are generated from api/openapi.yaml — the contract the server is tested against; the Symfony bundle and the Spring Boot starter build on the PHP and Java clients.",
+    clientLabels: { php: "PHP / Laravel", java: "Java", js: "JavaScript / TypeScript", symfony: "Symfony", python: "Python", spring: "Spring Boot" },
+    e2eNote:
+      "The JavaScript and Python clients run a shared end-to-end scenario against a real server in CI:",
+    tabLabels: { laravel: "Laravel", php: "PHP", symfony: "Symfony", java: "Java", js: "TypeScript", python: "Python", curl: "curl" },
     responseLabel: "Yoon answers",
     copy: "Copy",
     copied: "Copied",

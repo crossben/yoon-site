@@ -8,6 +8,7 @@ import {
   repo,
   licensing,
   pispi,
+  clients,
 } from "@/content/facts";
 import type { Content } from "@/content/types";
 import { codeSnippets, demoEnv, demoStepYoon, demoStepShop } from "@/lib/snippets";
@@ -70,8 +71,10 @@ export default async function Page({ content }: { content: Content }) {
       [
         ["laravel", "php"],
         ["php", "php"],
+        ["symfony", "php"],
         ["java", "java"],
         ["js", "typescript"],
+        ["python", "python"],
         ["curl", "bash"],
       ] as const
     ).map(async ([id, lang]) => ({
@@ -347,7 +350,18 @@ export default async function Page({ content }: { content: Content }) {
 
         {/* 6 — Your code */}
         <Section id="code" title={content.code.heading} intro={content.code.intro}>
-          <CodeTabs tabs={tabs} responseHtml={responseHtml} labels={content.code} />
+          <Reveal className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger>
+            {(Object.keys(clients) as (keyof typeof clients)[]).map((key) => (
+              <div key={key} className="rounded-xl border border-line bg-surface p-4">
+                <p className="text-sm font-semibold">{content.code.clientLabels[key]}</p>
+                <p className="mt-1 font-mono text-sm text-accent">{clients[key].package}</p>
+                <p className="mt-1 text-xs text-muted">{clients[key].requires}</p>
+              </div>
+            ))}
+          </Reveal>
+          <div className="mt-8">
+            <CodeTabs tabs={tabs} responseHtml={responseHtml} labels={content.code} />
+          </div>
           <p className="mt-4 text-sm text-muted">
             {content.code.contractNote}{" "}
             <a
@@ -355,6 +369,15 @@ export default async function Page({ content }: { content: Content }) {
               className="font-medium text-ink underline decoration-accent decoration-2 underline-offset-4 hover:text-accent"
             >
               api/openapi.yaml <ExternalArrow />
+            </a>
+          </p>
+          <p className="mt-2 text-sm text-muted">
+            {content.code.e2eNote}{" "}
+            <a
+              href={`${repo.blob}/clients/e2e/scenario.md`}
+              className="font-medium text-ink underline decoration-accent decoration-2 underline-offset-4 hover:text-accent"
+            >
+              clients/e2e/scenario.md <ExternalArrow />
             </a>
           </p>
         </Section>
