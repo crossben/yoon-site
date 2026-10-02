@@ -40,6 +40,12 @@ export type Content = {
       play: string;
     };
   };
+  independent: {
+    heading: string;
+    lead: string;
+    points: { title: string; body: string }[];
+    licensingLabel: string;
+  };
   problem: {
     heading: string;
     cards: { title: string; body: string }[];
@@ -123,6 +129,9 @@ export type Content = {
     terminalLabel: string;
     terminalNote: string;
     linkLabel: string;
+    envHint: string;
+    envRandomise: string;
+    envReset: string;
   };
   run: {
     heading: string;

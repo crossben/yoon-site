@@ -12,6 +12,7 @@ import {
 } from "@/content/facts";
 import type { Content } from "@/content/types";
 import { codeSnippets, demoEnv, demoStepYoon, demoStepShop } from "@/lib/snippets";
+import EditableEnv from "@/components/EditableEnv";
 import { paymentResponseExample } from "@/lib/openapi";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -98,6 +99,24 @@ export default async function Page({ content }: { content: Content }) {
       <Header content={content} />
       <main id="main">
         <Hero content={content} />
+
+        {/* 1b — Not an aggregator, nothing to pay Yoon */}
+        <Section id="independent" title={content.independent.heading} intro={content.independent.lead}>
+          <Reveal className="grid gap-4 md:grid-cols-3" stagger>
+            {content.independent.points.map((point) => (
+              <div key={point.title} className="rounded-xl border border-line bg-surface p-6">
+                <h3 className="font-semibold">{point.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{point.body}</p>
+              </div>
+            ))}
+          </Reveal>
+          <a
+            href={repo.licensing}
+            className="mt-6 inline-block text-sm font-medium text-ink underline decoration-accent decoration-2 underline-offset-4 hover:text-accent"
+          >
+            {content.independent.licensingLabel} <ExternalArrow />
+          </a>
+        </Section>
 
         {/* 2 — The problem */}
         <Section id="problem" title={content.problem.heading}>
@@ -399,7 +418,16 @@ export default async function Page({ content }: { content: Content }) {
                 </h3>
                 <p className="mt-1 text-sm text-muted">{content.demo.step1Note}</p>
                 <div className="mt-3">
-                  <CodeBlock code={demoEnv} lang="ini" labels={content.code} />
+                  <EditableEnv
+                    initial={demoEnv}
+                    labels={{
+                      copy: content.code.copy,
+                      copied: content.code.copied,
+                      randomise: content.demo.envRandomise,
+                      reset: content.demo.envReset,
+                      hint: content.demo.envHint,
+                    }}
+                  />
                 </div>
                 <div className="mt-3">
                   <CodeBlock code={demoStepYoon} lang="bash" labels={content.code} />

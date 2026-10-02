@@ -45,6 +45,26 @@ export const fr: Content = {
       play: "Reprendre l'animation",
     },
   },
+  independent: {
+    heading: "Ni agrégateur, ni commission sur vos paiements.",
+    lead:
+      "Yoon n'est pas un agrégateur : vous ouvrez vos propres comptes marchands chez les fournisseurs et apportez vos propres clés. Yoon enlève le travail d'intégration, pas l'inscription.",
+    points: [
+      {
+        title: "Rien à payer à Yoon",
+        body: "Le serveur est un logiciel libre sous AGPL-3.0 : aucun frais de licence, aucune part sur vos paiements. Vous l'hébergez vous-même.",
+      },
+      {
+        title: "Les conditions sont celles de la licence",
+        body: "Yoon utilisé sans modification : aucune obligation au-delà des mentions de licence. Offert à d'autres sur un réseau : offrez-leur le code source.",
+      },
+      {
+        title: "Vous restez le marchand",
+        body: "Les contrats, comptes et clés des fournisseurs sont les vôtres. Yoon se place devant eux ; il n'est pas partie à votre argent.",
+      },
+    ],
+    licensingLabel: "Ce que l'AGPL vous demande, en clair",
+  },
   problem: {
     heading: "Le même travail, dans chaque projet",
     cards: [
@@ -246,6 +266,9 @@ export const fr: Content = {
     terminalLabel: "À quoi ça ressemble",
     terminalNote: "Les commandes complètes sont à gauche.",
     linkLabel: "L'exemple, pas à pas",
+    envHint: "Éditez-moi — copiez le résultat dans votre propre .env",
+    envRandomise: "Générer les secrets",
+    envReset: "Réinitialiser",
   },
   run: {
     heading: "L'installer vous-même",

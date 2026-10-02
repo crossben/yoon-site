@@ -42,6 +42,26 @@ export const en: Content = {
       play: "Play the animation",
     },
   },
+  independent: {
+    heading: "Not an aggregator. No cut of your payments.",
+    lead:
+      "Yoon is not an aggregator: you open your own merchant accounts with the providers and bring your own keys. Yoon removes the integration work, not the onboarding.",
+    points: [
+      {
+        title: "Nothing to pay Yoon",
+        body: "The server is free software under AGPL-3.0: no licence fee and no share of your payments. You run it yourself.",
+      },
+      {
+        title: "The conditions are the licence's",
+        body: "Running Yoon unmodified: no obligation beyond keeping the licence notices. Offering it to others over a network: offer them the source.",
+      },
+      {
+        title: "You stay the merchant",
+        body: "The providers' contracts, accounts and keys are yours. Yoon sits in front of them; it is not a party to your money.",
+      },
+    ],
+    licensingLabel: "What the AGPL asks of you, plainly",
+  },
   problem: {
     heading: "The same work, in every project",
     cards: [
@@ -233,6 +253,9 @@ export const en: Content = {
     terminalLabel: "What it looks like",
     terminalNote: "The full commands are on the left.",
     linkLabel: "The example, step by step",
+    envHint: "Edit me — copy the result into your own .env",
+    envRandomise: "Randomise secrets",
+    envReset: "Reset",
   },
   run: {
     heading: "Run it yourself",

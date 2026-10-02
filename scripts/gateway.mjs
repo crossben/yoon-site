@@ -53,6 +53,7 @@ export const REQUIRED_STRINGS = {
     "io.github.crossben:yoon-java",
     // What Yoon is not
     "**Not an aggregator.**",
+    "Yoon removes the integration work, not the onboarding.",
     "**Not a card vault.**",
     "**Not a checkout UI.**",
     "**Not a hosted service.**",
@@ -72,6 +73,7 @@ export const REQUIRED_STRINGS = {
   ],
   "docs/licensing.md": [
     "A **commercial licence** for the server is available",
+    "no obligation beyond",
     "| `yoon-core`, `yoon-server`, `yoon-providers/*`, `yoon-testkit` | [AGPL-3.0](../LICENSE) |",
     "| `clients/php`, `clients/java`, `examples/` | [Apache-2.0](../clients/LICENSE) |",
   ],
