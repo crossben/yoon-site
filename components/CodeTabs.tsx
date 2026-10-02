@@ -2,19 +2,22 @@
 
 import { useRef, useState, type ReactNode } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import CopyButton from "@/components/CopyButton";
 import type { Content } from "@/content/types";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export type CodeTab = { id: string; label: string; html: string; raw: string };
 
 /**
  * The "Your code" tabs (website/PLAN.md §5.6). All panels are server-rendered
  * (Shiki highlighting happened at build time); this client component only swaps
- * which one is visible and runs the small request/response animation when the
- * curl tab opens. ARIA tabs pattern with roving tabindex and arrow keys.
+ * which one is visible and runs the request/response animation when a tab opens:
+ * the request highlights, then the JSON answer streams in line by line (§5a).
+ * Every tab gets the same response — it is the same API answering. ARIA tabs
+ * pattern with roving tabindex and arrow keys.
  */
 export default function CodeTabs({
   tabs,
@@ -24,11 +27,11 @@ export default function CodeTabs({
   tabs: CodeTab[];
   responseHtml: ReactNode;
   labels: Pick<Content["code"], "responseLabel" | "copy" | "copied">;
-  // CopyButton is rendered by the parent panel body (needs raw text).
 }) {
   const [active, setActive] = useState(tabs[0]?.id ?? "");
   const rootRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const interacted = useRef(false);
 
   const activeIndex = Math.max(
     0,
@@ -44,45 +47,54 @@ export default function CodeTabs({
     else if (event.key === "End") next = last;
     if (next === null) return;
     event.preventDefault();
+    interacted.current = true;
     setActive(tabs[next].id);
     tabRefs.current[next]?.focus();
   }
 
-  // When the curl panel opens: highlight the request, then stream the JSON
-  // response in line by line (website/PLAN.md §5a "Request/response").
+  // When a panel opens: highlight the request, then stream the JSON response in
+  // line by line (website/PLAN.md §5a "Request/response"). The panel that is open
+  // on load waits until the section scrolls into view, so the animation is seen,
+  // not spent off-screen.
   useGSAP(
     () => {
-      if (active !== "curl") return;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const root = rootRef.current;
       if (!root) return;
-      const request = root.querySelector("[data-request-block]");
-      const lines = root.querySelectorAll("[data-response-block] .line");
-      if (request) {
-        gsap.fromTo(
-          request,
-          { boxShadow: "inset 0 0 0 1000px rgba(181, 83, 46, 0.14)" },
-          {
-            boxShadow: "inset 0 0 0 1000px rgba(181, 83, 46, 0)",
-            duration: 0.7,
-            ease: "power1.out",
-          },
-        );
+
+      const run = () => {
+        const panel = root.querySelector(`[id="panel-${active}"]`);
+        if (!panel) return;
+        const request = panel.querySelector("[data-request-block]");
+        const lines = panel.querySelectorAll("[data-response-block] .line");
+        if (request) {
+          gsap.fromTo(
+            request,
+            { boxShadow: "inset 0 0 0 1000px rgba(181, 83, 46, 0.14)" },
+            {
+              boxShadow: "inset 0 0 0 1000px rgba(181, 83, 46, 0)",
+              duration: 0.7,
+              ease: "power1.out",
+            },
+          );
+        }
+        if (lines.length) {
+          gsap.from(lines, { opacity: 0, y: 4, duration: 0.18, stagger: 0.05, ease: "none" });
+        }
+      };
+
+      if (interacted.current) {
+        run();
+        return;
       }
-      if (lines.length) {
-        gsap.from(lines, { opacity: 0, y: 4, duration: 0.18, stagger: 0.05, ease: "none" });
-      }
+      ScrollTrigger.create({ trigger: root, start: "top 75%", once: true, onEnter: run });
     },
     { dependencies: [active], scope: rootRef },
   );
 
   return (
     <div ref={rootRef}>
-      <div
-        role="tablist"
-        aria-label={labels.responseLabel ? "Code examples" : "Code examples"}
-        className="flex flex-wrap gap-2"
-      >
+      <div role="tablist" aria-label="Code examples" className="flex flex-wrap gap-2">
         {tabs.map((tab, index) => (
           <button
             key={tab.id}
@@ -95,7 +107,10 @@ export default function CodeTabs({
             aria-controls={`panel-${tab.id}`}
             tabIndex={active === tab.id ? 0 : -1}
             onKeyDown={onKeyDown}
-            onClick={() => setActive(tab.id)}
+            onClick={() => {
+              interacted.current = true;
+              setActive(tab.id);
+            }}
             className={`rounded-full px-4 py-2 font-mono text-sm transition-colors ${
               active === tab.id
                 ? "bg-ink text-bg"
@@ -120,22 +135,20 @@ export default function CodeTabs({
             <CopyButton text={tab.raw} label={labels.copy} copiedLabel={labels.copied} />
           </div>
           <div
-            data-request-block={tab.id === "curl" ? "" : undefined}
+            data-request-block=""
             className="overflow-x-auto rounded-xl border border-line bg-surface p-4 text-sm"
             dangerouslySetInnerHTML={{ __html: tab.html }}
           />
-          {tab.id === "curl" && (
-            <div className="mt-4">
-              <p className="mb-2 font-mono text-xs uppercase tracking-wide text-muted">
-                {labels.responseLabel}
-              </p>
-              <div
-                data-response-block=""
-                className="overflow-x-auto rounded-xl border border-line bg-surface p-4 text-sm"
-                dangerouslySetInnerHTML={{ __html: responseHtml as string }}
-              />
-            </div>
-          )}
+          <div className="mt-4">
+            <p className="mb-2 font-mono text-xs uppercase tracking-wide text-muted">
+              {labels.responseLabel}
+            </p>
+            <div
+              data-response-block=""
+              className="overflow-x-auto rounded-xl border border-line bg-surface p-4 text-sm"
+              dangerouslySetInnerHTML={{ __html: responseHtml as string }}
+            />
+          </div>
         </div>
       ))}
     </div>
