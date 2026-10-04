@@ -5,6 +5,10 @@
 // refreshed by `npm run sync:gateway` (scripts/sync-gateway.mjs). CI checks daily that the
 // snapshot still matches the gateway repository.
 import { resolve } from "node:path";
+import { DOC_SNIPPETS } from "./doc-snippets.mjs";
+// The providers list lives in content/facts.ts (Node runs TypeScript with type stripping):
+// one entry there brings its docs page into the snapshot and under the drift guard.
+const { providers } = await import("../content/facts.ts");
 
 /** The snapshot the build reads. `YOON_APP_DIR` overrides it (e.g. to read a live checkout). */
 export const SNAPSHOT_DIR = resolve(process.env.YOON_APP_DIR ?? "gateway");
@@ -32,7 +36,8 @@ export const REQUIRED_STRINGS = {
     "| Wave (direct) | Wave, 4 XOF countries | Wave | Full amount |",
     "| PI-SPI (BCEAO) | Payment request to a PI alias, 8 UEMOA countries | To a PI alias | Full amount |",
     // Refunds
-    "PayDunya, DexPay and NabooPay offer no refund API: refund a customer by sending a payout.",
+    "PayDunya, DexPay, NabooPay and CinetPay offer no refund API: refund a customer by sending a payout.",
+    "Stripe refunds any amount up to what was paid.",
     "Wave (direct) and PI-SPI return the full amount of a payment",
     // Status (not sandbox-tested)
     "yet been run against the providers' sandboxes",
@@ -135,6 +140,17 @@ export const REQUIRED_STRINGS = {
   "CONTRIBUTING.md": ["Contributor License Agreement"],
   "SECURITY.md": ["private vulnerability reporting"],
 };
+
+// The docs pages (/docs/…): every snippet's marker must stay in its source file
+// (scripts/doc-snippets.mjs), and every provider in content/facts.ts must keep its row in the
+// README's providers table and its page under docs/providers/.
+for (const { file, marker } of Object.values(DOC_SNIPPETS)) {
+  (REQUIRED_STRINGS[file] ??= []).push(marker);
+}
+for (const provider of providers) {
+  REQUIRED_STRINGS["README.md"].push(`| ${provider.name} |`, `[${provider.doc}](${provider.doc})`);
+  (REQUIRED_STRINGS[provider.doc] ??= []).push("# ");
+}
 
 /**
  * Every gateway file the build reads — exactly what the snapshot holds. Never add the

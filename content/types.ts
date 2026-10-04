@@ -2,6 +2,7 @@
 // so a missing or misspelled French string fails `npm run typecheck`.
 import type { clients, guaranteeSources, providers } from "./facts";
 import type { codeSnippets } from "../lib/snippets";
+import type { DocSnippetId } from "../lib/docs";
 
 type SnippetId = keyof typeof codeSnippets;
 
@@ -14,6 +15,77 @@ export type Nav = {
   demo: string;
   run: string;
   pispi: string;
+  docs: string;
+};
+
+export type ClientId = keyof typeof clients;
+
+/** Copy for the developer docs (/docs/…). Snippets themselves are never translated. */
+export type DocsContent = {
+  /** Hero link to the docs. */
+  heroCta: string;
+  /** Sidebar */
+  navLabel: string;
+  navQuickstart: string;
+  navClients: string;
+  navProviders: string;
+  /** Label before the gateway file a snippet is copied from. */
+  sourceLabel: string;
+  index: {
+    title: string;
+    description: string;
+    intro: string;
+    quickstartBody: string;
+    clientsBody: string;
+    providersBody: string;
+    apiLabel: string;
+  };
+  quickstart: {
+    title: string;
+    description: string;
+    intro: string;
+    steps: {
+      start: { title: string; body: string; after: string };
+      app: { title: string; body: string };
+      pay: { title: string; body: string; after: string };
+      webhook: { title: string; body: string; signature: string; rules: string; clients: string };
+    };
+    cliTitle: string;
+    cliBody: string;
+  };
+  client: {
+    /** Page title per client, e.g. "PHP and Laravel". */
+    titles: Record<ClientId, string>;
+    /** "{client}" is replaced by the client's title. */
+    description: string;
+    requiresLabel: string;
+    install: string;
+    create: string;
+    createNote: string;
+    webhook: string;
+    webhookNote: string;
+    /** Sentence introducing the inline verify call, for clients that only document one. */
+    verifyInline: string;
+    /** Optional caption above a snippet. */
+    captions: Partial<Record<DocSnippetId, string>>;
+    readmeLabel: string;
+  };
+  providers: {
+    title: string;
+    description: string;
+    intro: string;
+    columns: {
+      provider: string;
+      collect: string;
+      payout: string;
+      refund: string;
+      status: string;
+      doc: string;
+    };
+    notTested: string;
+    docLink: string;
+    configNote: string;
+  };
 };
 
 export type Content = {
@@ -76,6 +148,7 @@ export type Content = {
     none: string;
     refundNote: string;
     fullRefund: string;
+    partialRefund: string;
     sandboxNote: string;
     countryNote: string;
   };
@@ -156,6 +229,7 @@ export type Content = {
     security: { title: string; body: string };
     commercial: { title: string; body: string };
   };
+  docs: DocsContent;
   footer: {
     meaning: string;
     tagline: string;

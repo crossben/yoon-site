@@ -26,6 +26,7 @@ export const fr: Content = {
       demo: "Démo",
       run: "Installer",
       pispi: "PI-SPI",
+      docs: "Docs",
     },
     themeToggle: { toLight: "Passer en thème clair", toDark: "Passer en thème sombre" },
     homeAria: "Yoon — accueil",
@@ -47,8 +48,7 @@ export const fr: Content = {
   },
   independent: {
     heading: "Ni agrégateur, ni commission sur vos paiements.",
-    lead:
-      "Yoon n'est pas un agrégateur : vous ouvrez vos propres comptes marchands chez les fournisseurs et apportez vos propres clés. Yoon enlève le travail d'intégration, pas l'inscription.",
+    lead: "Yoon n'est pas un agrégateur : vous ouvrez vos propres comptes marchands chez les fournisseurs et apportez vos propres clés. Yoon enlève le travail d'intégration, pas l'inscription.",
     points: [
       {
         title: "Rien à payer à Yoon",
@@ -151,12 +151,13 @@ export const fr: Content = {
     },
     none: "—",
     fullRefund: "Montant total",
+    partialRefund: "Total et partiel",
     refundNote:
-      "PayDunya, DexPay et NabooPay n'offrent pas d'API de remboursement : on rembourse un client en lui envoyant un payout. Wave (direct) et PI-SPI remboursent le montant total ; un remboursement partiel se fait par payout.",
+      "PayDunya, DexPay, NabooPay et CinetPay n'offrent pas d'API de remboursement : on rembourse un client en lui envoyant un payout. Wave (direct) et PI-SPI remboursent le montant total ; Stripe rembourse tout montant jusqu'à ce qui a été payé.",
     sandboxNote:
-      "Les adaptateurs sont testés contre des API simulées (à partir d'intégrations de production, de la documentation publique de Wave et de la spécification de la BCEAO) — pas encore contre les sandboxes des fournisseurs.",
+      "Les adaptateurs sont testés contre des API simulées (à partir d'intégrations de production, des documentations publiques de Wave et de Stripe, des SDK de CinetPay et de la spécification de la BCEAO) — pas encore contre les sandboxes des fournisseurs.",
     countryNote:
-      "XOF. PayDunya, DexPay, NabooPay : Sénégal. Wave : Sénégal, Côte d'Ivoire, Mali, Burkina Faso. PI-SPI : les huit pays de l'UEMOA.",
+      "PayDunya, DexPay, NabooPay : Sénégal. Wave : Sénégal, Côte d'Ivoire, Mali, Burkina Faso. PI-SPI : les huit pays de l'UEMOA. CinetPay : neuf pays d'Afrique de l'Ouest et centrale. Stripe : cartes du monde entier. Stripe et CinetPay sont sur la branche principale et arrivent dans la prochaine version.",
   },
   pispi: {
     heading: "Yoon et PI-SPI : deux étages, pas deux concurrents",
@@ -237,10 +238,25 @@ export const fr: Content = {
       "Des bibliothèques pour PHP, Java, JavaScript et Python — plus un bundle Symfony et un starter Spring Boot — avec des aides orientées clé d'idempotence et vérification des webhooks déjà en place.",
     contractNote:
       "Les quatre clients de langage sont générés depuis api/openapi.yaml — le contrat contre lequel le serveur est testé ; le bundle Symfony et le starter Spring Boot s'appuient sur les clients PHP et Java.",
-    clientLabels: { php: "PHP / Laravel", java: "Java", js: "JavaScript / TypeScript", symfony: "Symfony", python: "Python", spring: "Spring Boot" },
+    clientLabels: {
+      php: "PHP / Laravel",
+      java: "Java",
+      js: "JavaScript / TypeScript",
+      symfony: "Symfony",
+      python: "Python",
+      spring: "Spring Boot",
+    },
     e2eNote:
       "Les clients JavaScript et Python passent un scénario de bout en bout partagé, contre un vrai serveur, en CI :",
-    tabLabels: { laravel: "Laravel", php: "PHP", symfony: "Symfony", java: "Java", js: "TypeScript", python: "Python", curl: "curl" },
+    tabLabels: {
+      laravel: "Laravel",
+      php: "PHP",
+      symfony: "Symfony",
+      java: "Java",
+      js: "TypeScript",
+      python: "Python",
+      curl: "curl",
+    },
     responseLabel: "Yoon répond",
     copy: "Copier",
     copied: "Copié",
@@ -346,6 +362,120 @@ export const fr: Content = {
     commercial: {
       title: "Licence commerciale",
       body: "Ouvrez une issue, ou contactez le mainteneur sur GitHub.",
+    },
+  },
+  docs: {
+    heroCta: "Docs",
+    navLabel: "Documentation",
+    navQuickstart: "Démarrage rapide",
+    navClients: "Bibliothèques clientes",
+    navProviders: "Fournisseurs",
+    sourceLabel: "Source",
+    index: {
+      title: "Documentation",
+      description:
+        "Lancer Yoon avec le fournisseur de démo, encaisser un premier paiement, et l'intégrer depuis PHP, Symfony, Java, Spring Boot, JavaScript ou Python.",
+      intro:
+        "Chaque commande et chaque extrait de ces pages est copié du dépôt de la passerelle — son README et celui de chaque client — et le build échoue s'ils divergent.",
+      quickstartBody:
+        "Docker Compose, le fournisseur de démo, une clé d'API, un premier paiement avec curl et un webhook signé. Sans compte fournisseur, sans argent réel.",
+      clientsBody: "Installer, créer un paiement avec une clé d'idempotence, vérifier un webhook.",
+      providersBody: "Ce que fait chaque fournisseur, et où sa configuration est documentée.",
+      apiLabel: "Contrat d'API (OpenAPI)",
+    },
+    quickstart: {
+      title: "Démarrage rapide",
+      description:
+        "Lancer Yoon avec Docker Compose et le fournisseur de démo, créer une clé d'API, encaisser un premier paiement avec curl et recevoir un webhook.",
+      intro:
+        "Il vous faut Docker et un clone du dépôt. Le fournisseur de démo sert sa propre page de paiement : vous cliquez sur Pay ou Decline, et un callback signé suit le vrai circuit. Aucun argent ne circule — ne l'activez jamais en production.",
+      steps: {
+        start: {
+          title: "Configurer Yoon",
+          body: "À la racine du dépôt, créez .env. Il active le fournisseur de démo pour une application nommée shop, et indique où Yoon envoie les événements de cette application. Le secret du webhook doit faire au moins 32 caractères.",
+          after:
+            "Dans le nom d'une variable, <APP> est le nom de l'application en majuscules, les - devenant des _ : shop devient SHOP.",
+        },
+        app: {
+          title: "Le démarrer, créer l'application et sa clé d'API",
+          body: "La ligne de commande d'exploitation crée l'application et affiche sa clé d'API une seule fois : copiez-la. Redémarrez ensuite Yoon, qui lit les réglages des fournisseurs et des webhooks au démarrage.",
+        },
+        pay: {
+          title: "Créer un premier paiement",
+          body: "Remplacez yk_… par votre clé. Chaque écriture porte un Idempotency-Key : la même requête renvoyée rend le paiement d'origine au lieu de débiter deux fois.",
+          after:
+            "Avec le fournisseur de démo activé pour l'application, le paiement revient en pending avec un checkout_url : ouvrez-le et cliquez sur Pay. Sans fournisseur configuré, Yoon répond 422 no_provider_for_method — c'est le routage qui fonctionne.",
+        },
+        webhook: {
+          title: "Recevoir le webhook",
+          body: "Quand le paiement aboutit, Yoon envoie en POST un événement signé, par exemple payment.succeeded, à l'URL de webhook de l'application — dans ce .env, le port 8010 de votre machine. Les événements sont aussi listés sur GET /v1/events pour rattraper un retard.",
+          signature: "Chaque envoi porte cet en-tête :",
+          rules:
+            "Calculez ce HMAC sur le corps brut, comparez-le à v1 en temps constant, et refusez l'envoi si t date de plus de 5 minutes. La livraison est « au moins une fois » et sans ordre garanti : dédupliquez sur l'id de l'événement.",
+          clients: "Chaque bibliothèque cliente le fait pour vous :",
+        },
+      },
+      cliTitle: "Applications et clés",
+      cliBody:
+        "La même ligne de commande liste les applications, émet une autre clé pour une rotation et en révoque une. Une clé ne s'affiche qu'une fois.",
+    },
+    client: {
+      titles: {
+        php: "PHP et Laravel",
+        symfony: "Symfony",
+        java: "Java",
+        spring: "Spring Boot",
+        js: "JavaScript et TypeScript",
+        python: "Python",
+      },
+      description:
+        "Installer le client {client} de Yoon, créer un paiement avec une clé d'idempotence et vérifier les webhooks de Yoon.",
+      requiresLabel: "Prérequis",
+      install: "Installer",
+      create: "Créer un paiement",
+      createNote:
+        "La clé d'idempotence est obligatoire pour toute écriture. Liez-la à votre commande : une nouvelle tentative avec la même clé ne peut jamais débiter deux fois.",
+      webhook: "Vérifier un webhook",
+      webhookNote:
+        "L'outil vérifie la signature sur le corps brut et refuse une signature fausse ou périmée avec 401, répond 200 à un événement déjà traité sans appeler votre code, et ne retient un événement qu'une fois que votre code a répondu 2xx. Les événements arrivent sans ordre : fiez-vous à l'état contenu dans l'objet de l'événement.",
+      verifyInline: "Pour vérifier une signature vous-même, sur le corps brut de la requête :",
+      captions: {
+        "php.create": "PHP seul",
+        "php.laravelEnv": "Laravel — .env",
+        "php.laravelCreate": "Laravel — la façade",
+        "php.laravelWebhook": "Laravel — le middleware yoon.webhook",
+        "symfony.bundle": "Enregistrer le bundle",
+        "symfony.config": "Le configurer",
+        "symfony.create": "Yoon\\Yoon est injectable automatiquement",
+        "symfony.webhook": "#[YoonWebhook] sur le contrôleur",
+        "spring.config": "Configuration",
+        "spring.create": "Injecter le bean Yoon auto-configuré",
+        "spring.webhook": "Le filtre du starter vérifie l'événement avant votre contrôleur",
+        "js.webhook": "Express",
+        "js.verify": "Hors framework",
+        "python.webhook": "Django",
+        "python.verify": "Hors framework",
+      },
+      readmeLabel: "Autres frameworks, erreurs et tous les helpers : le README du client",
+    },
+    providers: {
+      title: "Fournisseurs",
+      description:
+        "Les fournisseurs de paiement pris en charge par Yoon, ce que fait chacun, et où sa configuration est documentée.",
+      intro:
+        "Vous ouvrez votre propre compte marchand chez chaque fournisseur et apportez vos propres clés : Yoon supprime le travail d'intégration, pas l'inscription. La page de chaque fournisseur liste les identifiants à renseigner, la correspondance entre ses statuts et ceux de Yoon, et ses particularités.",
+      columns: {
+        provider: "Fournisseur",
+        collect: "Encaissement",
+        payout: "Versement",
+        refund: "Remboursement",
+        status: "Statut",
+        doc: "Docs",
+      },
+      notTested: "Pas testé en sandbox",
+      docLink: "Configuration",
+      configNote:
+        "Les fournisseurs s'activent par application avec des variables d'environnement — YOON_APPS_<APP>_PROVIDERS_<PROVIDER>_PRIORITY et _CREDENTIALS_<KEY> — lues au démarrage : redémarrez Yoon après un changement.",
     },
   },
   footer: {

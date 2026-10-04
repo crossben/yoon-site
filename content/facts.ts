@@ -25,46 +25,90 @@ export const repo = {
 /** Version. Source: CHANGELOG.md `## [0.1.0]`. */
 export const version = "0.1.0";
 
-/** Providers and what each supports. Source: README.md § Providers, docs/providers/*.md. */
+/**
+ * Providers and what each supports. Source: README.md § Providers, docs/providers/*.md.
+ *
+ * Adding a provider is one entry here: `name` must match the first cell of its row in the
+ * gateway README's providers table, and `doc` its page under docs/providers/. The snapshot
+ * sync and scripts/check-facts.mjs read this list (scripts/gateway.mjs), so the new page is
+ * copied into gateway/ and both are guarded automatically.
+ * `sandboxTested`: README.md status line — no adapter has been run against a provider sandbox yet.
+ */
 export const providers = [
   {
     id: "paydunya",
     name: "PayDunya",
+    doc: "docs/providers/paydunya.md",
     collect: ["Wave", "Orange Money", "Free Money", "card"],
     payout: ["Wave", "Orange Money", "Free Money"],
     refund: false,
+    sandboxTested: false,
   },
   {
     id: "dexpay",
     name: "DexPay",
+    doc: "docs/providers/dexpay.md",
     collect: ["Wave", "Orange Money", "Free Money", "card"],
     payout: ["Wave", "Orange Money"],
     refund: false,
+    sandboxTested: false,
   },
   {
     id: "naboopay",
     name: "NabooPay",
+    doc: "docs/providers/naboopay.md",
     collect: ["Wave", "Orange Money", "Free Money", "card"],
     payout: [],
     refund: false,
+    sandboxTested: false,
+  },
+  {
+    id: "cinetpay",
+    name: "CinetPay",
+    doc: "docs/providers/cinetpay.md",
+    collect: ["Orange Money", "MTN", "Moov", "Wave", "Free Money", "and more (9 countries)"],
+    payout: ["Mobile money"],
+    refund: false,
+    sandboxTested: false,
   },
   {
     id: "wave",
     name: "Wave (direct)",
+    doc: "docs/providers/wave.md",
     collect: ["Wave"],
     payout: ["Wave"],
     refund: "full",
+    sandboxTested: false,
+  },
+  {
+    id: "stripe",
+    name: "Stripe",
+    doc: "docs/providers/stripe.md",
+    collect: ["card (international)"],
+    payout: [],
+    refund: "partial",
+    sandboxTested: false,
   },
   {
     id: "pispi",
     name: "PI-SPI (BCEAO)",
+    doc: "docs/providers/pispi.md",
     collect: ["PI alias"],
     payout: ["PI alias"],
     refund: "full",
+    sandboxTested: false,
   },
-] as const;
+] as const satisfies readonly {
+  id: string;
+  name: string;
+  doc: `docs/providers/${string}.md`;
+  collect: readonly string[];
+  payout: readonly string[];
+  refund: false | "full" | "partial";
+  sandboxTested: boolean;
+}[];
 
-/** Source: README.md — "PayDunya, DexPay and NabooPay offer no refund API: refund a customer by sending a payout." and "Wave (direct) and PI-SPI return the full amount of a payment". */
+/** Source: README.md — "PayDunya, DexPay, NabooPay and CinetPay offer no refund API: refund a customer by sending a payout.", "Stripe refunds any amount up to what was paid." and "Wave (direct) and PI-SPI return the full amount of a payment". */
 export const refundByPayout = true;
 
 /** Source: CHANGELOG.md § Known limitations. */
@@ -121,9 +165,15 @@ export const clients = {
   php: { package: "yoonpay/yoon-php", requires: "PHP 8.2+, Laravel 10–13" },
   java: { package: "io.github.crossben:yoon-java", requires: "Java 17+" },
   js: { package: "@yoonpay/yoon", requires: "Node ≥ 20 — also Bun, Deno and edge runtimes" },
-  symfony: { package: "yoonpay/yoon-php", requires: "Symfony 6.4 LTS and 7.x — bundle in the PHP client" },
+  symfony: {
+    package: "yoonpay/yoon-php",
+    requires: "Symfony 6.4 LTS and 7.x — bundle in the PHP client",
+  },
   python: { package: "yoonpay", requires: "Python ≥ 3.10 — Django, FastAPI and Flask helpers" },
-  spring: { package: "io.github.crossben:yoon-spring-boot-starter", requires: "Spring Boot 3.x and 4.x" },
+  spring: {
+    package: "io.github.crossben:yoon-spring-boot-starter",
+    requires: "Spring Boot 3.x and 4.x",
+  },
 } as const;
 
 /** Licence split. Source: docs/licensing.md. */

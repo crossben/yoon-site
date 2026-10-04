@@ -9,8 +9,8 @@ Everything factual on the site comes from the gateway repository
 source for every claim, and `scripts/check-facts.mjs` fails the build when a source file
 no longer backs one. The site never modifies the gateway repository.
 
-**This repository builds on its own.** The gateway files the build reads (23 of them: the
-cited documents, `api/openapi.yaml`, the brand assets) are kept in a committed snapshot,
+**This repository builds on its own.** The gateway files the build reads (31 of them: the
+cited documents, the client READMEs and provider pages the docs quote, `api/openapi.yaml`, the brand assets) are kept in a committed snapshot,
 `gateway/`, with the gateway commit it came from in `gateway/SOURCE.json`. No sibling
 checkout and no token are needed to build or deploy — on a VPS, in Docker, on
 Cloudflare Pages.
@@ -35,6 +35,13 @@ Never edit files in `gateway/` by hand. The list of files lives in `scripts/gate
 as instructions). CI's `gateway-drift` job re-syncs from the gateway's `main` every day and
 fails when the committed snapshot is out of date.
 
+## Adding a provider
+
+Add one entry to `providers` in `content/facts.ts` (its `name` exactly as in the gateway
+README's providers table, its `doc` page under `docs/providers/`), then `npm run sync:gateway`.
+The sync copies the provider's page into the snapshot, check-facts guards its README row and
+page, and the home table and `/docs/providers/` show it with its "not sandbox-tested" status.
+
 ## Develop
 
 ```sh
@@ -55,16 +62,16 @@ npm run check:links
 
 ## How things are wired
 
-| Piece | Where |
-| --- | --- |
-| Facts (single source for claims) | `content/facts.ts` |
-| Copy per language, typed | `content/en.ts`, `content/fr.ts`, `content/types.ts` |
-| Fact-drift guard | `scripts/check-facts.mjs` (prebuild + CI) |
-| API list + response example | generated from `api/openapi.yaml` by `lib/openapi.ts` |
-| Code snippets | `lib/snippets.ts` — must match the real clients |
-| Brand assets | copied from `$YOON_APP_DIR/docs/assets` by `scripts/copy-brand.mjs`; never edit `public/brand/` |
-| Theme | `prefers-color-scheme`, manual toggle in `localStorage`, no flash (inline script in `<head>`) |
-| Animation | GSAP + ScrollTrigger (`@gsap/react`), three.js hero scene; see `components/HeroScene.tsx` |
+| Piece                            | Where                                                                                           |
+| -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Facts (single source for claims) | `content/facts.ts`                                                                              |
+| Copy per language, typed         | `content/en.ts`, `content/fr.ts`, `content/types.ts`                                            |
+| Fact-drift guard                 | `scripts/check-facts.mjs` (prebuild + CI)                                                       |
+| API list + response example      | generated from `api/openapi.yaml` by `lib/openapi.ts`                                           |
+| Code snippets                    | `lib/snippets.ts` — must match the real clients                                                 |
+| Brand assets                     | copied from `$YOON_APP_DIR/docs/assets` by `scripts/copy-brand.mjs`; never edit `public/brand/` |
+| Theme                            | `prefers-color-scheme`, manual toggle in `localStorage`, no flash (inline script in `<head>`)   |
+| Animation                        | GSAP + ScrollTrigger (`@gsap/react`), three.js hero scene; see `components/HeroScene.tsx`       |
 
 ### Animation and accessibility rules
 
@@ -93,12 +100,12 @@ npm run check:links
 
 Lighthouse 13, mobile emulation (throttled), against `out/` served with gzip:
 
-| Category | Score |
-| --- | --- |
-| Performance | 88 |
-| Accessibility | 100 |
-| Best practices | 100 |
-| SEO | 100 |
+| Category       | Score |
+| -------------- | ----- |
+| Performance    | 88    |
+| Accessibility  | 100   |
+| Best practices | 100   |
+| SEO            | 100   |
 
 FCP 1.0 s · LCP 2.3 s · TBT ~0.4 s · CLS 0. The LCP element is the hero text;
 the three.js scene is a separate lazy chunk, loaded after `load` + idle, and
@@ -144,4 +151,5 @@ The build artifact `out/` is ready for any static host.
 4. Footer: link the name to benhattab.pro?
 5. Product screenshots (§6): skipped for now — the page is text- and
    diagram-only. Real screenshots from the demo can be added later.
+
 # yoon-site

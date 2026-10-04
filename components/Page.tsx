@@ -21,9 +21,9 @@ import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
 import RoadDiagram from "@/components/RoadDiagram";
 import CodeTabs, { type CodeTab } from "@/components/CodeTabs";
-import CopyButton from "@/components/CopyButton";
 import Terminal from "@/components/Terminal";
 import ApiList from "@/components/ApiList";
+import CodeBlock from "@/components/CodeBlock";
 
 function JsonLd({ content }: { content: Content }) {
   const data = {
@@ -40,29 +40,6 @@ function JsonLd({ content }: { content: Content }) {
   };
   return (
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
-  );
-}
-
-async function CodeBlock({
-  code,
-  lang,
-  labels,
-}: {
-  code: string;
-  lang: string;
-  labels: { copy: string; copied: string };
-}) {
-  const html = await highlight(code, lang);
-  return (
-    <div className="rounded-xl border border-line bg-surface">
-      <div className="flex justify-end px-3 pt-2">
-        <CopyButton text={code} label={labels.copy} copiedLabel={labels.copied} />
-      </div>
-      <div
-        className="overflow-x-auto px-4 pb-4 pt-1 text-sm"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    </div>
   );
 }
 
@@ -101,7 +78,11 @@ export default async function Page({ content }: { content: Content }) {
         <Hero content={content} />
 
         {/* 1b — Not an aggregator, nothing to pay Yoon */}
-        <Section id="independent" title={content.independent.heading} intro={content.independent.lead}>
+        <Section
+          id="independent"
+          title={content.independent.heading}
+          intro={content.independent.lead}
+        >
           <Reveal className="grid gap-4 md:grid-cols-3" stagger>
             {content.independent.points.map((point) => (
               <div key={point.title} className="rounded-xl border border-line bg-surface p-6">
@@ -212,9 +193,11 @@ export default async function Page({ content }: { content: Content }) {
                         {provider.payout.length ? provider.payout.join(", ") : "—"}
                       </td>
                       <td className="px-4 py-3 text-muted">
-                        {provider.refund
-                          ? content.providersTable.fullRefund
-                          : content.providersTable.none}
+                        {provider.refund === "partial"
+                          ? content.providersTable.partialRefund
+                          : provider.refund
+                            ? content.providersTable.fullRefund
+                            : content.providersTable.none}
                       </td>
                     </tr>
                   ))}

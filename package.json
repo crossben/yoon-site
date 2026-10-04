@@ -2,6 +2,7 @@
   "name": "yoon-website",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "yoonpay.benhattab.pro — the one-page site for Yoon",
   "scripts": {
     "predev": "npm run --silent brand && node scripts/check-facts.mjs",

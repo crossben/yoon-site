@@ -43,6 +43,12 @@ export default function Hero({ content }: { content: Content }) {
             >
               {hero.ctaGithub}
             </a>
+            <a
+              href={content.lang === "en" ? "/docs/" : "/fr/docs/"}
+              className="rounded-full px-3 py-3 font-medium text-ink underline decoration-accent decoration-2 underline-offset-4 transition-colors hover:text-accent"
+            >
+              {content.docs.heroCta}
+            </a>
           </div>
 
           {/* Required status line (website/PLAN.md §5.1). */}

@@ -65,7 +65,7 @@ function ThemeToggle({ labels }: { labels: Content["header"]["themeToggle"] }) {
   );
 }
 
-function LanguageLink({ other }: { other: Content["otherLang"] }) {
+function LanguageLink({ other, href }: { other: Content["otherLang"]; href: string }) {
   const [hash, setHash] = useState("");
   useEffect(() => {
     // Keep the current section when switching language.
@@ -76,7 +76,7 @@ function LanguageLink({ other }: { other: Content["otherLang"] }) {
   }, []);
   return (
     <a
-      href={other.href + hash}
+      href={href + hash}
       lang={other.href.startsWith("/fr") ? "fr" : "en"}
       className="rounded-full border border-line px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:border-accent hover:text-accent"
     >
@@ -85,26 +85,38 @@ function LanguageLink({ other }: { other: Content["otherLang"] }) {
   );
 }
 
-export default function Header({ content }: { content: Content }) {
+export default function Header({
+  content,
+  onHome = true,
+  otherHref,
+  current,
+}: {
+  content: Content;
+  /** On the one-page home, section links are bare anchors; elsewhere they lead back home. */
+  onHome?: boolean;
+  /** The same page in the other language (defaults to its home). */
+  otherHref?: string;
+  /** Marks the docs link as the current section. */
+  current?: "docs";
+}) {
+  const home = content.lang === "en" ? "/" : "/fr/";
+  const anchor = (id: string) => (onHome ? `#${id}` : `${home}#${id}`);
   const nav = [
-    ["#how", content.header.nav.how],
-    ["#guarantees", content.header.nav.guarantees],
-    ["#providers", content.header.nav.providers],
-    ["#pispi", content.header.nav.pispi],
-    ["#code", content.header.nav.code],
-    ["#api", content.header.nav.api],
-    ["#demo", content.header.nav.demo],
-    ["#run", content.header.nav.run],
+    [anchor("how"), content.header.nav.how],
+    [anchor("guarantees"), content.header.nav.guarantees],
+    [anchor("providers"), content.header.nav.providers],
+    [anchor("pispi"), content.header.nav.pispi],
+    [anchor("code"), content.header.nav.code],
+    [anchor("api"), content.header.nav.api],
+    [anchor("demo"), content.header.nav.demo],
+    [anchor("run"), content.header.nav.run],
   ] as const;
+  const docsHref = `${home}docs/`;
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 md:px-6">
-        <a
-          href={content.lang === "en" ? "/" : "/fr/"}
-          aria-label={content.header.homeAria}
-          className="flex shrink-0 items-center"
-        >
+        <a href={home} aria-label={content.header.homeAria} className="flex shrink-0 items-center">
           {/* Brand files are copied verbatim from the gateway repo; never recolour. */}
           <img
             src="/brand/logo.svg"
@@ -124,24 +136,41 @@ export default function Header({ content }: { content: Content }) {
 
         <nav
           aria-label={content.lang === "en" ? "Sections" : "Sections"}
-          className="mx-auto hidden lg:block"
+          className="mx-auto hidden xl:block"
         >
           <ul className="flex items-center gap-1">
             {nav.map(([href, label]) => (
               <li key={href}>
                 <a
                   href={href}
-                  className="rounded-full px-3 py-1.5 text-sm text-muted transition-colors hover:text-ink"
+                  className="whitespace-nowrap rounded-full px-3 py-1.5 text-sm text-muted transition-colors hover:text-ink"
                 >
                   {label}
                 </a>
               </li>
             ))}
+            <li>
+              <a
+                href={docsHref}
+                aria-current={current === "docs" ? "page" : undefined}
+                className="rounded-full px-3 py-1.5 text-sm font-medium text-ink underline decoration-accent decoration-2 underline-offset-4 transition-colors hover:text-accent"
+              >
+                {content.header.nav.docs}
+              </a>
+            </li>
           </ul>
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 lg:ml-0">
-          <LanguageLink other={content.otherLang} />
+        <div className="ml-auto flex items-center gap-2 xl:ml-0">
+          {/* Below xl the section nav is hidden: keep the docs reachable. */}
+          <a
+            href={docsHref}
+            aria-current={current === "docs" ? "page" : undefined}
+            className="rounded-full border border-line px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:border-accent hover:text-accent xl:hidden"
+          >
+            {content.header.nav.docs}
+          </a>
+          <LanguageLink other={content.otherLang} href={otherHref ?? content.otherLang.href} />
           <ThemeToggle labels={content.header.themeToggle} />
           <a
             href="https://github.com/crossben/yoonpay"
