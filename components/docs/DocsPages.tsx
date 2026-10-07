@@ -292,6 +292,11 @@ export function ClientDoc({ content, client }: { content: Content; client: Clien
           </>
         ) : null}
       </section>
+      <section aria-labelledby="agent">
+        <H2 id="agent">{c.agent}</H2>
+        <P>{c.agentNote}</P>
+        {snippets([page.agent])}
+      </section>
       <p className="text-sm">
         <a href={page.readme} className={linkClass}>
           {c.readmeLabel} <ExternalArrow />

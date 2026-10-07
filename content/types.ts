@@ -66,6 +66,8 @@ export type DocsContent = {
     webhookNote: string;
     /** Sentence introducing the inline verify call, for clients that only document one. */
     verifyInline: string;
+    agent: string;
+    agentNote: string;
     /** Optional caption above a snippet. */
     captions: Partial<Record<DocSnippetId, string>>;
     readmeLabel: string;

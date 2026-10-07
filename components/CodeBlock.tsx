@@ -22,7 +22,8 @@ export default async function CodeBlock({
         <CopyButton text={code} label={labels.copy} copiedLabel={labels.copied} />
       </div>
       <div
-        className="overflow-x-auto px-4 pb-4 pt-1 text-sm"
+        // Plain text (prompts) wraps so it can be read before copying; code keeps its lines.
+        className={`overflow-x-auto px-4 pb-4 pt-1 text-sm ${lang === "text" ? "[&_pre]:whitespace-pre-wrap [&_pre]:break-words" : ""}`}
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </div>

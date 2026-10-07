@@ -22,6 +22,8 @@ export type ClientPage = {
   install: DocSnippetId[];
   create: DocSnippetId[];
   webhook: DocSnippetId[];
+  /** The copy-ready prompt for an AI coding agent, from the client README. */
+  agent: DocSnippetId;
   /** Inline verification call, for clients whose README documents no framework helper here. */
   verifyInline?: DocSnippetId;
   readme: string;
@@ -29,6 +31,7 @@ export type ClientPage = {
 
 export const clientPages: Record<ClientId, ClientPage> = {
   php: {
+    agent: "php.agent",
     install: ["php.install"],
     create: ["php.create", "php.laravelEnv", "php.laravelCreate"],
     webhook: ["php.laravelWebhook"],
@@ -36,12 +39,14 @@ export const clientPages: Record<ClientId, ClientPage> = {
     readme: `${repo.blob}/clients/php/README.md`,
   },
   symfony: {
+    agent: "symfony.agent",
     install: ["symfony.install", "symfony.bundle", "symfony.config"],
     create: ["symfony.create"],
     webhook: ["symfony.webhook"],
     readme: `${repo.blob}/clients/php/README.md#symfony`,
   },
   java: {
+    agent: "java.agent",
     install: ["java.install"],
     create: ["java.create"],
     webhook: [],
@@ -49,18 +54,21 @@ export const clientPages: Record<ClientId, ClientPage> = {
     readme: `${repo.blob}/clients/java/README.md`,
   },
   spring: {
+    agent: "spring.agent",
     install: ["spring.install", "spring.config"],
     create: ["spring.create"],
     webhook: ["spring.webhook"],
     readme: `${repo.blob}/clients/java-spring-boot-starter/README.md`,
   },
   js: {
+    agent: "js.agent",
     install: ["js.install"],
     create: ["js.create"],
     webhook: ["js.webhook", "js.verify"],
     readme: `${repo.blob}/clients/js/README.md`,
   },
   python: {
+    agent: "python.agent",
     install: ["python.install"],
     create: ["python.create"],
     webhook: ["python.webhook", "python.verify"],

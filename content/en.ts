@@ -418,6 +418,9 @@ export const en: Content = {
       webhookNote:
         "The helper checks the signature over the raw body and rejects a wrong or stale one with 401, answers an already-handled event with 200 without calling your code, and remembers an event only after your code answered 2xx. Events are unordered: act on the state in the event's object.",
       verifyInline: "To verify a signature yourself, over the raw request body:",
+      agent: "Prompt for an AI agent",
+      agentNote:
+        "Copy this prompt into your coding agent (Claude Code, Cursor, Copilot) to add Yoon to an existing app. It says what to install and write, the rules that protect money (idempotency keys, fulfil only on payment.succeeded, raw-body webhook verification), and how to check the result with the demo provider.",
       captions: {
         "php.create": "Plain PHP",
         "php.laravelEnv": "Laravel — .env",

@@ -118,4 +118,32 @@ export const DOC_SNIPPETS = {
     file: "clients/python/README.md",
     marker: "from yoonpay import Event, verify_signature",
   },
+
+  // Prompts for AI coding agents: one `text` block per client README.
+  "php.agent": {
+    file: "clients/php/README.md",
+    marker: "Integrate Yoon payments (yoonpay/yoon-php 0.2.x) into this Laravel app.",
+  },
+  "symfony.agent": {
+    file: "clients/php/README.md",
+    marker:
+      "Integrate Yoon payments (yoonpay/yoon-php 0.2.x, Symfony bundle) into this Symfony app.",
+  },
+  "java.agent": {
+    file: "clients/java/README.md",
+    marker: "Integrate Yoon payments (io.github.crossben:yoon-java 0.2.x) into this Java app.",
+  },
+  "spring.agent": {
+    file: "clients/java-spring-boot-starter/README.md",
+    marker:
+      "Integrate Yoon payments (io.github.crossben:yoon-spring-boot-starter 0.2.x) into this Spring Boot app.",
+  },
+  "js.agent": {
+    file: "clients/js/README.md",
+    marker: "Integrate Yoon payments (@yoonpay/yoon 0.2.x) into this Node.js / TypeScript app.",
+  },
+  "python.agent": {
+    file: "clients/python/README.md",
+    marker: "Integrate Yoon payments (yoonpay 0.2.x) into this Python app.",
+  },
 };

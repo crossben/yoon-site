@@ -439,6 +439,9 @@ export const fr: Content = {
       webhookNote:
         "L'outil vérifie la signature sur le corps brut et refuse une signature fausse ou périmée avec 401, répond 200 à un événement déjà traité sans appeler votre code, et ne retient un événement qu'une fois que votre code a répondu 2xx. Les événements arrivent sans ordre : fiez-vous à l'état contenu dans l'objet de l'événement.",
       verifyInline: "Pour vérifier une signature vous-même, sur le corps brut de la requête :",
+      agent: "Prompt pour un agent IA",
+      agentNote:
+        "Copiez ce prompt dans votre agent de code (Claude Code, Cursor, Copilot) pour ajouter Yoon à une application existante. Il indique quoi installer et écrire, les règles qui protègent l'argent (clés d'idempotence, livrer seulement sur payment.succeeded, vérification du webhook sur le corps brut) et comment vérifier le résultat avec le fournisseur de démo. Le prompt est en anglais : les agents le suivent tel quel.",
       captions: {
         "php.create": "PHP seul",
         "php.laravelEnv": "Laravel — .env",
