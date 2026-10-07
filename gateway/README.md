@@ -10,16 +10,16 @@
 > *Yoon* (Wolof): the way, the road. Yoon picks the way a payment travels.
 
 **A self-hosted, open-source payment gateway for Africa's payment providers.**
-One API in front of PayDunya, DexPay, NabooPay, Wave and PI-SPI (more later): routing,
+One API in front of PayDunya, DexPay, NabooPay, CinetPay, Wave, Stripe and PI-SPI: routing,
 verified webhooks, idempotency, a ledger and automatic reconciliation — written
 once, in Java, instead of in every project.
 
-> **Status: 0.1.0 — first release.** The gateway, its operations tooling, its PayDunya,
-> DexPay, NabooPay, Wave (direct) and PI-SPI adapters and its clients are built and tested. The
-> adapters are tested against simulated provider APIs (built from production integrations;
-> Wave: from its public documentation; PI-SPI: from the BCEAO specification); they have
-> **not yet been run against the providers' sandboxes**. Try it with the demo provider, and
-> test with your own sandbox keys before taking real payments.
+> **Status: 0.2.0.** The gateway, its operations tooling, its operator dashboard and hosted
+> checkout, its PayDunya, DexPay, NabooPay, CinetPay, Wave (direct), Stripe and PI-SPI adapters
+> and its clients are built and tested. The adapters are tested against simulated provider APIs
+> (built from production integrations, the providers' public documentation and SDKs, and the
+> BCEAO specification); they have **not yet been run against the providers' sandboxes**. Try it
+> with the demo provider, and test with your own sandbox keys before taking real payments.
 
 ## What works today
 
@@ -158,8 +158,9 @@ Real providers add their own latency to each create.
   and bring your own keys. Yoon removes the integration work, not the onboarding.
 - **Not a card vault.** Yoon never sees card numbers; cards go through the
   provider's hosted checkout.
-- **Not a checkout UI.** Yoon returns the provider's checkout URL or push/USSD
-  instruction; your app renders its own UI.
+- **Not a payment form.** Yoon never collects card or wallet details. It returns the
+  provider's checkout URL or push/USSD instruction, or — with the optional hosted checkout —
+  lets the customer pick a method, then hands them to the provider.
 - **Not a hosted service.** You run it yourself. It sends no telemetry.
 
 ## Run locally

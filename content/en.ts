@@ -10,7 +10,7 @@ export const en: Content = {
   meta: {
     title: "Yoon — one API for Africa's payment providers",
     description:
-      "Yoon is a self-hosted, open-source payment gateway: one API in front of PayDunya, DexPay, NabooPay, Wave and PI-SPI, with routing, verified webhooks, idempotency, a ledger and reconciliation.",
+      "Yoon is a self-hosted, open-source payment gateway: one API in front of PayDunya, DexPay, NabooPay, CinetPay, Wave, Stripe and PI-SPI, with routing, verified webhooks, idempotency, a ledger and reconciliation.",
   },
   header: {
     skipToContent: "Skip to content",
@@ -31,7 +31,7 @@ export const en: Content = {
   hero: {
     headline: "One API for Africa's payment providers.",
     subline:
-      "A self-hosted, open-source gateway in front of PayDunya · DexPay · NabooPay · Wave · PI-SPI — routing, verified webhooks, idempotency, a ledger, reconciliation.",
+      "A self-hosted, open-source gateway in front of PayDunya · DexPay · NabooPay · CinetPay · Wave · Stripe · PI-SPI — routing, verified webhooks, idempotency, a ledger, reconciliation.",
     ctaDemo: "Try the demo",
     ctaGithub: "GitHub",
     statusLine: `v${version} — adapters not yet tested against provider sandboxes.`,
@@ -149,7 +149,7 @@ export const en: Content = {
     sandboxNote:
       "The adapters are tested against simulated provider APIs (from production integrations, Wave's and Stripe's public documentation, CinetPay's SDKs and the BCEAO specification) — not yet against the providers' sandboxes.",
     countryNote:
-      "PayDunya, DexPay, NabooPay: Senegal. Wave: Senegal, Côte d'Ivoire, Mali, Burkina Faso. PI-SPI: the eight UEMOA countries. CinetPay: nine West and Central African countries. Stripe: cards from anywhere. Stripe and CinetPay are on the main branch and ship in the next release.",
+      "PayDunya, DexPay, NabooPay: Senegal. Wave: Senegal, Côte d'Ivoire, Mali, Burkina Faso. PI-SPI: the eight UEMOA countries. CinetPay: nine West and Central African countries. Stripe: cards from anywhere.",
   },
   pispi: {
     heading: "Yoon and PI-SPI: layers, not competitors",
@@ -309,8 +309,8 @@ export const en: Content = {
         body: "Yoon never sees card numbers; cards go through the provider's hosted checkout.",
       },
       {
-        title: "Not a checkout UI",
-        body: "Yoon returns the provider's checkout URL or push/USSD instruction; your app renders its own UI.",
+        title: "Not a payment form",
+        body: "Yoon never collects card or wallet details. It returns the provider's checkout URL or push/USSD instruction, or — with the optional hosted checkout — lets the customer pick a method, then hands them to the provider.",
       },
       {
         title: "Not a hosted service",

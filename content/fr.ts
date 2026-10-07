@@ -13,7 +13,7 @@ export const fr: Content = {
   meta: {
     title: "Yoon — une seule API pour les paiements africains",
     description:
-      "Yoon est une passerelle de paiement auto-hébergée et open source : une seule API devant PayDunya, DexPay, NabooPay, Wave et PI-SPI, avec routage, webhooks vérifiés, idempotence, grand livre et réconciliation.",
+      "Yoon est une passerelle de paiement auto-hébergée et open source : une seule API devant PayDunya, DexPay, NabooPay, CinetPay, Wave, Stripe et PI-SPI, avec routage, webhooks vérifiés, idempotence, grand livre et réconciliation.",
   },
   header: {
     skipToContent: "Aller au contenu",
@@ -34,7 +34,7 @@ export const fr: Content = {
   hero: {
     headline: "Une seule API pour les paiements africains.",
     subline:
-      "Une passerelle auto-hébergée et open source devant PayDunya · DexPay · NabooPay · Wave · PI-SPI — routage, webhooks vérifiés, idempotence, grand livre, réconciliation.",
+      "Une passerelle auto-hébergée et open source devant PayDunya · DexPay · NabooPay · CinetPay · Wave · Stripe · PI-SPI — routage, webhooks vérifiés, idempotence, grand livre, réconciliation.",
     ctaDemo: "Essayer la démo",
     ctaGithub: "GitHub",
     statusLine: `v${version} — adaptateurs pas encore testés contre les sandboxes des fournisseurs.`,
@@ -157,7 +157,7 @@ export const fr: Content = {
     sandboxNote:
       "Les adaptateurs sont testés contre des API simulées (à partir d'intégrations de production, des documentations publiques de Wave et de Stripe, des SDK de CinetPay et de la spécification de la BCEAO) — pas encore contre les sandboxes des fournisseurs.",
     countryNote:
-      "PayDunya, DexPay, NabooPay : Sénégal. Wave : Sénégal, Côte d'Ivoire, Mali, Burkina Faso. PI-SPI : les huit pays de l'UEMOA. CinetPay : neuf pays d'Afrique de l'Ouest et centrale. Stripe : cartes du monde entier. Stripe et CinetPay sont sur la branche principale et arrivent dans la prochaine version.",
+      "PayDunya, DexPay, NabooPay : Sénégal. Wave : Sénégal, Côte d'Ivoire, Mali, Burkina Faso. PI-SPI : les huit pays de l'UEMOA. CinetPay : neuf pays d'Afrique de l'Ouest et centrale. Stripe : cartes du monde entier.",
   },
   pispi: {
     heading: "Yoon et PI-SPI : deux étages, pas deux concurrents",
@@ -330,8 +330,8 @@ export const fr: Content = {
         body: "Yoon ne voit jamais les numéros de carte ; les cartes passent par la page de paiement hébergée du fournisseur.",
       },
       {
-        title: "Pas d'interface de paiement",
-        body: "Yoon renvoie l'URL de paiement du fournisseur ou une instruction push/USSD ; votre application affiche sa propre interface.",
+        title: "Pas un formulaire de paiement",
+        body: "Yoon ne collecte jamais de données de carte ou de portefeuille. Il renvoie l'URL de paiement du fournisseur ou une instruction push/USSD, ou — avec la page de paiement hébergée, en option — laisse le client choisir un moyen de paiement, puis le confie au fournisseur.",
       },
       {
         title: "Pas un service hébergé",

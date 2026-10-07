@@ -22,8 +22,8 @@ export const repo = {
   adr: (n: string) => `${BLOB}/docs/adr/${n}`,
 } as const;
 
-/** Version. Source: CHANGELOG.md `## [0.1.0]`. */
-export const version = "0.1.0";
+/** Version. Source: CHANGELOG.md `## [0.2.0]`. */
+export const version = "0.2.0";
 
 /**
  * Providers and what each supports. Source: README.md § Providers, docs/providers/*.md.

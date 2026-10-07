@@ -60,7 +60,7 @@ export const REQUIRED_STRINGS = {
     "**Not an aggregator.**",
     "Yoon removes the integration work, not the onboarding.",
     "**Not a card vault.**",
-    "**Not a checkout UI.**",
+    "**Not a payment form.**",
     "**Not a hosted service.**",
     "It sends no telemetry.",
     // Load test intro
@@ -68,6 +68,7 @@ export const REQUIRED_STRINGS = {
   ],
   "CHANGELOG.md": [
     "## [0.1.0]",
+    "## [0.2.0]",
     "**PI-SPI** (`pispi`, BCEAO instant payments",
     "PayDunya, DexPay and NabooPay: Senegal (XOF) only and no refund API (refund by payout).",
   ],
