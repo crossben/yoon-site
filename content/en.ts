@@ -349,6 +349,7 @@ export const en: Content = {
     navQuickstart: "Quickstart",
     navClients: "Client libraries",
     navProviders: "Providers",
+    navBilling: "Billing",
     sourceLabel: "From",
     index: {
       title: "Documentation",
@@ -360,6 +361,7 @@ export const en: Content = {
         "Docker Compose, the demo provider, an API key, a first payment with curl and a signed webhook. No provider account, no real money.",
       clientsBody: "Install, create a payment with an idempotency key, verify a webhook.",
       providersBody: "What each provider does, and where its configuration is documented.",
+      billingBody: "Prepaid subscriptions for SaaS, coming in Yoon 0.3.0 (not released yet).",
       apiLabel: "API contract (OpenAPI)",
     },
     quickstart: {
@@ -439,6 +441,111 @@ export const en: Content = {
         "python.verify": "Outside a framework",
       },
       readmeLabel: "Other frameworks, errors and every helper: the client's README",
+    },
+    billing: {
+      title: "Billing for SaaS",
+      description:
+        "Prepaid subscriptions with Yoon 0.3.0 (coming, not released yet): plans and prices, customers, hosted checkout, access from webhooks, invoices and receipts.",
+      unreleased: `This page describes Yoon 0.3.0, which is coming but not released yet. The current release, v${version}, has no billing: everything below is subject to change until 0.3.0 ships.`,
+      intro:
+        "Yoon 0.3.0 bills prepaid subscriptions: the customer pays each period (a month, a year…) on Yoon's hosted checkout, by mobile money, PI-SPI or card, and your application grants access from Yoon's webhooks. Nothing is charged automatically: mobile money has no card-style auto-debit, so every period is a payment the customer makes. Automatic charging, Stripe first, is planned for 0.4.0.",
+      settings: {
+        title: "Settings",
+        body: "Hosted checkout needs YOON_PUBLIC_URL. Billing is configured per application; <APP> is the application name upper-cased.",
+        columns: { variable: "Variable", default: "Default", meaning: "Meaning" },
+        rows: [
+          {
+            variable: "YOON_APPS_<APP>_BILLING_GRACE_DAYS",
+            value: "3",
+            meaning:
+              "Days a subscription stays past_due — still entitled — after its period ends unpaid",
+          },
+          {
+            variable: "YOON_APPS_<APP>_BILLING_REMINDER_DAYS",
+            value: "3",
+            meaning: "Days before the period end when subscription.renewal_upcoming is sent",
+          },
+          {
+            variable: "YOON_APPS_<APP>_BILLING_TIMEZONE",
+            value: "Africa/Dakar",
+            meaning: "Time zone for counting reminder days and invoice years",
+          },
+          {
+            variable: "YOON_APPS_<APP>_BILLING_INVOICE_PREFIX",
+            value: "INV",
+            meaning: "Invoice number prefix (INV-2026-000001), gap-free per application",
+          },
+          {
+            variable: "YOON_APPS_<APP>_BILLING_INVOICE_TTL",
+            value: "7d",
+            meaning: "An unpaid first invoice older than this expires the subscription",
+          },
+        ],
+      },
+      catalog: {
+        title: "Plans and prices",
+        body: "Amounts are integers in minor units. features is yours — limits, flags — and every subscription carries its plan's features. Like every write, it takes an Idempotency-Key.",
+        after:
+          'Prices never change: to change one, add a new price and archive the old one with PATCH /v1/prices/{id} {"active": false}. Existing subscriptions keep their price.',
+      },
+      customers: {
+        title: "Customers",
+        body: "Create one customer per user of yours, found again by your own id (external_id).",
+        after:
+          "409 customer_exists means it already exists: fetch it with GET /v1/customers?external_id=42.",
+      },
+      subscribe: {
+        title: "Subscribe and send the customer to checkout",
+        body: "With the Python client and FastAPI: create the subscription, then redirect to its first invoice's checkout_url.",
+        after:
+          "The subscription starts incomplete. Never grant access from the return URL — only from webhooks. renew returns the open invoice (creating it if needed, at most one per subscription) with a fresh checkout when the last one expired; customers may renew early without losing days.",
+        js: "In JavaScript (a Next.js route handler): checkoutRedirect(sub) from @yoonpay/yoon/next; in a server action, redirect(checkoutUrlOf(sub)).",
+      },
+      webhooks: {
+        title: "Grant access from webhooks",
+        body: "Every event carries the full object, so access can be driven from webhooks alone.",
+        after:
+          "Delivery is at least once: keep handlers idempotent (the helper drops exact duplicates). After an outage on your side, reconcile with GET /v1/subscriptions?customer=…. Yoon sends no e-mail: reminders and receipts are yours to send.",
+        columns: { status: "Status", meaning: "Meaning", entitled: "Entitled" },
+        statuses: [
+          { status: "incomplete", meaning: "Created, first invoice not paid", entitled: false },
+          { status: "active", meaning: "Paid up to current_period_end", entitled: true },
+          {
+            status: "past_due",
+            meaning: "Period ended unpaid, within the grace days; a renewal invoice is open",
+            entitled: true,
+          },
+          {
+            status: "expired",
+            meaning: "Grace ended, or the first invoice was never paid",
+            entitled: false,
+          },
+          { status: "canceled", meaning: "Ended on request", entitled: false },
+        ],
+        yes: "yes",
+        no: "no",
+        late: "A late payment of an open invoice still re-activates an expired or canceled subscription: money received is never ignored.",
+      },
+      periods: {
+        title: "Periods, upgrades, cancellation",
+        items: [
+          "Paying early stacks after the current period. Paying in grace starts from the old period end — grace days are not free. Paying after expiry starts at the payment.",
+          "Months are calendar months anchored on the first day paid: a period from 31 January ends on 28 or 29 February, then 31 March.",
+          "POST /v1/subscriptions/{id}/change: an upgrade is invoiced now for a full period of the new price, and once paid the unused time of the old period becomes extra days. A downgrade waits for the period end. Changing currency is refused.",
+          'POST /v1/subscriptions/{id}/cancel ends the subscription at the period end (reversible with /resume), or now with {"at_period_end": false}. No automatic refund.',
+        ],
+      },
+      invoices: {
+        title: "Invoices and receipts",
+        body: "Each period is an invoice, numbered without gaps. Once paid, receipt_url opens a printable payment receipt in French or English. It is a payment receipt, not a tax invoice: if you must issue tax invoices, produce them from invoice.paid in your own system. CSV exports: GET /v1/exports/subscriptions.csv and GET /v1/exports/invoices.csv.",
+      },
+      comp: {
+        title: "Periods without payment (comp)",
+        body: 'For partners, support gestures or "contact us" plans, an operator can grant periods without payment or ledger posting:',
+        after:
+          "The subscription shows comp: true until the customer pays a period. The admin API does the same, and migrating from your own billing uses it too — see the full guide.",
+      },
+      guideLabel: "Full billing guide (docs/billing.md)",
     },
     providers: {
       title: "Providers",

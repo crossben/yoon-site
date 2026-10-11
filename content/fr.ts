@@ -370,6 +370,7 @@ export const fr: Content = {
     navQuickstart: "Démarrage rapide",
     navClients: "Bibliothèques clientes",
     navProviders: "Fournisseurs",
+    navBilling: "Facturation",
     sourceLabel: "Source",
     index: {
       title: "Documentation",
@@ -381,6 +382,8 @@ export const fr: Content = {
         "Docker Compose, le fournisseur de démo, une clé d'API, un premier paiement avec curl et un webhook signé. Sans compte fournisseur, sans argent réel.",
       clientsBody: "Installer, créer un paiement avec une clé d'idempotence, vérifier un webhook.",
       providersBody: "Ce que fait chaque fournisseur, et où sa configuration est documentée.",
+      billingBody:
+        "Abonnements prépayés pour les SaaS, à venir avec Yoon 0.3.0 (pas encore publié).",
       apiLabel: "Contrat d'API (OpenAPI)",
     },
     quickstart: {
@@ -460,6 +463,114 @@ export const fr: Content = {
         "python.verify": "Hors framework",
       },
       readmeLabel: "Autres frameworks, erreurs et tous les helpers : le README du client",
+    },
+    billing: {
+      title: "Facturation pour SaaS",
+      description:
+        "Abonnements prépayés avec Yoon 0.3.0 (à venir, pas encore publié) : offres et tarifs, clients, paiement hébergé, accès piloté par les webhooks, factures et reçus.",
+      unreleased: `Cette page décrit Yoon 0.3.0, à venir et pas encore publié. La version actuelle, v${version}, ne gère pas la facturation : tout ce qui suit peut encore changer d'ici la sortie de la 0.3.0.`,
+      intro:
+        "Yoon 0.3.0 facture des abonnements prépayés : le client règle chaque période (un mois, un an…) sur la page de paiement hébergée par Yoon, par mobile money, PI-SPI ou carte, et votre application ouvre l'accès à partir des webhooks de Yoon. Rien n'est prélevé automatiquement : le mobile money ne connaît pas le prélèvement à la manière des cartes, chaque période est donc un paiement fait par le client. Le prélèvement automatique, Stripe en premier, est prévu pour la 0.4.0.",
+      settings: {
+        title: "Réglages",
+        body: "Le paiement hébergé a besoin de YOON_PUBLIC_URL. La facturation se règle par application ; <APP> est le nom de l'application en majuscules.",
+        columns: { variable: "Variable", default: "Défaut", meaning: "Rôle" },
+        rows: [
+          {
+            variable: "YOON_APPS_<APP>_BILLING_GRACE_DAYS",
+            value: "3",
+            meaning:
+              "Nombre de jours pendant lesquels un abonnement impayé reste past_due — et donne toujours accès — après la fin de sa période",
+          },
+          {
+            variable: "YOON_APPS_<APP>_BILLING_REMINDER_DAYS",
+            value: "3",
+            meaning:
+              "Combien de jours avant la fin de période l'événement subscription.renewal_upcoming part",
+          },
+          {
+            variable: "YOON_APPS_<APP>_BILLING_TIMEZONE",
+            value: "Africa/Dakar",
+            meaning:
+              "Fuseau horaire utilisé pour compter les jours de rappel et l'année des factures",
+          },
+          {
+            variable: "YOON_APPS_<APP>_BILLING_INVOICE_PREFIX",
+            value: "INV",
+            meaning: "Préfixe des numéros de facture (INV-2026-000001), sans trou, par application",
+          },
+          {
+            variable: "YOON_APPS_<APP>_BILLING_INVOICE_TTL",
+            value: "7d",
+            meaning: "Au-delà de ce délai, une première facture impayée fait expirer l'abonnement",
+          },
+        ],
+      },
+      catalog: {
+        title: "Offres et tarifs",
+        body: "Les montants sont des entiers, en plus petite unité de la devise. features vous appartient — limites, options — et chaque abonnement reprend les features de son offre. Comme toute écriture, l'appel prend une Idempotency-Key.",
+        after:
+          'Un tarif ne change jamais : pour modifier un prix, créez-en un nouveau et archivez l\'ancien avec PATCH /v1/prices/{id} {"active": false}. Les abonnements en cours gardent leur prix.',
+      },
+      customers: {
+        title: "Clients",
+        body: "Créez un client Yoon par utilisateur, retrouvable grâce à votre propre identifiant (external_id).",
+        after:
+          "Une réponse 409 customer_exists signifie qu'il existe déjà : retrouvez-le avec GET /v1/customers?external_id=42.",
+      },
+      subscribe: {
+        title: "Abonner le client et l'envoyer au paiement",
+        body: "Avec le client Python et FastAPI : on crée l'abonnement, puis on redirige vers le checkout_url de sa première facture.",
+        after:
+          "L'abonnement démarre à l'état incomplete. N'ouvrez jamais l'accès depuis l'URL de retour : uniquement depuis les webhooks. renew renvoie la facture ouverte (en la créant au besoin, une au plus par abonnement), avec une nouvelle page de paiement si la précédente a expiré ; le client peut renouveler en avance sans perdre de jours.",
+        js: "En JavaScript (route handler Next.js) : checkoutRedirect(sub) depuis @yoonpay/yoon/next ; dans une server action, redirect(checkoutUrlOf(sub)).",
+      },
+      webhooks: {
+        title: "Ouvrir l'accès depuis les webhooks",
+        body: "Chaque événement contient l'objet complet : les webhooks suffisent à piloter les accès.",
+        after:
+          "La livraison est « au moins une fois » : vos handlers doivent être idempotents (l'assistant écarte les doublons exacts). Après une panne de votre côté, resynchronisez avec GET /v1/subscriptions?customer=…. Yoon n'envoie aucun e-mail : rappels et reçus sont à votre charge.",
+        columns: { status: "Statut", meaning: "Signification", entitled: "Accès" },
+        statuses: [
+          { status: "incomplete", meaning: "Créé, première facture non réglée", entitled: false },
+          { status: "active", meaning: "Payé jusqu'à current_period_end", entitled: true },
+          {
+            status: "past_due",
+            meaning:
+              "Période terminée sans paiement, encore dans le délai de grâce ; une facture de renouvellement est ouverte",
+            entitled: true,
+          },
+          {
+            status: "expired",
+            meaning: "Délai de grâce écoulé, ou première facture jamais réglée",
+            entitled: false,
+          },
+          { status: "canceled", meaning: "Arrêté à la demande", entitled: false },
+        ],
+        yes: "oui",
+        no: "non",
+        late: "Le paiement tardif d'une facture encore ouverte réactive quand même un abonnement expired ou canceled : un paiement reçu n'est jamais ignoré.",
+      },
+      periods: {
+        title: "Périodes, changement d'offre, résiliation",
+        items: [
+          "Payer en avance ajoute la période après la période en cours. Payer pendant le délai de grâce repart de l'ancienne fin de période : la grâce n'est pas offerte. Payer après expiration repart du jour du paiement.",
+          "Les mois sont des mois calendaires, calés sur le premier jour payé : une période commencée le 31 janvier se termine le 28 ou 29 février, puis le 31 mars.",
+          "POST /v1/subscriptions/{id}/change : une montée en gamme est facturée tout de suite pour une période complète du nouveau tarif ; une fois payée, le temps non utilisé de l'ancienne période devient des jours en plus. Une descente attend la fin de période. Changer de devise est refusé.",
+          'POST /v1/subscriptions/{id}/cancel arrête l\'abonnement en fin de période (annulable avec /resume), ou immédiatement avec {"at_period_end": false}. Aucun remboursement automatique.',
+        ],
+      },
+      invoices: {
+        title: "Factures et reçus",
+        body: "Chaque période donne lieu à une facture, numérotée sans trou. Une fois payée, receipt_url ouvre un reçu de paiement imprimable, en français ou en anglais. C'est un reçu de paiement, pas une facture fiscale : si vous devez émettre des factures fiscales, produisez-les dans votre propre système à partir de invoice.paid. Exports CSV : GET /v1/exports/subscriptions.csv et GET /v1/exports/invoices.csv.",
+      },
+      comp: {
+        title: "Périodes offertes (comp)",
+        body: "Pour un partenaire, un geste commercial ou une offre « sur devis », un opérateur peut accorder des périodes sans paiement ni écriture comptable :",
+        after:
+          "L'abonnement porte comp: true jusqu'à ce que le client paie une période. L'API d'administration fait la même chose, et c'est aussi ce qui sert à migrer depuis votre propre facturation — voir le guide complet.",
+      },
+      guideLabel: "Guide complet de la facturation (docs/billing.md, en anglais)",
     },
     providers: {
       title: "Fournisseurs",

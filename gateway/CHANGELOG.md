@@ -5,10 +5,69 @@ never changes incompatibly.
 
 ## [Unreleased]
 
+### Billing (0.3.0, in progress)
+- Customers: `POST/GET/PATCH /v1/customers`, found by your own `external_id` (unique per
+  application; a duplicate is `409 customer_exists`). Phones masked; `metadata` up to 20 strings.
+- Plans and prices: `POST/GET/PATCH /v1/plans`, `POST /v1/plans/{id}/prices`,
+  `GET/PATCH /v1/prices/{id}`. Prices are immutable (a database trigger refuses edits); plans and
+  prices are archived with `active: false`, never deleted. Plans carry free-form `features`.
+- Subscriptions: `POST/GET /v1/subscriptions`, `/renew`, `/change`, `/cancel`, `/resume`,
+  `/events`; invoices: `GET /v1/invoices`. Each period is an invoice paid through the hosted
+  checkout; the payment's confirmation, the paid invoice and the extended subscription commit in
+  one transaction. Stacking, upgrades with unused time as extra days, scheduled downgrades,
+  cancel at period end or now (open invoice voided; a late payment still counts, with an alert).
+- Events: `subscription.created|activated|renewed|past_due|expired|canceled|changed|renewal_upcoming`,
+  `invoice.created|paid|voided`.
+- Billing sweep, every minute under ShedLock: `subscription.renewal_upcoming` once per period
+  (reminder days before the end, counted in the application's time zone); at period end
+  `cancel_at_period_end` → `canceled`, otherwise a pending change is applied and the subscription
+  becomes `past_due` with a renewal invoice; after grace → `expired` (the invoice stays payable);
+  an unpaid first invoice older than the invoice TTL → `expired`. Each row is re-checked under its
+  lock; failures count in `yoon.billing.sweep.errors`.
+- Receipts: a paid invoice's `receipt_url` opens a printable payment receipt (French/English,
+  "not a tax invoice") at `/checkout/receipts/{id}?t=…`, under the checkout page's rules (strict
+  CSP, no cache, rate limit, the same 404 for every refusal). The checkout of an invoice shows the
+  plan, interval and invoice number (`billing` in the checkout view) and links the receipt once paid.
+- Comp: `billing comp` (CLI) and `POST /admin/v1/applications/{app}/{subscriptions,customers}/{id}/comp`
+  grant periods, time until a date (for migrations) or an open-ended period, without payment or
+  ledger posting, with a note in the history (cause `admin`).
+- Operator views `/admin/v1/applications/{app}/{plans,subscriptions,invoices}` and
+  `subscriptions/{id}/events`; dashboard tabs Subscriptions, Invoices and Plans (read-only).
+- CSV exports `GET /v1/exports/subscriptions.csv` and `/v1/exports/invoices.csv`.
+- Invoice numbers `<PREFIX>-<year>-<000001>`, gap-free per application.
+- Per-application billing settings: `YOON_APPS_<APP>_BILLING_GRACE_DAYS` (3),
+  `_REMINDER_DAYS` (3), `_TIMEZONE` (Africa/Dakar), `_INVOICE_PREFIX` (INV), `_INVOICE_TTL` (7d).
+- Migration `V7__billing`: all billing tables.
+- Ids made in the same millisecond now sort in creation order (RFC 9562 counter), so "oldest
+  first" holds for a plan and its prices created together.
+
 ### Clients
+- **Response enums are an open set.** The 0.2.0 Java and PHP clients failed to parse a status or
+  event type they did not know; they now keep going (PHP keeps the raw value, Java maps it to
+  `UNKNOWN_DEFAULT_OPEN_API`), like Python and JS. Event payloads pick their object type by its
+  `object` field (discriminator). Each client has a test. CI allows new values in response
+  enums and still fails on removed ones (`api/oasdiff/`). Upgrade your client before using
+  billing events.
+- Billing helpers. Python: `Yoon.customers()`, `plans()`, `subscriptions()` (invoices through
+  `subscriptions()`); `yoonpay.billing` (`Entitlement.from_subscription()`, `changes_entitlement()`,
+  `checkout_url()`); `yoonpay.fastapi.redirect_to_checkout()` (303, `NoCheckout` when there is
+  none: renew). JS: `createCustomer`, `createSubscription`, `getSubscription`,
+  `renewSubscription`, `customers()`/`plans()`/`subscriptions()`; `entitlementOf()`,
+  `changesEntitlement()`, `checkoutUrlOf()`/`NoCheckoutError`; `checkoutRedirect()` in
+  `@yoonpay/yoon/next`. `past_due` is entitled; unknown statuses are not, and never throw.
+- Guide: [docs/billing.md](docs/billing.md) — Billing for SaaS, with a FastAPI example and
+  migrating from your own billing.
+- Customers and plans APIs in every client (regenerated).
 - Every client README has a "Prompt for an AI coding agent": a copy-ready brief that tells a coding
   agent what to install and write, and the rules that protect money (idempotency keys tied to the
   order, fulfil only on `payment.succeeded`, raw-body webhook verification, minor units).
+
+### Fixed
+- Webhook deliveries and provider calls over plain `http://` were refused by servers that reject
+  HTTP/2 upgrade requests (uvicorn's default answers `Upgrade: h2c` with 400), so such endpoints
+  never received events. Yoon now always speaks HTTP/1.1. Found while integrating OSIG.
+- Docs: local webhook setup with Docker Desktop (IPv6 `host.docker.internal`, clock drift);
+  every delivery attempt, including redeliveries, is signed with its send time (now tested).
 
 ## [0.2.0] - 2026-10-07
 

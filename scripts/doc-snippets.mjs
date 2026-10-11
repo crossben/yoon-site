@@ -119,6 +119,19 @@ export const DOC_SNIPPETS = {
     marker: "from yoonpay import Event, verify_signature",
   },
 
+  // Billing (Yoon 0.3.0, not released yet) — docs/billing.md
+  "billing.plan": { file: "docs/billing.md", marker: "POST /v1/plans" },
+  "billing.customer": { file: "docs/billing.md", marker: "POST /v1/customers" },
+  "billing.subscribe": {
+    file: "docs/billing.md",
+    marker: "def subscribe(price_id: str, user: User = Depends(current_user)):",
+  },
+  "billing.webhook": {
+    file: "docs/billing.md",
+    marker: "def yoon_events(event: Event = Depends(yoon_event)) -> None:",
+  },
+  "billing.comp": { file: "docs/billing.md", marker: "docker compose run --rm yoon billing comp" },
+
   // Prompts for AI coding agents: one `text` block per client README.
   "php.agent": {
     file: "clients/php/README.md",

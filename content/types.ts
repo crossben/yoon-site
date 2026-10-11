@@ -29,6 +29,7 @@ export type DocsContent = {
   navQuickstart: string;
   navClients: string;
   navProviders: string;
+  navBilling: string;
   /** Label before the gateway file a snippet is copied from. */
   sourceLabel: string;
   index: {
@@ -38,6 +39,7 @@ export type DocsContent = {
     quickstartBody: string;
     clientsBody: string;
     providersBody: string;
+    billingBody: string;
     apiLabel: string;
   };
   quickstart: {
@@ -71,6 +73,37 @@ export type DocsContent = {
     /** Optional caption above a snippet. */
     captions: Partial<Record<DocSnippetId, string>>;
     readmeLabel: string;
+  };
+  /** Billing for SaaS (Yoon 0.3.0, not released yet), from the gateway's docs/billing.md. */
+  billing: {
+    title: string;
+    description: string;
+    /** Banner at the top: this describes an unreleased version. */
+    unreleased: string;
+    intro: string;
+    settings: {
+      title: string;
+      body: string;
+      columns: { variable: string; default: string; meaning: string };
+      rows: { variable: string; value: string; meaning: string }[];
+    };
+    catalog: { title: string; body: string; after: string };
+    customers: { title: string; body: string; after: string };
+    subscribe: { title: string; body: string; after: string; js: string };
+    webhooks: {
+      title: string;
+      body: string;
+      after: string;
+      columns: { status: string; meaning: string; entitled: string };
+      statuses: { status: string; meaning: string; entitled: boolean }[];
+      yes: string;
+      no: string;
+      late: string;
+    };
+    periods: { title: string; items: string[] };
+    invoices: { title: string; body: string };
+    comp: { title: string; body: string; after: string };
+    guideLabel: string;
   };
   providers: {
     title: string;

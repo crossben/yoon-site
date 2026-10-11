@@ -14,9 +14,16 @@ export default function Footer({ content }: { content: Content }) {
           </span>
           <span className="flex-1 text-sm">
             <span className="font-medium transition-colors group-hover:text-accent">Accord</span>{" "}
-            <span className="text-muted">— {content.lang === "fr" ? "synchronisation hors-ligne qui reste correcte quand le réseau ment" : "offline-first sync that stays correct when the network lies"}</span>
+            <span className="text-muted">
+              —{" "}
+              {content.lang === "fr"
+                ? "synchronisation hors-ligne qui reste correcte quand le réseau ment"
+                : "offline-first sync that stays correct when the network lies"}
+            </span>
           </span>
-          <span aria-hidden="true" className="text-muted transition-colors group-hover:text-accent">→</span>
+          <span aria-hidden="true" className="text-muted transition-colors group-hover:text-accent">
+            →
+          </span>
         </a>
       </div>
 

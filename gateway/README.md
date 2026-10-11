@@ -63,6 +63,27 @@ once, in Java, instead of in every project.
   through the provider's status API without human action; unpaid payments expire;
   a success that arrives after expiry is still recovered; a payout whose outcome
   stays unknown is flagged for a human instead of guessed.
+- **Billing (0.3.0, in progress)** — prepaid subscriptions for mobile money
+  ([guide: Billing for SaaS](docs/billing.md), [plan](docs/plans/billing-0.3.0.md), ADR-0025 to ADR-0027):
+  - customers found by your own user id; plans with free-form `features` (limits, flags); prices
+    in integer minor units per currency and interval, immutable (the database refuses edits),
+    archived, never deleted;
+  - subscriptions: each period is an invoice paid on Yoon's hosted checkout; only a confirmed
+    payment activates or extends (never the return URL). Paying early stacks after the current
+    period; paying in grace does not get the grace days free; paying after expiry starts at the
+    payment. Upgrades apply now and turn unused time into extra days; downgrades and cheaper
+    periods apply at the period end. Cancel now or at the period end, resume;
+  - invoices numbered without gaps per application (billing records, not tax invoices), each
+    with a printable payment receipt page (French/English) once paid; the checkout shows the
+    plan, interval and invoice number;
+  - events `subscription.*` and `invoice.*` carry the full object, so entitlements can be driven
+    from webhooks alone. A sweep every minute sends
+    renewal reminders, moves ended periods to `past_due` (with a renewal invoice) and expires
+    subscriptions after grace;
+  - operators grant periods without payment (comp: some periods, or open-ended for "contact us"
+    plans) from the CLI or the operator API; CSV exports `subscriptions.csv` and `invoices.csv`;
+  - Python and JS helpers: entitlement from a subscription event, redirect to the checkout
+    (FastAPI, Next.js).
 - **Operator API** (`/admin/v1`, behind `YOON_ADMIN_TOKEN`): dead letters and
   payouts needing review, resolved through the same state machine.
 - **Alerts** as a Prometheus counter `yoon_alerts_total{type=…}` (amount
@@ -115,7 +136,8 @@ never a second one while a provider may have the payment. Until the customer cho
 ## Operator dashboard
 
 Open `https://<your yoon>/dashboard` and paste `YOON_ADMIN_TOKEN`. You see your applications;
-payments, refunds and payouts per application (filter by status, newest first, paginated);
+payments, refunds, payouts, subscriptions, invoices and plans per application (filter by
+status, newest first, paginated);
 payouts needing review; webhook dead letters, which you can replay; balances and ledger
 entries; and the status history of any record. Phone numbers stay masked. The token is kept
 only in that browser tab (session storage) and sent in the `Authorization` header, never in
@@ -213,6 +235,11 @@ Build and test (needs a running Docker daemon — integration tests start a real
 | `YOON_DEMO_ENABLED` | no | `true` enables the demo provider and its checkout page. Never in production |
 | `YOON_CHECKOUT_TTL` | no | How long a hosted checkout waits for the customer's choice before it fails with `checkout_expired` (default `30m`) |
 | `YOON_CHECKOUT_RATE_LIMIT` | no | Public checkout requests allowed per minute per client address (default `300`, `0` = off) |
+| `YOON_APPS_<APP>_BILLING_GRACE_DAYS` | no | Days a subscription stays entitled (`past_due`) after its period ends unpaid (default 3) |
+| `YOON_APPS_<APP>_BILLING_REMINDER_DAYS` | no | Days before the period end that `subscription.renewal_upcoming` is sent (default 3) |
+| `YOON_APPS_<APP>_BILLING_TIMEZONE` | no | The application's time zone for billing dates (default `Africa/Dakar`) |
+| `YOON_APPS_<APP>_BILLING_INVOICE_PREFIX` | no | Invoice numbers are `<prefix>-<year>-<000001>` (default `INV`) |
+| `YOON_APPS_<APP>_BILLING_INVOICE_TTL` | no | How long an unpaid first invoice keeps a new subscription alive (default `7d`) |
 | `YOON_DASHBOARD_ENABLED` | no | Operator dashboard at `/dashboard` (default `true`). It exists only when `YOON_ADMIN_TOKEN` is set; `false` removes it (404) |
 | `YOON_DB_POOL_SIZE` | no | Database connections per instance (default `20`); keep instances × pool below Postgres' `max_connections` |
 | `YOON_SOURCE_URL` | if modified | Where users get this instance's source code (AGPL-3.0). Defaults to the upstream repository; set it if you run a modified version |
@@ -231,6 +258,21 @@ constant time with `v1`, and reject if `t` is more than 5 minutes old. Delivery
 is at-least-once and unordered: deduplicate on the event `id`. The full
 description is in the `webhooks` section of `api/openapi.yaml` (and at `/docs`).
 
+Every attempt is signed with the time it is sent, including retries and
+`POST /v1/events/{id}/redeliver`; the event id stays the same.
+
+### Receiving webhooks on your machine (local development)
+
+- Yoon in Docker reaches an app on the host at `http://host.docker.internal:<port>`. The app
+  must listen on all interfaces (`--host 0.0.0.0`). On Docker Desktop, `host.docker.internal`
+  may resolve to an IPv6 address first: if deliveries fail with "connection refused", make the
+  app listen on IPv6 too (e.g. `--host ::` for uvicorn) or use the host's IPv4 address.
+- Yoon delivers over HTTP/1.1, so plain-HTTP servers that refuse protocol upgrades (uvicorn's
+  default) work.
+- Signatures older than 5 minutes are rejected, so the clocks must agree. Docker Desktop's
+  virtual machine clock can fall behind after the laptop sleeps: if fresh deliveries are
+  refused as "stale", restart Docker Desktop (or sync its clock).
+
 ### Operator command line
 
 ```sh
@@ -239,6 +281,8 @@ docker compose run --rm yoon apps create <name>      # new application + API key
 docker compose run --rm yoon apps list               # applications and key prefixes
 docker compose run --rm yoon apps add-key <name>     # rotate: issue another key
 docker compose run --rm yoon apps revoke-key <prefix>
+# grant time without payment (sub_… or cus_…; a number of periods, an end date or "open"; a note)
+docker compose run --rm yoon billing comp <app> <sub_…|cus_…> <price_…> <periods|until|open> <note…>
 ```
 
 ## Contributing and security

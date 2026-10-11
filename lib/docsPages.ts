@@ -118,4 +118,5 @@ export const docsSlugs = [
   "quickstart",
   ...clientOrder.map((id) => `clients/${id}`),
   "providers",
+  "billing",
 ];

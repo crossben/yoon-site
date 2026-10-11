@@ -46,6 +46,7 @@ function Sidebar({ content, slug }: { content: Content; slug: string }) {
           </ul>
         </li>
         {item("providers", docs.navProviders)}
+        {item("billing", docs.navBilling)}
       </ul>
     </nav>
   );
@@ -175,6 +176,7 @@ export function DocsIndex({ content }: { content: Content }) {
       <div className="grid gap-4 sm:grid-cols-2">
         {card(docsHref(content.lang, "quickstart"), docs.navQuickstart, docs.index.quickstartBody)}
         {card(docsHref(content.lang, "providers"), docs.navProviders, docs.index.providersBody)}
+        {card(docsHref(content.lang, "billing"), docs.navBilling, docs.index.billingBody)}
       </div>
       <section aria-labelledby="clients">
         <H2 id="clients">{docs.navClients}</H2>
@@ -368,6 +370,133 @@ export function ProvidersDoc({ content }: { content: Content }) {
         <p className="text-muted">{t.countryNote}</p>
         <p className="text-muted">{p.configNote}</p>
       </div>
+    </DocsShell>
+  );
+}
+
+// ---------------------------------------------------------------- billing (Yoon 0.3.0)
+
+export function BillingDoc({ content }: { content: Content }) {
+  const b = content.docs.billing;
+  const th = "px-4 py-3 text-left font-semibold";
+  const td = "px-4 py-3 text-muted";
+  return (
+    <DocsShell content={content} slug="billing" title={b.title} intro={<p>{b.intro}</p>}>
+      {/* Billing ships in 0.3.0, not released: the site's current version stays v{version}. */}
+      <p
+        role="note"
+        className="rounded-xl border border-accent bg-surface p-4 text-sm leading-relaxed"
+      >
+        <strong>0.3.0.</strong> {b.unreleased}
+      </p>
+      <Step n={1} id="settings" title={b.settings.title}>
+        <P>{b.settings.body}</P>
+        <div className="relative mt-4 overflow-x-auto rounded-xl border border-line">
+          <table className="w-full min-w-[40rem] border-collapse bg-surface text-sm">
+            <thead>
+              <tr className="border-b border-line">
+                <th scope="col" className={th}>
+                  {b.settings.columns.variable}
+                </th>
+                <th scope="col" className={th}>
+                  {b.settings.columns.default}
+                </th>
+                <th scope="col" className={th}>
+                  {b.settings.columns.meaning}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {b.settings.rows.map((row) => (
+                <tr key={row.variable} className="border-b border-line align-top last:border-b-0">
+                  <th scope="row" className="px-4 py-3 text-left font-mono text-xs font-medium">
+                    {row.variable}
+                  </th>
+                  <td className={`${td} font-mono text-xs`}>{row.value}</td>
+                  <td className={td}>{row.meaning}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Step>
+      <Step n={2} id="catalog" title={b.catalog.title}>
+        <P>{b.catalog.body}</P>
+        <Snippet content={content} id="billing.plan" />
+        <P>{b.catalog.after}</P>
+      </Step>
+      <Step n={3} id="customers" title={b.customers.title}>
+        <P>{b.customers.body}</P>
+        <Snippet content={content} id="billing.customer" />
+        <P>{b.customers.after}</P>
+      </Step>
+      <Step n={4} id="subscribe" title={b.subscribe.title}>
+        <P>{b.subscribe.body}</P>
+        <Snippet content={content} id="billing.subscribe" />
+        <P>{b.subscribe.after}</P>
+        <P>
+          {b.subscribe.js}{" "}
+          <a href={docsHref(content.lang, "clients/js")} className={linkClass}>
+            {content.docs.client.titles.js}
+          </a>
+        </P>
+      </Step>
+      <Step n={5} id="webhooks" title={b.webhooks.title}>
+        <P>{b.webhooks.body}</P>
+        <Snippet content={content} id="billing.webhook" />
+        <P>{b.webhooks.after}</P>
+        <div className="relative mt-4 overflow-x-auto rounded-xl border border-line">
+          <table className="w-full min-w-[32rem] border-collapse bg-surface text-sm">
+            <thead>
+              <tr className="border-b border-line">
+                <th scope="col" className={th}>
+                  {b.webhooks.columns.status}
+                </th>
+                <th scope="col" className={th}>
+                  {b.webhooks.columns.meaning}
+                </th>
+                <th scope="col" className={th}>
+                  {b.webhooks.columns.entitled}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {b.webhooks.statuses.map((row) => (
+                <tr key={row.status} className="border-b border-line align-top last:border-b-0">
+                  <th scope="row" className="px-4 py-3 text-left font-mono text-xs font-medium">
+                    {row.status}
+                  </th>
+                  <td className={td}>{row.meaning}</td>
+                  <td className={row.entitled ? "px-4 py-3 font-medium" : td}>
+                    {row.entitled ? b.webhooks.yes : b.webhooks.no}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <P>{b.webhooks.late}</P>
+      </Step>
+      <Step n={6} id="periods" title={b.periods.title}>
+        <ul className="mt-3 list-disc space-y-2 pl-5 leading-relaxed">
+          {b.periods.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </Step>
+      <Step n={7} id="invoices" title={b.invoices.title}>
+        <P>{b.invoices.body}</P>
+      </Step>
+      <Step n={8} id="comp" title={b.comp.title}>
+        <P>{b.comp.body}</P>
+        <Snippet content={content} id="billing.comp" />
+        <P>{b.comp.after}</P>
+      </Step>
+      <p className="text-sm">
+        <a href={`${repo.blob}/docs/billing.md`} className={linkClass}>
+          {b.guideLabel} <ExternalArrow />
+        </a>
+      </p>
     </DocsShell>
   );
 }
