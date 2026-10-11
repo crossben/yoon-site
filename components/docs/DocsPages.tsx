@@ -374,7 +374,7 @@ export function ProvidersDoc({ content }: { content: Content }) {
   );
 }
 
-// ---------------------------------------------------------------- billing (Yoon 0.3.0)
+// ---------------------------------------------------------------- billing
 
 export function BillingDoc({ content }: { content: Content }) {
   const b = content.docs.billing;
@@ -382,13 +382,6 @@ export function BillingDoc({ content }: { content: Content }) {
   const td = "px-4 py-3 text-muted";
   return (
     <DocsShell content={content} slug="billing" title={b.title} intro={<p>{b.intro}</p>}>
-      {/* Billing ships in 0.3.0, not released: the site's current version stays v{version}. */}
-      <p
-        role="note"
-        className="rounded-xl border border-accent bg-surface p-4 text-sm leading-relaxed"
-      >
-        <strong>0.3.0.</strong> {b.unreleased}
-      </p>
       <Step n={1} id="settings" title={b.settings.title}>
         <P>{b.settings.body}</P>
         <div className="relative mt-4 overflow-x-auto rounded-xl border border-line">

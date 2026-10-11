@@ -69,11 +69,12 @@ export const REQUIRED_STRINGS = {
   "CHANGELOG.md": [
     "## [0.1.0]",
     "## [0.2.0]",
-    "### Billing (0.3.0, in progress)",
+    "## [0.3.0]",
+    "### Billing",
     "**PI-SPI** (`pispi`, BCEAO instant payments",
     "PayDunya, DexPay and NabooPay: Senegal (XOF) only and no refund API (refund by payout).",
   ],
-  // Billing docs page (/docs/billing): Yoon 0.3.0, not released yet.
+  // Billing docs page (/docs/billing): Yoon 0.3.0.
   "docs/billing.md": [
     "Yoon 0.3.0 bills **prepaid subscriptions**",
     "Nothing is charged automatically",

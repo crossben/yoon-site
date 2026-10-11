@@ -74,12 +74,10 @@ export type DocsContent = {
     captions: Partial<Record<DocSnippetId, string>>;
     readmeLabel: string;
   };
-  /** Billing for SaaS (Yoon 0.3.0, not released yet), from the gateway's docs/billing.md. */
+  /** Billing for SaaS (Yoon 0.3.0), from the gateway's docs/billing.md. */
   billing: {
     title: string;
     description: string;
-    /** Banner at the top: this describes an unreleased version. */
-    unreleased: string;
     intro: string;
     settings: {
       title: string;

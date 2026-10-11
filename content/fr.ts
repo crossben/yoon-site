@@ -383,7 +383,7 @@ export const fr: Content = {
       clientsBody: "Installer, créer un paiement avec une clé d'idempotence, vérifier un webhook.",
       providersBody: "Ce que fait chaque fournisseur, et où sa configuration est documentée.",
       billingBody:
-        "Abonnements prépayés pour les SaaS, à venir avec Yoon 0.3.0 (pas encore publié).",
+        "Abonnements prépayés pour les SaaS, depuis Yoon 0.3.0.",
       apiLabel: "Contrat d'API (OpenAPI)",
     },
     quickstart: {
@@ -467,8 +467,7 @@ export const fr: Content = {
     billing: {
       title: "Facturation pour SaaS",
       description:
-        "Abonnements prépayés avec Yoon 0.3.0 (à venir, pas encore publié) : offres et tarifs, clients, paiement hébergé, accès piloté par les webhooks, factures et reçus.",
-      unreleased: `Cette page décrit Yoon 0.3.0, à venir et pas encore publié. La version actuelle, v${version}, ne gère pas la facturation : tout ce qui suit peut encore changer d'ici la sortie de la 0.3.0.`,
+        "Abonnements prépayés avec Yoon 0.3.0 : offres et tarifs, clients, paiement hébergé, accès piloté par les webhooks, factures et reçus.",
       intro:
         "Yoon 0.3.0 facture des abonnements prépayés : le client règle chaque période (un mois, un an…) sur la page de paiement hébergée par Yoon, par mobile money, PI-SPI ou carte, et votre application ouvre l'accès à partir des webhooks de Yoon. Rien n'est prélevé automatiquement : le mobile money ne connaît pas le prélèvement à la manière des cartes, chaque période est donc un paiement fait par le client. Le prélèvement automatique, Stripe en premier, est prévu pour la 0.4.0.",
       settings: {

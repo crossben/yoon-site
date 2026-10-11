@@ -361,7 +361,7 @@ export const en: Content = {
         "Docker Compose, the demo provider, an API key, a first payment with curl and a signed webhook. No provider account, no real money.",
       clientsBody: "Install, create a payment with an idempotency key, verify a webhook.",
       providersBody: "What each provider does, and where its configuration is documented.",
-      billingBody: "Prepaid subscriptions for SaaS, coming in Yoon 0.3.0 (not released yet).",
+      billingBody: "Prepaid subscriptions for SaaS, since Yoon 0.3.0.",
       apiLabel: "API contract (OpenAPI)",
     },
     quickstart: {
@@ -445,8 +445,7 @@ export const en: Content = {
     billing: {
       title: "Billing for SaaS",
       description:
-        "Prepaid subscriptions with Yoon 0.3.0 (coming, not released yet): plans and prices, customers, hosted checkout, access from webhooks, invoices and receipts.",
-      unreleased: `This page describes Yoon 0.3.0, which is coming but not released yet. The current release, v${version}, has no billing: everything below is subject to change until 0.3.0 ships.`,
+        "Prepaid subscriptions with Yoon 0.3.0: plans and prices, customers, hosted checkout, access from webhooks, invoices and receipts.",
       intro:
         "Yoon 0.3.0 bills prepaid subscriptions: the customer pays each period (a month, a year…) on Yoon's hosted checkout, by mobile money, PI-SPI or card, and your application grants access from Yoon's webhooks. Nothing is charged automatically: mobile money has no card-style auto-debit, so every period is a payment the customer makes. Automatic charging, Stripe first, is planned for 0.4.0.",
       settings: {
