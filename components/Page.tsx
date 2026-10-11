@@ -1,3 +1,4 @@
+import CopyButton from "@/components/CopyButton";
 import ExternalArrow from "@/components/ExternalArrow";
 import { highlight } from "@/lib/shiki";
 import {
@@ -354,8 +355,16 @@ export default async function Page({ content }: { content: Content }) {
         <Section id="code" title={content.code.heading} intro={content.code.intro}>
           <Reveal className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger>
             {(Object.keys(clients) as (keyof typeof clients)[]).map((key) => (
-              <div key={key} className="rounded-xl border border-line bg-surface p-4">
-                <p className="text-sm font-semibold">{content.code.clientLabels[key]}</p>
+              <div key={key} className="group relative rounded-xl border border-line bg-surface p-4">
+                {/* Shown on hover or keyboard focus; always shown where there is no hover (touch). */}
+                <CopyButton
+                  text={clients[key].install}
+                  label={content.code.copy}
+                  copiedLabel={content.code.copied}
+                  title={`${content.code.copyInstall}: ${clients[key].install}`}
+                  className="absolute right-3 top-3 opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100"
+                />
+                <p className="pr-16 text-sm font-semibold">{content.code.clientLabels[key]}</p>
                 <p className="mt-1 font-mono text-sm text-accent">{clients[key].package}</p>
                 <p className="mt-1 text-xs text-muted">{clients[key].requires}</p>
               </div>

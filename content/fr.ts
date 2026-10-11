@@ -260,6 +260,7 @@ export const fr: Content = {
     responseLabel: "Yoon répond",
     copy: "Copier",
     copied: "Copié",
+    copyInstall: "Copier la commande d’installation",
   },
   api: {
     heading: "L'API en un coup d'œil",

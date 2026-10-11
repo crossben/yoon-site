@@ -248,6 +248,7 @@ export const en: Content = {
     responseLabel: "Yoon answers",
     copy: "Copy",
     copied: "Copied",
+    copyInstall: "Copy the install command",
   },
   api: {
     heading: "The API at a glance",

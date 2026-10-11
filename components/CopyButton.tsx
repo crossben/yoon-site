@@ -6,10 +6,15 @@ export default function CopyButton({
   text,
   label,
   copiedLabel,
+  title,
+  className = "",
 }: {
   text: string;
   label: string;
   copiedLabel: string;
+  /** Tooltip and accessible name, when the visible label alone is not enough. */
+  title?: string;
+  className?: string;
 }) {
   const [copied, setCopied] = useState(false);
   const timer = useRef<number>(undefined);
@@ -45,7 +50,9 @@ export default function CopyButton({
     <button
       type="button"
       onClick={copy}
-      className="rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-xs text-muted transition-colors hover:border-accent hover:text-accent"
+      title={title}
+      aria-label={title ? `${title}${copied ? ` — ${copiedLabel}` : ""}` : undefined}
+      className={`${className} rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-xs text-muted transition-colors hover:border-accent hover:text-accent`}
     >
       {copied ? copiedLabel : label}
     </button>

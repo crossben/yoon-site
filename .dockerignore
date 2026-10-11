@@ -7,3 +7,5 @@ public/brand
 .git
 .env*
 *.log
+Dockerfile
+docker-compose.yml

@@ -216,6 +216,7 @@ export type Content = {
     responseLabel: string;
     copy: string;
     copied: string;
+    copyInstall: string;
   };
   api: {
     heading: string;

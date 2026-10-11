@@ -160,19 +160,43 @@ export const pispi = {
   providerStatus: "available-not-sandbox-tested",
 } as const;
 
-/** Client libraries. Source: README.md § Client libraries, ADR-0018. */
+/**
+ * Client libraries. Source: README.md § Client libraries, ADR-0018.
+ * `install` is what the card's copy button copies. npm packages go through safe-install
+ * (https://github.com/crossben/safe-install: install scripts reviewed before they run); it
+ * covers the npm family only, so the other ecosystems use their own tool. Maven has no install
+ * command: the Java cards copy the Gradle dependency line.
+ */
 export const clients = {
-  php: { package: "yoonpay/yoon-php", requires: "PHP 8.2+, Laravel 10–13" },
-  java: { package: "io.github.crossben:yoon-java", requires: "Java 17+" },
-  js: { package: "@yoonpay/yoon", requires: "Node ≥ 20 — also Bun, Deno and edge runtimes" },
+  php: {
+    package: "yoonpay/yoon-php",
+    requires: "PHP 8.2+, Laravel 10–13",
+    install: "composer require yoonpay/yoon-php",
+  },
+  java: {
+    package: "io.github.crossben:yoon-java",
+    requires: "Java 17+",
+    install: `implementation("io.github.crossben:yoon-java:${version}")`,
+  },
+  js: {
+    package: "@yoonpay/yoon",
+    requires: "Node ≥ 20 — also Bun, Deno and edge runtimes",
+    install: "safe-install add @yoonpay/yoon",
+  },
   symfony: {
     package: "yoonpay/yoon-php",
     requires: "Symfony 6.4 LTS and 7.x — bundle in the PHP client",
+    install: "composer require yoonpay/yoon-php",
   },
-  python: { package: "yoonpay", requires: "Python ≥ 3.10 — Django, FastAPI and Flask helpers" },
+  python: {
+    package: "yoonpay",
+    requires: "Python ≥ 3.10 — Django, FastAPI and Flask helpers",
+    install: "pip install yoonpay",
+  },
   spring: {
     package: "io.github.crossben:yoon-spring-boot-starter",
     requires: "Spring Boot 3.x and 4.x",
+    install: `implementation("io.github.crossben:yoon-spring-boot-starter:${version}")`,
   },
 } as const;
 
