@@ -261,6 +261,12 @@ export const fr: Content = {
     copy: "Copier",
     copied: "Copié",
     copyInstall: "Copier la commande d’installation",
+    safeInstall: {
+      label: "via safe-install",
+      what: "Qu’est-ce que safe-install ?",
+      text: "safe-install installe les paquets npm avec leurs scripts d’installation désactivés et n’exécute que ceux que vous approuvez : un paquet malveillant ne peut pas lancer de code sur votre machine. Gratuit et open source, par l’auteur de Yoon. npm install @yoonpay/yoon fonctionne aussi.",
+      link: "safe-install.benhattab.pro",
+    },
   },
   api: {
     heading: "L'API en un coup d'œil",

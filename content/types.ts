@@ -217,6 +217,7 @@ export type Content = {
     copy: string;
     copied: string;
     copyInstall: string;
+    safeInstall: { label: string; what: string; text: string; link: string };
   };
   api: {
     heading: string;

@@ -14,6 +14,8 @@ const SITE = "https://yoonpay.benhattab.pro";
 const ALLOWED_EXTERNAL_HOSTS = [
   "github.com",
   "yoonpay.benhattab.pro",
+  // safe-install: the author's npm supply-chain tool, offered in the JS card's install command.
+  "safe-install.benhattab.pro",
   "pispi.bceao.int",
   "developer.pispi.bceao.int",
 ];

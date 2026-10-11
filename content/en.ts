@@ -249,6 +249,12 @@ export const en: Content = {
     copy: "Copy",
     copied: "Copied",
     copyInstall: "Copy the install command",
+    safeInstall: {
+      label: "via safe-install",
+      what: "What is safe-install?",
+      text: "safe-install installs npm packages with their install scripts turned off and runs only the scripts you approve, so a malicious package cannot run code on your machine. Free and open source, by the author of Yoon. Plain npm install @yoonpay/yoon works too.",
+      link: "safe-install.benhattab.pro",
+    },
   },
   api: {
     heading: "The API at a glance",

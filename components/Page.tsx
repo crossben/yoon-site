@@ -355,7 +355,7 @@ export default async function Page({ content }: { content: Content }) {
         <Section id="code" title={content.code.heading} intro={content.code.intro}>
           <Reveal className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger>
             {(Object.keys(clients) as (keyof typeof clients)[]).map((key) => (
-              <div key={key} className="group relative rounded-xl border border-line bg-surface p-4">
+              <div key={key} className="group relative rounded-xl border border-line bg-surface p-4 focus-within:z-30 hover:z-30">
                 {/* Shown on hover or keyboard focus; always shown where there is no hover (touch). */}
                 <CopyButton
                   text={clients[key].install}
@@ -367,6 +367,36 @@ export default async function Page({ content }: { content: Content }) {
                 <p className="pr-16 text-sm font-semibold">{content.code.clientLabels[key]}</p>
                 <p className="mt-1 font-mono text-sm text-accent">{clients[key].package}</p>
                 <p className="mt-1 text-xs text-muted">{clients[key].requires}</p>
+                {key === "js" && (
+                  // Opens on hover, on keyboard focus and on tap (the button takes focus); no JS.
+                  <div className="group/tip relative mt-2 inline-block">
+                    <button
+                      type="button"
+                      aria-describedby="safe-install-tip"
+                      className="inline-flex items-center gap-1 rounded font-mono text-xs text-muted underline decoration-dotted underline-offset-4 hover:text-accent focus-visible:text-accent"
+                    >
+                      {content.code.safeInstall.label}
+                      <span aria-hidden="true" className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-current text-[10px] not-italic leading-none">
+                        i
+                      </span>
+                      <span className="sr-only">— {content.code.safeInstall.what}</span>
+                    </button>
+                    <div
+                      id="safe-install-tip"
+                      role="tooltip"
+                      className="invisible absolute left-0 top-full z-20 mt-2 w-72 max-w-[calc(100vw-3rem)] rounded-lg border border-line bg-surface p-3 text-xs leading-relaxed text-ink opacity-0 shadow-lg transition-opacity group-focus-within/tip:visible group-focus-within/tip:opacity-100 group-hover/tip:visible group-hover/tip:opacity-100"
+                    >
+                      <p className="font-semibold">{content.code.safeInstall.what}</p>
+                      <p className="mt-1 text-muted">{content.code.safeInstall.text}</p>
+                      <a
+                        href="https://safe-install.benhattab.pro/"
+                        className="mt-2 inline-block font-medium text-ink underline decoration-accent decoration-2 underline-offset-4 hover:text-accent"
+                      >
+                        {content.code.safeInstall.link} <ExternalArrow />
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </Reveal>
