@@ -572,13 +572,13 @@ export const fr: Content = {
       },
       trials: {
         title: "Essais gratuits",
-        badge: "Yoon 0.4 — à venir",
+        badge: "Depuis Yoon 0.4",
         body: "Donnez à un plan un trial_days par défaut, ou passez trial_days à la souscription. L'abonnement démarre en trialing : le client a accès, sans facture ni rien à payer. Chaque client a droit à un seul essai par plan. Payer pendant l'essai ne fait perdre aucun jour : la période payée commence à la fin de l'essai. Sans paiement à la fin, l'abonnement passe en past_due (délai de grâce), puis en expired.",
         upgrade: "Passez votre client Yoon en 0.4 avant d'utiliser les essais : les helpers 0.3 considèrent trialing comme sans accès, et vos clients en essai seraient bloqués.",
       },
       coupons: {
         title: "Coupons",
-        badge: "Yoon 0.4 — à venir",
+        badge: "Depuis Yoon 0.4",
         body: "Un coupon retire un pourcentage ou un montant fixe, une fois, pendant un nombre de périodes ou pour toujours :",
         after: "Appliquez-le avec coupon sur POST /v1/subscriptions, ou plus tard sur l'abonnement. Chaque facture payée consomme une période du coupon. Un coupon à 100 % règle la facture à lui seul : invoice.paid arrive sans paiement.",
       },

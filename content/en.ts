@@ -547,13 +547,13 @@ export const en: Content = {
       },
       trials: {
         title: "Free trials",
-        badge: "Yoon 0.4 — coming",
+        badge: "Since Yoon 0.4",
         body: "Give a plan a default trial_days, or pass trial_days when subscribing. The subscription starts trialing: it is entitled, with no invoice and nothing to pay. Each customer gets one trial per plan. Paying during the trial keeps every trial day: the paid period starts when the trial ends. Unpaid at the end, the subscription goes past_due (grace), then expired.",
         upgrade: "Upgrade your Yoon client to 0.4 before using trials: the 0.3 helpers treat trialing as not entitled, so trial users would be denied access.",
       },
       coupons: {
         title: "Coupons",
-        badge: "Yoon 0.4 — coming",
+        badge: "Since Yoon 0.4",
         body: "A coupon takes a percentage or a fixed amount off, once, for a number of periods or forever:",
         after: "Redeem it with coupon on POST /v1/subscriptions or later on the subscription. Each paid invoice uses one period of the coupon. A 100% coupon pays the invoice by itself: invoice.paid arrives with no payment.",
       },
