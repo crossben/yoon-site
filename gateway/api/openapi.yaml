@@ -42,6 +42,8 @@ tags:
     description: Your users, for billing (found by your own id).
   - name: Plans
     description: What customers subscribe to, and its prices. Archived, never deleted.
+  - name: Coupons
+    description: Discount codes for subscriptions. Terms never change; archived, never deleted.
   - name: Subscriptions
     description: Prepaid periods, invoices and renewals (ADR-0026, ADR-0027).
   - name: Ledger
@@ -545,6 +547,101 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
 
+  /v1/coupons:
+    post:
+      tags: [Coupons]
+      operationId: createCoupon
+      summary: Create a coupon
+      description: |
+        A discount code customers redeem on a subscription (ADR-0029): `percent_off` or
+        `amount_off`, for one invoice (`once`), `duration_in_periods` invoices (`repeating`) or
+        every invoice (`forever`). Its terms never change: archive it with `active: false` and
+        create another. Codes are unique per application, case-insensitively.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateCouponRequest' }
+            example: { code: WELCOME20, percent_off: 20, duration: repeating, duration_in_periods: 3 }
+      responses:
+        '201':
+          description: Coupon created.
+          headers:
+            Idempotent-Replayed: { $ref: '#/components/headers/IdempotentReplayed' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Coupon' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409':
+          description: '`coupon_exists` — the code is taken (`detail` names the coupon), or an idempotency conflict.'
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422':
+          description: '`plan_not_found` — a plan in `plans` does not exist.'
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+    get:
+      tags: [Coupons]
+      operationId: listCoupons
+      summary: List coupons
+      parameters:
+        - { name: code, in: query, description: 'Exact code, case-insensitive.', schema: { type: string } }
+        - { name: active, in: query, schema: { type: boolean } }
+        - $ref: '#/components/parameters/StartingAfter'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: A page of coupons, newest first.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CouponPage' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /v1/coupons/{id}:
+    get:
+      tags: [Coupons]
+      operationId: getCoupon
+      summary: Get a coupon
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: The coupon.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Coupon' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Coupons]
+      operationId: updateCoupon
+      summary: Update a coupon
+      description: '`active`, `max_redemptions` (raise, or `null` to remove the cap; never lower) and `metadata`. The terms never change.'
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateCouponRequest' }
+      responses:
+        '200':
+          description: The updated coupon.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Coupon' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/IdempotencyConflict' }
+
   /v1/plans/{id}:
     get:
       tags: [Plans]
@@ -564,7 +661,7 @@ paths:
       tags: [Plans]
       operationId: updatePlan
       summary: Update a plan
-      description: '`name`, `active`, `features`, `metadata`. The slug and prices never change here.'
+      description: '`name`, `active`, `features`, `metadata`, `trial_days`. The slug and prices never change here.'
       parameters:
         - $ref: '#/components/parameters/Id'
         - $ref: '#/components/parameters/IdempotencyKey'
@@ -670,7 +767,7 @@ paths:
             example: { customer: cus_0199a3f0c2e47a1b9c3d5e6f7a8b9c0d, price: price_0199a3f0c2e47a1b9c3d5e6f7a8b9c0d, return_url: 'https://shop.example/billing' }
       responses:
         '201':
-          description: Subscription created, waiting for its first payment.
+          description: Subscription created, waiting for its first payment (or `trialing`, with nothing to pay yet).
           headers:
             Idempotent-Replayed: { $ref: '#/components/headers/IdempotentReplayed' }
           content:
@@ -678,9 +775,18 @@ paths:
               schema: { $ref: '#/components/schemas/Subscription' }
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '409': { $ref: '#/components/responses/IdempotencyConflict' }
+        '409':
+          description: |
+            `trial_already_used` — the customer had a trial on this plan. Or an idempotency conflict:
+            `idempotency_in_progress` (retry after `Retry-After` seconds) or `idempotency_key_reused`.
+          headers:
+            Retry-After:
+              schema: { type: integer }
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
         '422':
-          description: '`customer_not_found`, `price_not_found`, `price_archived`, `public_url_required`, `no_provider_for_method`.'
+          description: '`customer_not_found`, `price_not_found`, `price_archived`, `public_url_required`, `no_provider_for_method`, `coupon_not_applicable` (with `reason`).'
           content:
             application/problem+json:
               schema: { $ref: '#/components/schemas/Problem' }
@@ -851,6 +957,78 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/IdempotencyConflict' }
 
+  /v1/subscriptions/{id}/discount:
+    post:
+      tags: [Subscriptions]
+      operationId: applySubscriptionDiscount
+      summary: Apply a coupon to the next invoices
+      description: |
+        Replaces the subscription's current discount. A use of the coupon is counted now; each paid
+        invoice consumes one of its periods. An open invoice without a payment in progress is voided
+        so the next one (`/renew`) carries the discount; with a payment in progress: 409.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [coupon]
+              properties:
+                coupon: { type: string, maxLength: 32 }
+      responses:
+        '200':
+          description: The subscription with its discount.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Subscription' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: '`payment_in_progress` — the open invoice is being paid; or an idempotency conflict.'
+          headers:
+            Retry-After:
+              schema: { type: integer }
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422':
+          description: '`coupon_not_applicable` (with `reason`), `subscription_ended`.'
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+    delete:
+      tags: [Subscriptions]
+      operationId: removeSubscriptionDiscount
+      summary: Remove the discount from the next invoices
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: The subscription without a discount.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Subscription' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: '`payment_in_progress`, or an idempotency conflict.'
+          headers:
+            Retry-After:
+              schema: { type: integer }
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422':
+          description: '`subscription_ended`.'
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+
   /v1/invoices:
     get:
       tags: [Subscriptions]
@@ -994,6 +1172,17 @@ paths:
       operationId: exportInvoices
       summary: Export invoices as CSV
       description: Created in the window, with number, status, amount, period and the payment that paid it.
+      parameters: [{ $ref: '#/components/parameters/From' }, { $ref: '#/components/parameters/To' }]
+      responses:
+        '200': { $ref: '#/components/responses/Csv' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /v1/exports/coupons.csv:
+    get:
+      tags: [Exports]
+      operationId: exportCouponRedemptions
+      summary: Export coupon redemptions as CSV
+      description: One row per redemption in the window — coupon, code, subscription and the customer's external id.
       parameters: [{ $ref: '#/components/parameters/From' }, { $ref: '#/components/parameters/To' }]
       responses:
         '200': { $ref: '#/components/responses/Csv' }
@@ -1568,6 +1757,28 @@ paths:
             application/problem+json:
               schema: { $ref: '#/components/schemas/Problem' }
 
+  /admin/v1/applications/{application_id}/coupons:
+    get:
+      tags: [Admin]
+      operationId: adminListApplicationCoupons
+      summary: One application's coupons
+      security: [{ adminToken: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+        - { name: code, in: query, schema: { type: string } }
+        - { name: active, in: query, schema: { type: boolean } }
+        - $ref: '#/components/parameters/StartingAfter'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: A page of coupons, newest first.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CouponPage' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/AdminDisabled' }
+
   /admin/v1/applications/{application_id}/invoices:
     get:
       tags: [Admin]
@@ -1855,6 +2066,9 @@ components:
         code:
           type: string
           description: Stable, machine-readable error code.
+        reason:
+          type: string
+          description: 'For `coupon_not_applicable`: `unknown`, `archived`, `expired`, `exhausted`, `plan`, `currency` (open set).'
 
     PaymentPage:
       type: object
@@ -1973,8 +2187,69 @@ components:
           description: Free-form JSON (limits, flags) returned on subscriptions, so you can enforce limits from it.
         metadata: { $ref: '#/components/schemas/Metadata' }
         prices: { type: array, items: { $ref: '#/components/schemas/Price' }, description: Oldest first, archived ones included. }
+        trial_days: { type: integer, description: 'Default free trial for new subscriptions, 0 for none (ADR-0028).' }
         created_at: { type: string, format: date-time }
         updated_at: { type: string, format: date-time }
+
+    CreateCouponRequest:
+      type: object
+      required: [code, duration]
+      description: Exactly one of `percent_off` and `amount_off`.
+      properties:
+        code: { type: string, pattern: '^[A-Za-z0-9_-]{3,32}$', description: What customers type. Case-insensitive. }
+        percent_off: { type: integer, minimum: 1, maximum: 100 }
+        amount_off: { $ref: '#/components/schemas/AmountOff' }
+        duration: { type: string, enum: [once, repeating, forever] }
+        duration_in_periods: { type: integer, minimum: 1, maximum: 120, description: 'Required for, and only for, `repeating`.' }
+        max_redemptions: { type: integer, minimum: 1 }
+        redeem_by: { type: string, format: date-time }
+        plans: { type: array, minItems: 1, maxItems: 50, items: { type: string }, description: Plan ids it is limited to; omit for every plan. }
+        metadata: { $ref: '#/components/schemas/Metadata' }
+
+    UpdateCouponRequest:
+      type: object
+      properties:
+        active: { type: boolean }
+        max_redemptions: { type: [integer, 'null'], minimum: 1 }
+        metadata: { $ref: '#/components/schemas/Metadata' }
+
+    AmountOff:
+      type: object
+      required: [currency, amount]
+      properties:
+        currency: { type: string, pattern: '^[A-Z]{3}$' }
+        amount: { type: integer, format: int64, minimum: 1, description: Minor units. }
+
+    Coupon:
+      type: object
+      required: [id, object, code, percent_off, amount_off, duration, duration_in_periods, max_redemptions,
+                 times_redeemed, redeem_by, plans, active, metadata, created_at]
+      properties:
+        id: { type: string, example: co_01a1… }
+        object: { type: string, const: coupon }
+        code: { type: string }
+        percent_off: { type: [integer, 'null'] }
+        amount_off:
+          oneOf:
+            - { $ref: '#/components/schemas/AmountOff' }
+            - { type: 'null' }
+        duration: { type: string, description: '`once`, `repeating` or `forever` (open set).' }
+        duration_in_periods: { type: [integer, 'null'] }
+        max_redemptions: { type: [integer, 'null'] }
+        times_redeemed: { type: integer }
+        redeem_by: { type: [string, 'null'], format: date-time }
+        plans: { type: [array, 'null'], items: { type: string } }
+        active: { type: boolean }
+        metadata: { $ref: '#/components/schemas/Metadata' }
+        created_at: { type: string, format: date-time }
+
+    CouponPage:
+      type: object
+      required: [data, has_more, next_cursor]
+      properties:
+        data: { type: array, items: { $ref: '#/components/schemas/Coupon' } }
+        has_more: { type: boolean }
+        next_cursor: { $ref: '#/components/schemas/NextCursor' }
 
     CreatePlanRequest:
       type: object
@@ -1985,6 +2260,7 @@ components:
         features: { type: object, additionalProperties: true }
         metadata: { $ref: '#/components/schemas/Metadata' }
         prices: { type: array, maxItems: 20, items: { $ref: '#/components/schemas/PriceInput' } }
+        trial_days: { type: integer, minimum: 0, maximum: 90, description: Default free trial for new subscriptions. }
 
     UpdatePlanRequest:
       type: object
@@ -1993,6 +2269,7 @@ components:
         active: { type: boolean }
         features: { type: object, additionalProperties: true }
         metadata: { $ref: '#/components/schemas/Metadata' }
+        trial_days: { type: integer, minimum: 0, maximum: 90 }
 
     PlanPage:
       type: object
@@ -2004,10 +2281,11 @@ components:
 
     SubscriptionStatus:
       type: string
-      enum: [incomplete, active, past_due, expired, canceled]
+      enum: [incomplete, active, past_due, expired, canceled, trialing]
       description: |
-        `active` and `past_due` (in grace) are entitled; see `entitled`. `expired` and `canceled`
-        come back to `active` if an open invoice is paid late.
+        `active`, `past_due` (in grace) and `trialing` are entitled; see `entitled`. `expired` and
+        `canceled` come back to `active` if an open invoice is paid late. Upgrade your client to
+        0.4 before using trials: older helpers treat `trialing` as not entitled.
 
     InvoiceStatus:
       type: string
@@ -2052,7 +2330,13 @@ components:
         subscription: { type: string }
         kind: { type: string, enum: [first, renewal, upgrade] }
         status: { $ref: '#/components/schemas/InvoiceStatus' }
-        amount_due: { type: integer, format: int64 }
+        amount_due: { type: integer, format: int64, description: '`subtotal − discount_amount`. 0 with a 100% coupon: paid at creation, without a payment.' }
+        subtotal: { type: integer, format: int64, description: The price before discount. }
+        discount_amount: { type: integer, format: int64 }
+        discount:
+          oneOf:
+            - { $ref: '#/components/schemas/Discount' }
+            - { type: 'null' }
         currency: { type: string }
         lines: { type: array, items: { $ref: '#/components/schemas/InvoiceLine' } }
         period_start: { type: [string, 'null'], format: date-time, description: Set when paid. }
@@ -2071,6 +2355,11 @@ components:
       required: [id, object, customer, price, status, collection_method, grace_period_days, cancel_at_period_end,
                  comp, entitled, features, metadata, created_at, updated_at]
       properties:
+        discount:
+          description: 'The coupon on its next invoices; `periods_remaining` null means forever.'
+          oneOf:
+            - { $ref: '#/components/schemas/Discount' }
+            - { type: 'null' }
         id: { type: string, example: sub_0199a3f0c2e47a1b9c3d5e6f7a8b9c0d }
         object: { type: string, const: subscription }
         customer:
@@ -2094,7 +2383,8 @@ components:
             effective_at: { type: [string, 'null'], format: date-time }
         canceled_at: { type: [string, 'null'], format: date-time }
         comp: { type: boolean, description: Periods granted by an operator, without payment. }
-        entitled: { type: boolean, description: 'Whether the customer should have access now (`active` or `past_due`).' }
+        entitled: { type: boolean, description: 'Whether the customer should have access now (`active`, `past_due` or `trialing`).' }
+        trial_end: { type: [string, 'null'], format: date-time, description: 'When its free trial ends (or ended); null without a trial.' }
         features: { type: object, additionalProperties: true, description: The plan's features, for enforcing limits. }
         latest_invoice:
           oneOf:
@@ -2112,7 +2402,16 @@ components:
         price: { type: string }
         grace_period_days: { type: integer, minimum: 0, maximum: 90, description: Default from the application's billing settings. }
         metadata: { $ref: '#/components/schemas/Metadata' }
-        return_url: { type: string, format: uri, maxLength: 2048 }
+        return_url: { type: string, format: uri, maxLength: 2048, description: 'Required unless the subscription starts with a trial.' }
+        coupon: { type: string, minLength: 3, maxLength: 32, description: 'A coupon code (case-insensitive) for its first invoices; `422 coupon_not_applicable` with a `reason` if it cannot be used.' }
+        trial_days:
+          type: integer
+          minimum: 0
+          maximum: 90
+          description: |
+            Free trial (ADR-0028); default: the plan's `trial_days`, 0 for none. A customer gets one
+            trial per plan: asking for one again is `409 trial_already_used`; without `trial_days`
+            the plan's default is simply not applied.
 
     RenewSubscriptionRequest:
       type: object
@@ -2178,7 +2477,7 @@ components:
              payout.paid, payout.failed, payout.needs_review,
              subscription.created, subscription.activated, subscription.renewed, subscription.past_due,
              subscription.expired, subscription.canceled, subscription.changed, subscription.renewal_upcoming,
-             invoice.created, invoice.paid, invoice.voided]
+             subscription.trial_will_end, invoice.created, invoice.paid, invoice.voided]
 
     DeliveryStatus:
       type: string
@@ -2406,6 +2705,8 @@ components:
             interval: { $ref: '#/components/schemas/Interval' }
             interval_count: { type: integer }
             receipt_url: { type: [string, 'null'], description: 'Relative; once this payment has paid the invoice.' }
+            subtotal: { type: integer, format: int64, description: 'Before discount; the payment amount is what is due.' }
+            coupon_code: { type: [string, 'null'] }
 
     CompRequest:
       type: object
@@ -2425,6 +2726,16 @@ components:
         open: { type: boolean, description: 'true: no end date (current_period_end null) until canceled.' }
         note: { type: string, minLength: 1, maxLength: 500, example: 'Partner school, approved by Awa' }
 
+    Discount:
+      type: object
+      required: [coupon, code, percent_off, amount_off, periods_remaining]
+      properties:
+        coupon: { type: string }
+        code: { type: string }
+        percent_off: { type: [integer, 'null'] }
+        amount_off: { type: [integer, 'null'], format: int64 }
+        periods_remaining: { type: [integer, 'null'], description: 'On a subscription: invoices it still discounts (null = forever). Null on an invoice.' }
+
     ReceiptView:
       type: object
       additionalProperties: false
@@ -2433,6 +2744,9 @@ components:
                  period_start, period_end, paid_at, method, payment]
       properties:
         number: { type: string }
+        subtotal: { type: integer, format: int64 }
+        discount_amount: { type: integer, format: int64 }
+        coupon_code: { type: [string, 'null'] }
         merchant: { type: [string, 'null'], description: The application's name. }
         customer: { type: [string, 'null'], description: The customer's name, if known. }
         plan: { type: string }

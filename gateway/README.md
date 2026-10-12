@@ -14,7 +14,7 @@ One API in front of PayDunya, DexPay, NabooPay, CinetPay, Wave, Stripe and PI-SP
 verified webhooks, idempotency, a ledger and automatic reconciliation — written
 once, in Java, instead of in every project.
 
-> **Status: 0.3.0.** The gateway, its operations tooling, its operator dashboard, hosted
+> **Status: 0.3.1.** The gateway, its operations tooling, its operator dashboard, hosted
 > checkout and prepaid subscriptions, its PayDunya, DexPay, NabooPay, CinetPay, Wave (direct),
 > Stripe and PI-SPI adapters and its clients are built and tested. **DexPay** (sandbox) and
 > **NabooPay** (live, small real payments) have been run end to end against the real APIs:
@@ -84,9 +84,14 @@ once, in Java, instead of in every project.
     renewal reminders, moves ended periods to `past_due` (with a renewal invoice) and expires
     subscriptions after grace;
   - operators grant periods without payment (comp: some periods, or open-ended for "contact us"
-    plans) from the CLI or the operator API; CSV exports `subscriptions.csv` and `invoices.csv`;
+    plans) from the CLI or the operator API; CSV exports `subscriptions.csv`, `invoices.csv` and `coupons.csv`;
   - Python and JS helpers: entitlement from a subscription event, redirect to the checkout
-    (FastAPI, Next.js).
+    (FastAPI, Next.js);
+  - free trials (0.4.0 in progress): `trialing` is entitled with nothing to pay; unpaid at the
+    end → grace → expired; one trial per customer and plan;
+  - coupons (`/v1/coupons`, 0.4.0 in progress): percent or amount off, once, N periods or
+    forever, immutable terms, redeemed when subscribing or later; a 100% coupon pays the
+    invoice by itself (no payment, no ledger posting).
 - **Operator API** (`/admin/v1`, behind `YOON_ADMIN_TOKEN`): dead letters and
   payouts needing review, resolved through the same state machine.
 - **Alerts** as a Prometheus counter `yoon_alerts_total{type=…}` (amount
@@ -139,8 +144,8 @@ never a second one while a provider may have the payment. Until the customer cho
 ## Operator dashboard
 
 Open `https://<your yoon>/dashboard` and paste `YOON_ADMIN_TOKEN`. You see your applications;
-payments, refunds, payouts, subscriptions, invoices and plans per application (filter by
-status, newest first, paginated);
+payments, refunds, payouts, subscriptions, invoices, plans and coupons per application (filter
+by status, newest first, paginated);
 payouts needing review; webhook dead letters, which you can replay; balances and ledger
 entries; and the status history of any record. Phone numbers stay masked. The token is kept
 only in that browser tab (session storage) and sent in the `Authorization` header, never in

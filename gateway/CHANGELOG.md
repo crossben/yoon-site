@@ -5,6 +5,36 @@ never changes incompatibly.
 
 ## [Unreleased]
 
+### Trials and coupons (0.4.0, in progress)
+- Coupons: `POST/GET /v1/coupons`, `GET/PATCH /v1/coupons/{id}` (ADR-0029): percent or fixed
+  amount off, for one invoice, N invoices or forever; optional cap, deadline and plan list. Codes
+  are unique per application whatever the case. Terms never change (a database trigger refuses
+  it); archive with `active: false`; the cap can only be raised or removed.
+- Discounts: `coupon` on `POST /v1/subscriptions`, `POST/DELETE /v1/subscriptions/{id}/discount`.
+  Invoices gain `subtotal`, `discount_amount`, `discount`; subscriptions `discount` (with
+  `periods_remaining`). A use is consumed when an invoice is paid, so a voided invoice never
+  costs one. Refusals are `422 coupon_not_applicable` with a `reason` (`unknown`, `archived`,
+  `expired`, `exhausted`, `plan`, `currency`). The cap holds under concurrent redemptions.
+- **100% off**: an invoice with nothing to pay is paid at creation, without a payment or ledger
+  posting; the subscription is activated or renewed as usual and the receipt says which coupon
+  paid it. The checkout and the receipt show the coupon and the discount.
+- Operator: dashboard **Coupons** tab (code, discount, uses / cap, plans) and a discount column
+  on invoices; `GET /admin/v1/applications/{app}/coupons`. Exports: `coupons.csv` (one row per
+  redemption), `subscriptions.csv` gains `trial_end`, `coupon`, `discount_periods_remaining`,
+  `invoices.csv` gains `subtotal`, `discount_amount`, `coupon`.
+- Free trials (ADR-0028): `Plan.trial_days` (default trial) and `trial_days` on
+  `POST /v1/subscriptions`. A trial starts `trialing` (entitled), with nothing to pay and no
+  invoice; one trial per customer and plan (`409 trial_already_used` when asked again). Paying
+  during the trial (`/renew`) starts the paid period at the trial end. Unpaid at the end: the
+  first invoice opens and the subscription goes `past_due` (grace), then `expired`. Cancel at the
+  trial end works; a plan change during the trial only switches the price. New event
+  `subscription.trial_will_end` (reminder days before), field `Subscription.trial_end`.
+- **Upgrade your clients before using trials.** The 0.4 Python and JS helpers count `trialing`
+  as entitled and treat `subscription.created` as an entitlement event (a subscription may now
+  start entitled); the 0.3 helpers would deny access to trial users.
+- Migration `V8` (trials and coupons schema). Invoices gain `subtotal` (equal to `amount_due`
+  until discounts apply).
+
 ## [0.3.1] - 2026-10-12
 
 Found by the first runs against real provider APIs (DexPay sandbox, NabooPay live). Upgrade if

@@ -476,17 +476,34 @@ export function BillingDoc({ content }: { content: Content }) {
         </div>
         <P>{b.webhooks.late}</P>
       </Step>
-      <Step n={6} id="periods" title={b.periods.title}>
+      <Step n={6} id="trials" title={b.trials.title}>
+        <p className="mt-3 inline-block rounded-full border border-line px-3 py-1 text-xs font-medium">
+          {b.trials.badge}
+        </p>
+        <P>{b.trials.body}</P>
+        <P>
+          <strong>{b.trials.upgrade}</strong>
+        </P>
+      </Step>
+      <Step n={7} id="coupons" title={b.coupons.title}>
+        <p className="mt-3 inline-block rounded-full border border-line px-3 py-1 text-xs font-medium">
+          {b.coupons.badge}
+        </p>
+        <P>{b.coupons.body}</P>
+        <Snippet content={content} id="billing.coupon" />
+        <P>{b.coupons.after}</P>
+      </Step>
+      <Step n={8} id="periods" title={b.periods.title}>
         <ul className="mt-3 list-disc space-y-2 pl-5 leading-relaxed">
           {b.periods.items.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
       </Step>
-      <Step n={7} id="invoices" title={b.invoices.title}>
+      <Step n={9} id="invoices" title={b.invoices.title}>
         <P>{b.invoices.body}</P>
       </Step>
-      <Step n={8} id="comp" title={b.comp.title}>
+      <Step n={10} id="comp" title={b.comp.title}>
         <P>{b.comp.body}</P>
         <Snippet content={content} id="billing.comp" />
         <P>{b.comp.after}</P>

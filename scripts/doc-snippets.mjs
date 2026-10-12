@@ -130,6 +130,7 @@ export const DOC_SNIPPETS = {
     file: "docs/billing.md",
     marker: "def yoon_events(event: Event = Depends(yoon_event)) -> None:",
   },
+  "billing.coupon": { file: "docs/billing.md", marker: "POST /v1/coupons" },
   "billing.comp": { file: "docs/billing.md", marker: "docker compose run --rm yoon billing comp" },
 
   // Prompts for AI coding agents: one `text` block per client README.
