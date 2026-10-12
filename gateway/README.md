@@ -16,10 +16,13 @@ once, in Java, instead of in every project.
 
 > **Status: 0.3.0.** The gateway, its operations tooling, its operator dashboard, hosted
 > checkout and prepaid subscriptions, its PayDunya, DexPay, NabooPay, CinetPay, Wave (direct),
-> Stripe and PI-SPI adapters and its clients are built and tested. The adapters are tested against simulated provider APIs
-> (built from production integrations, the providers' public documentation and SDKs, and the
-> BCEAO specification); they have **not yet been run against the providers' sandboxes**. Try it
-> with the demo provider, and test with your own sandbox keys before taking real payments.
+> Stripe and PI-SPI adapters and its clients are built and tested. **DexPay** (sandbox) and
+> **NabooPay** (live, small real payments) have been run end to end against the real APIs:
+> payment, real signed callback, status confirmation. The other adapters are tested against
+> simulated provider APIs (built from production integrations, the providers' public
+> documentation and SDKs, and the BCEAO specification) and have **not yet been run against the
+> providers' sandboxes**. Try it with the demo provider, and test with your own sandbox keys
+> before taking real payments.
 
 ## What works today
 

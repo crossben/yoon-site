@@ -593,6 +593,8 @@ export const fr: Content = {
         doc: "Docs",
       },
       notTested: "Pas testé en sandbox",
+      testedSandbox: "Testé en sandbox",
+      testedLive: "Testé en production",
       docLink: "Configuration",
       configNote:
         "Les fournisseurs s'activent par application avec des variables d'environnement — YOON_APPS_<APP>_PROVIDERS_<PROVIDER>_PRIORITY et _CREDENTIALS_<KEY> — lues au démarrage : redémarrez Yoon après un changement.",

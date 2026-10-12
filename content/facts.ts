@@ -32,7 +32,8 @@ export const version = "0.3.0";
  * gateway README's providers table, and `doc` its page under docs/providers/. The snapshot
  * sync and scripts/check-facts.mjs read this list (scripts/gateway.mjs), so the new page is
  * copied into gateway/ and both are guarded automatically.
- * `sandboxTested`: README.md status line — no adapter has been run against a provider sandbox yet.
+ * `tested`: README.md status line and the provider page's Evidence section — "sandbox" or "live"
+ * when the adapter has been run end to end against the provider's real API, false otherwise.
  */
 export const providers = [
   {
@@ -42,7 +43,7 @@ export const providers = [
     collect: ["Wave", "Orange Money", "Free Money", "card"],
     payout: ["Wave", "Orange Money", "Free Money"],
     refund: false,
-    sandboxTested: false,
+    tested: false,
   },
   {
     id: "dexpay",
@@ -51,7 +52,7 @@ export const providers = [
     collect: ["Wave", "Orange Money", "Free Money", "card"],
     payout: ["Wave", "Orange Money"],
     refund: false,
-    sandboxTested: false,
+    tested: "sandbox",
   },
   {
     id: "naboopay",
@@ -60,7 +61,7 @@ export const providers = [
     collect: ["Wave", "Orange Money", "Free Money", "card"],
     payout: [],
     refund: false,
-    sandboxTested: false,
+    tested: "live",
   },
   {
     id: "cinetpay",
@@ -69,7 +70,7 @@ export const providers = [
     collect: ["Orange Money", "MTN", "Moov", "Wave", "Free Money", "and more (9 countries)"],
     payout: ["Mobile money"],
     refund: false,
-    sandboxTested: false,
+    tested: false,
   },
   {
     id: "wave",
@@ -78,7 +79,7 @@ export const providers = [
     collect: ["Wave"],
     payout: ["Wave"],
     refund: "full",
-    sandboxTested: false,
+    tested: false,
   },
   {
     id: "stripe",
@@ -87,7 +88,7 @@ export const providers = [
     collect: ["card (international)"],
     payout: [],
     refund: "partial",
-    sandboxTested: false,
+    tested: false,
   },
   {
     id: "pispi",
@@ -96,7 +97,7 @@ export const providers = [
     collect: ["PI alias"],
     payout: ["PI alias"],
     refund: "full",
-    sandboxTested: false,
+    tested: false,
   },
 ] as const satisfies readonly {
   id: string;
@@ -105,7 +106,7 @@ export const providers = [
   collect: readonly string[];
   payout: readonly string[];
   refund: false | "full" | "partial";
-  sandboxTested: boolean;
+  tested: false | "sandbox" | "live";
 }[];
 
 /** Source: README.md — "PayDunya, DexPay, NabooPay and CinetPay offer no refund API: refund a customer by sending a payout.", "Stripe refunds any amount up to what was paid." and "Wave (direct) and PI-SPI return the full amount of a payment". */

@@ -40,7 +40,9 @@ export const REQUIRED_STRINGS = {
     "Stripe refunds any amount up to what was paid.",
     "Wave (direct) and PI-SPI return the full amount of a payment",
     // Status (not sandbox-tested)
-    "yet been run against the providers' sandboxes",
+    "and have **not yet been run against the",
+    // Status (DexPay sandbox, NabooPay live)
+    "**NabooPay** (live, small real payments) have been run end to end against the real APIs",
     // Money safety
     "A timeout\n  is *unknown*, never *failed*",
     "failover only after a definite refusal",

@@ -568,6 +568,8 @@ export const en: Content = {
         doc: "Docs",
       },
       notTested: "Not sandbox-tested",
+      testedSandbox: "Tested on the sandbox",
+      testedLive: "Tested live",
       docLink: "Configuration",
       configNote:
         "Providers are enabled per application with environment variables — YOON_APPS_<APP>_PROVIDERS_<PROVIDER>_PRIORITY and _CREDENTIALS_<KEY> — read at startup: restart Yoon after changes.",

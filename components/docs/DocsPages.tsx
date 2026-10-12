@@ -348,11 +348,17 @@ export function ProvidersDoc({ content }: { content: Content }) {
                       : t.none}
                 </td>
                 <td className="px-4 py-3">
-                  {provider.sandboxTested ? null : (
-                    <span className="inline-block whitespace-nowrap rounded-full border border-line px-2 py-0.5 text-xs">
-                      {p.notTested}
-                    </span>
-                  )}
+                  <span
+                    className={`inline-block whitespace-nowrap rounded-full border px-2 py-0.5 text-xs ${
+                      provider.tested ? "border-accent text-accent" : "border-line"
+                    }`}
+                  >
+                    {provider.tested === "sandbox"
+                      ? p.testedSandbox
+                      : provider.tested === "live"
+                        ? p.testedLive
+                        : p.notTested}
+                  </span>
                 </td>
                 <td className="px-4 py-3">
                   <a href={`${repo.blob}/${provider.doc}`} className={linkClass}>

@@ -116,6 +116,8 @@ export type DocsContent = {
       doc: string;
     };
     notTested: string;
+    testedSandbox: string;
+    testedLive: string;
     docLink: string;
     configNote: string;
   };
