@@ -25,9 +25,6 @@ export const repo = {
 /** Version. Source: CHANGELOG.md `## [0.4.0]`. */
 export const version = "0.4.0";
 
-/** The Java client and starter on Maven Central. Source: clients/java/README.md (0.4.0 from 2026-11-10). */
-export const javaVersion = "0.3.0";
-
 /**
  * Providers and what each supports. Source: README.md § Providers, docs/providers/*.md.
  *
@@ -180,9 +177,7 @@ export const clients = {
   java: {
     package: "io.github.crossben:yoon-java",
     requires: "Java 17+",
-    // Java 0.4.0 reaches Maven Central on 2026-11-10 (publishing quota): the README installs 0.3.0
-    // until then. Back to `${version}` once it is published.
-    install: `implementation("io.github.crossben:yoon-java:${javaVersion}")`,
+    install: `implementation("io.github.crossben:yoon-java:${version}")`,
   },
   js: {
     package: "@yoonpay/yoon",
@@ -202,7 +197,7 @@ export const clients = {
   spring: {
     package: "io.github.crossben:yoon-spring-boot-starter",
     requires: "Spring Boot 3.x and 4.x",
-    install: `implementation("io.github.crossben:yoon-spring-boot-starter:${javaVersion}")`,
+    install: `implementation("io.github.crossben:yoon-spring-boot-starter:${version}")`,
   },
 } as const;
 
