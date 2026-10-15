@@ -392,7 +392,7 @@ export const fr: Content = {
       providersBody: "Ce que fait chaque fournisseur, et où sa configuration est documentée.",
       billingBody: "Abonnements prépayés pour les SaaS, depuis Yoon 0.3.0.",
       paymentLinksBody:
-        "Des liens et QR codes sans code, pour encaisser sur WhatsApp ou au comptoir. Yoon 0.5 — à venir.",
+        "Des liens et QR codes sans code, pour encaisser sur WhatsApp ou au comptoir. Depuis Yoon 0.5.",
       apiLabel: "Contrat d'API (OpenAPI)",
     },
     quickstart: {
@@ -598,7 +598,7 @@ export const fr: Content = {
       title: "Liens de paiement",
       description:
         "Yoon 0.5 (à venir) : encaisser sans écrire de code — un lien et un QR code à partager sur WhatsApp ou au comptoir, payés sur le checkout hébergé de Yoon.",
-      badge: "Yoon 0.5 — à venir",
+      badge: "Depuis Yoon 0.5",
       intro:
         "Un lien de paiement, c'est une URL (et un QR code) que vous partagez où vous voulez : WhatsApp, Instagram, un SMS, une affiche au comptoir. Le client l'ouvre, appuie sur Payer et règle sur le checkout hébergé de Yoon, par Wave, Orange Money, carte ou tout autre moyen proposé par vos fournisseurs. Aucun code à écrire.",
       safety:

@@ -371,7 +371,7 @@ export const en: Content = {
       providersBody: "What each provider does, and where its configuration is documented.",
       billingBody: "Prepaid subscriptions for SaaS, since Yoon 0.3.0.",
       paymentLinksBody:
-        "No-code links and QR codes to get paid over WhatsApp or at the counter. Yoon 0.5 — coming.",
+        "No-code links and QR codes to get paid over WhatsApp or at the counter. Since Yoon 0.5.",
       apiLabel: "API contract (OpenAPI)",
     },
     quickstart: {
@@ -574,7 +574,7 @@ export const en: Content = {
       title: "Payment links",
       description:
         "Yoon 0.5 (coming): get paid without writing code — a link and a QR code to share on WhatsApp or at the counter, paid on Yoon's hosted checkout.",
-      badge: "Yoon 0.5 — coming",
+      badge: "Since Yoon 0.5",
       intro:
         "A payment link is a URL (and a QR code) you share anywhere: WhatsApp, Instagram, an SMS, a printed sign at the counter. The customer opens it, presses Pay, and completes Yoon's hosted checkout with Wave, Orange Money, a card or any method your providers offer. No code needed.",
       safety:
