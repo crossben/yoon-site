@@ -378,6 +378,7 @@ export const fr: Content = {
     navClients: "Bibliothèques clientes",
     navProviders: "Fournisseurs",
     navBilling: "Facturation",
+    navPaymentLinks: "Liens de paiement",
     sourceLabel: "Source",
     index: {
       title: "Documentation",
@@ -389,8 +390,9 @@ export const fr: Content = {
         "Docker Compose, le fournisseur de démo, une clé d'API, un premier paiement avec curl et un webhook signé. Sans compte fournisseur, sans argent réel.",
       clientsBody: "Installer, créer un paiement avec une clé d'idempotence, vérifier un webhook.",
       providersBody: "Ce que fait chaque fournisseur, et où sa configuration est documentée.",
-      billingBody:
-        "Abonnements prépayés pour les SaaS, depuis Yoon 0.3.0.",
+      billingBody: "Abonnements prépayés pour les SaaS, depuis Yoon 0.3.0.",
+      paymentLinksBody:
+        "Des liens et QR codes sans code, pour encaisser sur WhatsApp ou au comptoir. Yoon 0.5 — à venir.",
       apiLabel: "Contrat d'API (OpenAPI)",
     },
     quickstart: {
@@ -574,13 +576,15 @@ export const fr: Content = {
         title: "Essais gratuits",
         badge: "Depuis Yoon 0.4",
         body: "Donnez à un plan un trial_days par défaut, ou passez trial_days à la souscription. L'abonnement démarre en trialing : le client a accès, sans facture ni rien à payer. Chaque client a droit à un seul essai par plan. Payer pendant l'essai ne fait perdre aucun jour : la période payée commence à la fin de l'essai. Sans paiement à la fin, l'abonnement passe en past_due (délai de grâce), puis en expired.",
-        upgrade: "Passez votre client Yoon en 0.4 avant d'utiliser les essais : les helpers 0.3 considèrent trialing comme sans accès, et vos clients en essai seraient bloqués.",
+        upgrade:
+          "Passez votre client Yoon en 0.4 avant d'utiliser les essais : les helpers 0.3 considèrent trialing comme sans accès, et vos clients en essai seraient bloqués.",
       },
       coupons: {
         title: "Coupons",
         badge: "Depuis Yoon 0.4",
         body: "Un coupon retire un pourcentage ou un montant fixe, une fois, pendant un nombre de périodes ou pour toujours :",
-        after: "Appliquez-le avec coupon sur POST /v1/subscriptions, ou plus tard sur l'abonnement. Chaque facture payée consomme une période du coupon. Un coupon à 100 % règle la facture à lui seul : invoice.paid arrive sans paiement.",
+        after:
+          "Appliquez-le avec coupon sur POST /v1/subscriptions, ou plus tard sur l'abonnement. Chaque facture payée consomme une période du coupon. Un coupon à 100 % règle la facture à lui seul : invoice.paid arrive sans paiement.",
       },
       comp: {
         title: "Périodes offertes (comp)",
@@ -589,6 +593,69 @@ export const fr: Content = {
           "L'abonnement porte comp: true jusqu'à ce que le client paie une période. L'API d'administration fait la même chose, et c'est aussi ce qui sert à migrer depuis votre propre facturation — voir le guide complet.",
       },
       guideLabel: "Guide complet de la facturation (docs/billing.md, en anglais)",
+    },
+    paymentLinks: {
+      title: "Liens de paiement",
+      description:
+        "Yoon 0.5 (à venir) : encaisser sans écrire de code — un lien et un QR code à partager sur WhatsApp ou au comptoir, payés sur le checkout hébergé de Yoon.",
+      badge: "Yoon 0.5 — à venir",
+      intro:
+        "Un lien de paiement, c'est une URL (et un QR code) que vous partagez où vous voulez : WhatsApp, Instagram, un SMS, une affiche au comptoir. Le client l'ouvre, appuie sur Payer et règle sur le checkout hébergé de Yoon, par Wave, Orange Money, carte ou tout autre moyen proposé par vos fournisseurs. Aucun code à écrire.",
+      safety:
+        "Chaque paiement passé par un lien est un paiement hébergé ordinaire : le callback du fournisseur est reconfirmé auprès de son API, le grand livre l'enregistre, votre application reçoit payment.succeeded. Le lien ajoute une porte d'entrée, rien qui touche à l'argent. Les liens de paiement exigent YOON_PUBLIC_URL (le lien doit être absolu).",
+      create: {
+        title: "Créer un lien",
+        dashboard:
+          "Sans développeur : dans le tableau de bord opérateur, onglet Payment links, saisissez une description et le montant (ou laissez le client le saisir), cochez l'usage unique si besoin, puis Create link. Copiez le lien ou enregistrez son QR code.",
+        cli: "En ligne de commande — le montant en unités mineures (5000 = 5 000 XOF), ou any :",
+        api: "Depuis votre application, avec une Idempotency-Key comme pour toute écriture :",
+        after:
+          "La réponse contient url (ce que vous partagez, <YOON_PUBLIC_URL>/l/<code>) et qr_url (son QR code en SVG). Le code est aléatoire et impossible à deviner ; quiconque a le lien peut le payer.",
+        columns: { field: "Champ", meaning: "Rôle" },
+        rows: [
+          {
+            field: "amount",
+            meaning:
+              "Un montant fixe en unités mineures. Omettez-le pour laisser le client saisir le montant, éventuellement entre min_amount et max_amount (dons, pourboires, factures ouvertes).",
+          },
+          {
+            field: "max_payments",
+            meaning:
+              "1 pour un usage unique ; omettez-le pour un lien que chacun peut payer autant de fois qu'il veut.",
+          },
+          {
+            field: "expires_at",
+            meaning: "Passé cette date, la page indique que le lien a expiré.",
+          },
+          {
+            field: "method",
+            meaning:
+              "Limite le lien à un seul moyen (par ex. wave). Par défaut : tous les moyens proposés par vos fournisseurs.",
+          },
+          { field: "return_url", meaning: "Où le client est renvoyé après avoir payé." },
+        ],
+        immutable:
+          "Le montant, la devise et le pays ne changent jamais : archivez le lien et créez-en un autre.",
+      },
+      customer: {
+        title: "Ce que voit le client",
+        body: "Sur /l/<code> : le nom de votre application, la description, le montant (ou un champ pour le saisir) et Payer, en français ou en anglais, à la taille d'un téléphone. Appuyer sur Payer ouvre le checkout hébergé. Un double appui ou une nouvelle tentative ne donne qu'un seul paiement. Un lien archivé, expiré ou épuisé l'indique clairement.",
+      },
+      money: {
+        title: "Suivre l'argent",
+        items: [
+          "GET /v1/payment_links/{id} renvoie payments_count et amount_collected (paiements réussis uniquement).",
+          "Chaque paiement porte payment_link ; le tableau de bord et payments.csv l'affichent, et payment_links.csv exporte chaque lien avec ses totaux.",
+          "Votre webhook reçoit payment.succeeded pour chaque paiement, avec payment_link renseigné.",
+        ],
+        singleUse:
+          "Un lien à usage unique compte les paiements réussis : si deux clients paient au même moment, les deux paiements passent (l'argent reçu n'est jamais refusé) et le lien apparaît ensuite comme utilisé.",
+      },
+      stop: {
+        title: "Arrêter un lien",
+        body: 'Archivez-le dans le tableau de bord, avec PATCH /v1/payment_links/{id} et {"active": false}, ou avec POST /admin/v1/applications/{app}/payment_links/{id}/archive. Les paiements déjà faits sont conservés.',
+      },
+      guideLabel: "Guide complet des liens de paiement (docs/payment-links.md, en anglais)",
     },
     providers: {
       title: "Fournisseurs",

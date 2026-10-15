@@ -9,8 +9,8 @@ Everything factual on the site comes from the gateway repository
 source for every claim, and `scripts/check-facts.mjs` fails the build when a source file
 no longer backs one. The site never modifies the gateway repository.
 
-**This repository builds on its own.** The gateway files the build reads (34 of them: the
-cited documents, the client READMEs, provider pages and billing guide the docs quote, `api/openapi.yaml`, the brand assets) are kept in a committed snapshot,
+**This repository builds on its own.** The gateway files the build reads (35 of them: the
+cited documents, the client READMEs, provider pages, billing and payment-links guides the docs quote, `api/openapi.yaml`, the brand assets) are kept in a committed snapshot,
 `gateway/`, with the gateway commit it came from in `gateway/SOURCE.json`. No sibling
 checkout and no token are needed to build or deploy — on a VPS, in Docker, on
 Cloudflare Pages.

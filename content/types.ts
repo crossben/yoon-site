@@ -30,6 +30,7 @@ export type DocsContent = {
   navClients: string;
   navProviders: string;
   navBilling: string;
+  navPaymentLinks: string;
   /** Label before the gateway file a snippet is copied from. */
   sourceLabel: string;
   index: {
@@ -40,6 +41,7 @@ export type DocsContent = {
     clientsBody: string;
     providersBody: string;
     billingBody: string;
+    paymentLinksBody: string;
     apiLabel: string;
   };
   quickstart: {
@@ -103,6 +105,28 @@ export type DocsContent = {
     trials: { title: string; badge: string; body: string; upgrade: string };
     coupons: { title: string; badge: string; body: string; after: string };
     comp: { title: string; body: string; after: string };
+    guideLabel: string;
+  };
+  /** Payment links (Yoon 0.5, not released yet), from the gateway's docs/payment-links.md. */
+  paymentLinks: {
+    title: string;
+    description: string;
+    badge: string;
+    intro: string;
+    safety: string;
+    create: {
+      title: string;
+      dashboard: string;
+      cli: string;
+      api: string;
+      after: string;
+      columns: { field: string; meaning: string };
+      rows: { field: string; meaning: string }[];
+      immutable: string;
+    };
+    customer: { title: string; body: string };
+    money: { title: string; items: string[]; singleUse: string };
+    stop: { title: string; body: string };
     guideLabel: string;
   };
   providers: {

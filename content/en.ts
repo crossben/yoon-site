@@ -357,6 +357,7 @@ export const en: Content = {
     navClients: "Client libraries",
     navProviders: "Providers",
     navBilling: "Billing",
+    navPaymentLinks: "Payment links",
     sourceLabel: "From",
     index: {
       title: "Documentation",
@@ -369,6 +370,8 @@ export const en: Content = {
       clientsBody: "Install, create a payment with an idempotency key, verify a webhook.",
       providersBody: "What each provider does, and where its configuration is documented.",
       billingBody: "Prepaid subscriptions for SaaS, since Yoon 0.3.0.",
+      paymentLinksBody:
+        "No-code links and QR codes to get paid over WhatsApp or at the counter. Yoon 0.5 — coming.",
       apiLabel: "API contract (OpenAPI)",
     },
     quickstart: {
@@ -549,13 +552,15 @@ export const en: Content = {
         title: "Free trials",
         badge: "Since Yoon 0.4",
         body: "Give a plan a default trial_days, or pass trial_days when subscribing. The subscription starts trialing: it is entitled, with no invoice and nothing to pay. Each customer gets one trial per plan. Paying during the trial keeps every trial day: the paid period starts when the trial ends. Unpaid at the end, the subscription goes past_due (grace), then expired.",
-        upgrade: "Upgrade your Yoon client to 0.4 before using trials: the 0.3 helpers treat trialing as not entitled, so trial users would be denied access.",
+        upgrade:
+          "Upgrade your Yoon client to 0.4 before using trials: the 0.3 helpers treat trialing as not entitled, so trial users would be denied access.",
       },
       coupons: {
         title: "Coupons",
         badge: "Since Yoon 0.4",
         body: "A coupon takes a percentage or a fixed amount off, once, for a number of periods or forever:",
-        after: "Redeem it with coupon on POST /v1/subscriptions or later on the subscription. Each paid invoice uses one period of the coupon. A 100% coupon pays the invoice by itself: invoice.paid arrives with no payment.",
+        after:
+          "Redeem it with coupon on POST /v1/subscriptions or later on the subscription. Each paid invoice uses one period of the coupon. A 100% coupon pays the invoice by itself: invoice.paid arrives with no payment.",
       },
       comp: {
         title: "Periods without payment (comp)",
@@ -564,6 +569,65 @@ export const en: Content = {
           "The subscription shows comp: true until the customer pays a period. The admin API does the same, and migrating from your own billing uses it too — see the full guide.",
       },
       guideLabel: "Full billing guide (docs/billing.md)",
+    },
+    paymentLinks: {
+      title: "Payment links",
+      description:
+        "Yoon 0.5 (coming): get paid without writing code — a link and a QR code to share on WhatsApp or at the counter, paid on Yoon's hosted checkout.",
+      badge: "Yoon 0.5 — coming",
+      intro:
+        "A payment link is a URL (and a QR code) you share anywhere: WhatsApp, Instagram, an SMS, a printed sign at the counter. The customer opens it, presses Pay, and completes Yoon's hosted checkout with Wave, Orange Money, a card or any method your providers offer. No code needed.",
+      safety:
+        "Each payment through a link is an ordinary hosted payment: the provider's callback is re-confirmed with its API, the ledger records it, your application gets payment.succeeded. A link adds an entry point, nothing that touches money. Payment links need YOON_PUBLIC_URL (the link must be absolute).",
+      create: {
+        title: "Create a link",
+        dashboard:
+          "Without a developer: in the operator dashboard, tab Payment links, enter a description and the amount (or let the customer type it), tick single use if needed, then Create link. Copy the link, or save its QR code.",
+        cli: "From the command line — the amount in minor units (5000 is 5 000 XOF), or any:",
+        api: "From your application, with an Idempotency-Key like every write:",
+        after:
+          "The answer carries url (what you share, <YOON_PUBLIC_URL>/l/<code>) and qr_url (an SVG QR code of it). The code is random and unguessable; whoever has the link may pay it.",
+        columns: { field: "Field", meaning: "Meaning" },
+        rows: [
+          {
+            field: "amount",
+            meaning:
+              "A fixed amount in minor units. Omit it to let the customer type the amount, optionally between min_amount and max_amount (donations, tips, open invoices).",
+          },
+          {
+            field: "max_payments",
+            meaning: "1 for single use; omit for a link anyone can pay many times.",
+          },
+          { field: "expires_at", meaning: "After this, the page says the link has expired." },
+          {
+            field: "method",
+            meaning:
+              "Limit the link to one method (e.g. wave). Default: every method your providers offer.",
+          },
+          { field: "return_url", meaning: "Where the customer goes after paying." },
+        ],
+        immutable:
+          "The amount, currency and country never change: archive the link and create another.",
+      },
+      customer: {
+        title: "What the customer sees",
+        body: "At /l/<code>: your application's name, the description, the amount (or a field for it) and Pay, in French or English, sized for a phone. Pressing Pay opens the hosted checkout. A double tap or a retry pays one payment. An archived, expired or used-up link says so instead.",
+      },
+      money: {
+        title: "Follow the money",
+        items: [
+          "GET /v1/payment_links/{id} returns payments_count and amount_collected (succeeded payments only).",
+          "Every payment carries payment_link; the dashboard and payments.csv show it, and payment_links.csv exports each link with its totals.",
+          "Your webhook receives payment.succeeded for each payment, with payment_link set.",
+        ],
+        singleUse:
+          "A single-use link counts succeeded payments: if two customers pay at the same moment, both payments go through (money received is never refused) and the link then shows as used.",
+      },
+      stop: {
+        title: "Stop a link",
+        body: 'Archive it in the dashboard, with PATCH /v1/payment_links/{id} and {"active": false}, or with POST /admin/v1/applications/{app}/payment_links/{id}/archive. Payments already made are kept.',
+      },
+      guideLabel: "Full payment links guide (docs/payment-links.md)",
     },
     providers: {
       title: "Providers",

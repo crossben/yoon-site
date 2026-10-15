@@ -5,6 +5,33 @@ never changes incompatibly.
 
 ## [Unreleased]
 
+### Payment links
+- `POST/GET /v1/payment_links`, `GET/PATCH /v1/payment_links/{id}` (ADR-0030): a fixed amount, or
+  one the customer types within optional bounds; optional single use / cap, expiry, one method,
+  return URL. Each link has an unguessable URL (`/l/<code>`) and a QR code URL, and reports the
+  payments and the amount it collected (succeeded payments only). Amounts never change (database
+  trigger); archive with `active: false`. `Payment.payment_link` names the link a payment came
+  through. Migration `V9`.
+- The public link page `/l/<code>` (French/English, phone-sized): the amount, or a field for the
+  customer's amount within the bounds; "Pay" creates an ordinary hosted payment and opens its
+  checkout, so every money-safety rule of the checkout applies. A double click or a retry pays
+  one payment. Archived, expired and used-up links say so; unknown codes are 404. `/l/<code>/qr.svg`
+  serves the QR code of the public URL. Same rules as the checkout (strict CSP, no cache, rate
+  limit).
+- Operators: a **Payment links** tab on the dashboard (create with a description and an amount or
+  "customer types it", single use; list with QR code, link, uses and amount collected; archive),
+  `GET/POST /admin/v1/applications/{app}/payment_links`, `POST …/{id}/archive`, and the CLI
+  `links create <app> <amount|any> <currency> <country> <description…>`. Exports:
+  `payment_links.csv`, and `payments.csv` gains `payment_link`.
+- Guide: [docs/payment-links.md](docs/payment-links.md). Python `Yoon.payment_links()` and
+  `Yoon.coupons()`, JS `yoon.paymentLinks()` and `yoon.coupons()` (coupons were only in the
+  generated code in 0.4.0).
+
+### Providers
+- NabooPay: `…_CREDENTIALS_FEES_CUSTOMER_SIDE` (default `true`, the behaviour so far) — set it to
+  `false` for the merchant to absorb NabooPay's fee instead of the customer. Any other value stops
+  Yoon at startup.
+
 ## [0.4.0] - 2026-10-12
 
 Free trials and coupons. Upgrading from 0.3.x: migration `V8` runs on start-up. `/v1` stays

@@ -47,6 +47,7 @@ function Sidebar({ content, slug }: { content: Content; slug: string }) {
         </li>
         {item("providers", docs.navProviders)}
         {item("billing", docs.navBilling)}
+        {item("payment-links", docs.navPaymentLinks)}
       </ul>
     </nav>
   );
@@ -177,6 +178,11 @@ export function DocsIndex({ content }: { content: Content }) {
         {card(docsHref(content.lang, "quickstart"), docs.navQuickstart, docs.index.quickstartBody)}
         {card(docsHref(content.lang, "providers"), docs.navProviders, docs.index.providersBody)}
         {card(docsHref(content.lang, "billing"), docs.navBilling, docs.index.billingBody)}
+        {card(
+          docsHref(content.lang, "payment-links"),
+          docs.navPaymentLinks,
+          docs.index.paymentLinksBody,
+        )}
       </div>
       <section aria-labelledby="clients">
         <H2 id="clients">{docs.navClients}</H2>
@@ -511,6 +517,85 @@ export function BillingDoc({ content }: { content: Content }) {
       <p className="text-sm">
         <a href={`${repo.blob}/docs/billing.md`} className={linkClass}>
           {b.guideLabel} <ExternalArrow />
+        </a>
+      </p>
+    </DocsShell>
+  );
+}
+
+// ---------------------------------------------------------------- payment links (0.5, coming)
+
+export function PaymentLinksDoc({ content }: { content: Content }) {
+  const l = content.docs.paymentLinks;
+  const th = "px-4 py-3 text-left font-semibold";
+  const td = "px-4 py-3 text-muted";
+  return (
+    <DocsShell
+      content={content}
+      slug="payment-links"
+      title={l.title}
+      intro={
+        <>
+          <p className="inline-block rounded-full border border-line px-3 py-1 text-xs font-medium text-ink">
+            {l.badge}
+          </p>
+          <p className="mt-4">{l.intro}</p>
+          <p className="mt-3">{l.safety}</p>
+        </>
+      }
+    >
+      <Step n={1} id="create" title={l.create.title}>
+        <P>{l.create.dashboard}</P>
+        <P>{l.create.cli}</P>
+        <Snippet content={content} id="links.cli" />
+        <P>{l.create.api}</P>
+        <Snippet content={content} id="links.api" />
+        <P>{l.create.after}</P>
+        <div className="relative mt-4 overflow-x-auto rounded-xl border border-line">
+          <table className="w-full min-w-[32rem] border-collapse bg-surface text-sm">
+            <thead>
+              <tr className="border-b border-line">
+                <th scope="col" className={th}>
+                  {l.create.columns.field}
+                </th>
+                <th scope="col" className={th}>
+                  {l.create.columns.meaning}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {l.create.rows.map((row) => (
+                <tr key={row.field} className="border-b border-line align-top last:border-b-0">
+                  <th scope="row" className="px-4 py-3 text-left font-mono text-xs font-medium">
+                    {row.field}
+                  </th>
+                  <td className={td}>{row.meaning}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <P>{l.create.immutable}</P>
+      </Step>
+      <Step n={2} id="customer" title={l.customer.title}>
+        <P>{l.customer.body}</P>
+      </Step>
+      <Step n={3} id="money" title={l.money.title}>
+        <ul className="mt-3 list-disc space-y-2 pl-5 leading-relaxed">
+          {l.money.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+        <P>
+          <strong>{l.money.singleUse}</strong>
+        </P>
+      </Step>
+      <Step n={4} id="stop" title={l.stop.title}>
+        <P>{l.stop.body}</P>
+      </Step>
+      <p className="text-sm">
+        <a href={`${repo.blob}/docs/payment-links.md`} className={linkClass}>
+          {l.guideLabel} <ExternalArrow />
         </a>
       </p>
     </DocsShell>

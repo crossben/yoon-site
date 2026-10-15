@@ -133,6 +133,13 @@ export const DOC_SNIPPETS = {
   "billing.coupon": { file: "docs/billing.md", marker: "POST /v1/coupons" },
   "billing.comp": { file: "docs/billing.md", marker: "docker compose run --rm yoon billing comp" },
 
+  // Payment links (Yoon 0.5, not released yet) — docs/payment-links.md
+  "links.cli": {
+    file: "docs/payment-links.md",
+    marker: "docker compose run --rm yoon links create shop",
+  },
+  "links.api": { file: "docs/payment-links.md", marker: "POST /v1/payment_links" },
+
   // Prompts for AI coding agents: one `text` block per client README.
   "php.agent": {
     file: "clients/php/README.md",
