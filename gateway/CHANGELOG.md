@@ -5,6 +5,22 @@ never changes incompatibly.
 
 ## [Unreleased]
 
+### MCP server for AI assistants
+- `clients/mcp` (`@yoonpay/mcp`, [guide](docs/mcp.md), [ADR-0032](docs/adr/0032-mcp-server.md)):
+  an MCP server over one application's API key, for Claude, Cursor and other MCP clients. First
+  tool: `about` (version and configured providers). The API key never appears in a tool result.
+- Read tools: payments (`get_payment`, `list_payments`, `explain_payment` — a summary built only
+  from Yoon's own fields, plus the status history), refunds, payouts, customers, subscriptions
+  (with history), invoices, payment links, balances, ledger entries, events. Lists page at 20 by
+  default, 50 at most. Phone numbers and e-mails are masked unless `YOON_MCP_SHOW_CONTACTS=true`;
+  free text (descriptions, names, metadata, provider messages) comes back under `untrusted_text`;
+  objects with a currency carry `currency_decimals`.
+- Write tools, only with `YOON_MCP_WRITES=true`: `create_payment_link`, `create_portal_session`
+  (view and pay only — no cancel, plan change or coupon) and `redeliver_event`. Each requires an
+  `idempotency_key`; a retry with the same key does one thing. No tool sends money out: no refund,
+  payout, cancellation, comp or coupon.
+- Published to npm by the release workflow (`npm-mcp`), in lockstep with the other clients.
+
 ## [0.6.0] - 2026-10-16
 
 The customer portal: one API call gives a customer a private page to see their subscription,

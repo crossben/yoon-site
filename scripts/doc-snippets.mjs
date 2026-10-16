@@ -144,6 +144,11 @@ export const DOC_SNIPPETS = {
   },
   "links.api": { file: "docs/payment-links.md", marker: "POST /v1/payment_links" },
 
+  // AI assistants (Yoon 0.7) — docs/mcp.md
+  "mcp.key": { file: "docs/mcp.md", marker: "docker compose run --rm yoon apps add-key <app>" },
+  "mcp.json": { file: "docs/mcp.md", marker: '"mcpServers"' },
+  "mcp.claudeCode": { file: "docs/mcp.md", marker: "claude mcp add yoon" },
+
   // Prompts for AI coding agents: one `text` block per client README.
   "php.agent": {
     file: "clients/php/README.md",

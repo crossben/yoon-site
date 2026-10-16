@@ -48,6 +48,7 @@ function Sidebar({ content, slug }: { content: Content; slug: string }) {
         {item("providers", docs.navProviders)}
         {item("billing", docs.navBilling)}
         {item("payment-links", docs.navPaymentLinks)}
+        {item("mcp", docs.navMcp)}
       </ul>
     </nav>
   );
@@ -183,6 +184,7 @@ export function DocsIndex({ content }: { content: Content }) {
           docs.navPaymentLinks,
           docs.index.paymentLinksBody,
         )}
+        {card(docsHref(content.lang, "mcp"), docs.navMcp, docs.index.mcpBody)}
       </div>
       <section aria-labelledby="clients">
         <H2 id="clients">{docs.navClients}</H2>
@@ -610,6 +612,99 @@ export function PaymentLinksDoc({ content }: { content: Content }) {
       <p className="text-sm">
         <a href={`${repo.blob}/docs/payment-links.md`} className={linkClass}>
           {l.guideLabel} <ExternalArrow />
+        </a>
+      </p>
+    </DocsShell>
+  );
+}
+
+// ---------------------------------------------------------------- AI assistants (0.7, coming)
+
+function ToolTable({
+  m,
+  rows,
+}: {
+  m: Content["docs"]["mcp"];
+  rows: { tool: string; meaning: string }[];
+}) {
+  const th = "px-4 py-3 text-left font-semibold";
+  return (
+    <div className="relative mt-4 overflow-x-auto rounded-xl border border-line">
+      <table className="w-full min-w-[32rem] border-collapse bg-surface text-sm">
+        <thead>
+          <tr className="border-b border-line">
+            <th scope="col" className={th}>
+              {m.columns.tool}
+            </th>
+            <th scope="col" className={th}>
+              {m.columns.meaning}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.tool} className="border-b border-line align-top last:border-b-0">
+              <th scope="row" className="px-4 py-3 text-left font-mono text-xs font-medium">
+                {row.tool}
+              </th>
+              <td className="px-4 py-3 text-muted">{row.meaning}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function McpDoc({ content }: { content: Content }) {
+  const m = content.docs.mcp;
+  return (
+    <DocsShell
+      content={content}
+      slug="mcp"
+      title={m.title}
+      intro={
+        <>
+          <p className="inline-block rounded-full border border-line px-3 py-1 text-xs font-medium text-ink">
+            {m.badge}
+          </p>
+          <p className="mt-4">{m.intro}</p>
+          <p className="mt-3">{m.safety}</p>
+        </>
+      }
+    >
+      <Step n={1} id="key" title={m.key.title}>
+        <P>{m.key.body}</P>
+        <Snippet content={content} id="mcp.key" />
+        <P>{m.key.after}</P>
+      </Step>
+      <Step n={2} id="setup" title={m.setup.title}>
+        <P>{m.setup.desktop}</P>
+        <Snippet content={content} id="mcp.json" />
+        <P>{m.setup.claudeCode}</P>
+        <Snippet content={content} id="mcp.claudeCode" />
+        <P>{m.setup.after}</P>
+      </Step>
+      <Step n={3} id="read" title={m.read.title}>
+        <P>{m.read.intro}</P>
+        <ToolTable m={m} rows={m.readRows} />
+        <P>{m.read.after}</P>
+      </Step>
+      <Step n={4} id="write" title={m.write.title}>
+        <P>{m.write.intro}</P>
+        <ToolTable m={m} rows={m.writeRows} />
+        <P>{m.write.after}</P>
+      </Step>
+      <Step n={5} id="leaves" title={m.leaves.title}>
+        <ul className="mt-3 list-disc space-y-2 pl-5 leading-relaxed">
+          {m.leaves.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </Step>
+      <p className="text-sm">
+        <a href={`${repo.blob}/docs/mcp.md`} className={linkClass}>
+          {m.guideLabel} <ExternalArrow />
         </a>
       </p>
     </DocsShell>

@@ -120,4 +120,5 @@ export const docsSlugs = [
   "providers",
   "billing",
   "payment-links",
+  "mcp",
 ];

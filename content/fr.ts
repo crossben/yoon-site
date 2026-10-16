@@ -379,6 +379,7 @@ export const fr: Content = {
     navProviders: "Fournisseurs",
     navBilling: "Facturation",
     navPaymentLinks: "Liens de paiement",
+    navMcp: "Assistants IA",
     sourceLabel: "Source",
     index: {
       title: "Documentation",
@@ -393,6 +394,8 @@ export const fr: Content = {
       billingBody: "Abonnements prépayés pour les SaaS, depuis Yoon 0.3.0.",
       paymentLinksBody:
         "Des liens et QR codes sans code, pour encaisser sur WhatsApp ou au comptoir. Depuis Yoon 0.5.",
+      mcpBody:
+        "Laissez Claude, Cursor ou tout client MCP lire vos paiements et abonnements. Yoon 0.7, à venir.",
       apiLabel: "Contrat d'API (OpenAPI)",
     },
     quickstart: {
@@ -668,6 +671,106 @@ export const fr: Content = {
         body: 'Archivez-le dans le tableau de bord, avec PATCH /v1/payment_links/{id} et {"active": false}, ou avec POST /admin/v1/applications/{app}/payment_links/{id}/archive. Les paiements déjà faits sont conservés.',
       },
       guideLabel: "Guide complet des liens de paiement (docs/payment-links.md, en anglais)",
+    },
+    mcp: {
+      title: "Assistants IA (MCP)",
+      description:
+        "Laissez Claude, Cursor ou tout client MCP répondre à partir de vos données Yoon — en lecture seule par défaut, sans jamais faire sortir d'argent.",
+      badge: "Yoon 0.7 — à venir",
+      intro:
+        "@yoonpay/mcp permet à un assistant IA de répondre à partir de vos données Yoon : pourquoi la commande 1042 a échoué, qui est en retard de paiement, combien est entré par Wave cette semaine. Il parle le Model Context Protocol : il fonctionne avec Claude Desktop, Claude Code, Cursor et les autres clients MCP.",
+      safety:
+        "Il tourne à côté de votre assistant, sur votre machine, et appelle l'API /v1 de votre passerelle avec la clé d'une application. Il ne peut rien faire que cette clé ne puisse déjà faire, et par défaut il ne fait que lire.",
+      key: {
+        title: "Donnez à l'assistant sa propre clé",
+        body: "Créez une clé rien que pour l'assistant, que vous pourrez révoquer seule :",
+        after:
+          "Votre application garde sa propre clé. Le fichier de configuration de l'assistant contient la clé en clair : gardez-le dans vos réglages utilisateur, jamais dans un fichier que vous commitez.",
+      },
+      setup: {
+        title: "Ajoutez-le à votre assistant",
+        desktop:
+          "Node.js 20 ou plus récent. Claude Desktop (Settings → Developer → Edit Config) et Cursor (~/.cursor/mcp.json) utilisent la même configuration :",
+        claudeCode:
+          "Claude Code, enregistré dans vos réglages utilisateur pour ce projet, pas dans le dépôt :",
+        after:
+          "Redémarrez l'assistant et demandez-lui ce que dit l'outil about de Yoon. YOON_MCP_WRITES=true autorise les trois outils d'écriture ci-dessous ; YOON_MCP_SHOW_CONTACTS=true envoie les numéros et e-mails en clair.",
+      },
+      read: {
+        title: "Ce qu'il peut lire",
+        intro: "Tous les outils ci-dessous sont en lecture seule.",
+        after:
+          "Les listes renvoient 20 éléments par défaut, 50 au plus, avec un curseur pour continuer. Les montants sont dans l'unité mineure de la devise, et chaque objet indique son nombre de décimales (le XOF n'en a pas : 5000, c'est 5 000 XOF).",
+      },
+      write: {
+        title: "Ce qu'il peut faire — seulement si vous l'autorisez",
+        intro: "Avec YOON_MCP_WRITES=true, et seulement alors, trois outils apparaissent :",
+        after:
+          "Chacun exige une clé d'idempotence : réessayer avec la même clé ne fait l'action qu'une fois. Aucun outil ne fait sortir d'argent ni ne coupe l'accès d'un client — ni remboursement, ni versement, ni résiliation, ni période offerte, ni coupon. Faites-les depuis le tableau de bord, la CLI ou votre application.",
+      },
+      leaves: {
+        title: "Ce qui quitte votre machine",
+        items: [
+          "Ce que renvoie un outil est envoyé au fournisseur de votre assistant, comme le reste de la conversation.",
+          "Les numéros de téléphone et e-mails sont masqués (+22177***67, a***@example.com) sauf si vous le désactivez. Les noms, montants et vos métadonnées sont envoyés tels quels.",
+          "La clé d'API n'est jamais envoyée : elle est retirée de chaque résultat.",
+          "Le texte libre — descriptions, noms, métadonnées, messages des fournisseurs — revient marqué comme donnée non fiable. Un client peut écrire n'importe quoi dans une description, y compris des instructions pour l'assistant ; c'est pourquoi aucun outil ne peut faire sortir d'argent.",
+        ],
+      },
+      columns: { tool: "Outil", meaning: "Ce qu'il renvoie" },
+      readRows: [
+        {
+          tool: "about",
+          meaning: "Version de Yoon, fournisseurs et moyens de paiement configurés",
+        },
+        {
+          tool: "get_payment, list_payments",
+          meaning: "Filtres : statut, moyen, fournisseur, votre référence, dates",
+        },
+        {
+          tool: "explain_payment",
+          meaning: "Le paiement, l'historique de ses statuts et un résumé en une ligne",
+        },
+        {
+          tool: "get_refund, list_refunds",
+          meaning: "Tous les remboursements, ou ceux d'un paiement",
+        },
+        {
+          tool: "get_payout, list_payouts",
+          meaning: "needs_review=true : issue inconnue, un humain doit vérifier",
+        },
+        { tool: "get_customer, list_customers", meaning: "Par id, ou par votre external_id" },
+        {
+          tool: "get_subscription, list_subscriptions",
+          meaning: "Avec l'historique ; filtre par client ou statut",
+        },
+        { tool: "get_invoice, list_invoices", meaning: "Filtre par client, abonnement ou statut" },
+        {
+          tool: "get_payment_link, list_payment_links",
+          meaning: "Nombre de paiements et montant encaissé",
+        },
+        {
+          tool: "get_balances, list_ledger_entries",
+          meaning: "Le grand livre en partie double de Yoon",
+        },
+        {
+          tool: "get_event, list_events",
+          meaning: "Les webhooks envoyés à votre application et leur statut de livraison",
+        },
+      ],
+      writeRows: [
+        {
+          tool: "create_payment_link",
+          meaning: "Un lien et un QR code à partager — l'argent entre",
+        },
+        {
+          tool: "create_portal_session",
+          meaning:
+            "Un lien de portail privé et temporaire pour un client — consulter et payer seulement",
+        },
+        { tool: "redeliver_event", meaning: "Renvoie un webhook à votre propre application" },
+      ],
+      guideLabel: "Guide complet (docs/mcp.md, en anglais)",
     },
     providers: {
       title: "Fournisseurs",

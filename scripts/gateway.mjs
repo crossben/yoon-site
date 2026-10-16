@@ -146,6 +146,24 @@ export const REQUIRED_STRINGS = {
     "`GET /v1/exports/subscriptions.csv`, `GET /v1/exports/invoices.csv`",
     "The subscription shows `comp: true`",
   ],
+  // AI assistants docs page (/docs/mcp): Yoon 0.7.
+  "docs/mcp.md": [
+    "Available from Yoon 0.7.0.",
+    "It can do nothing that key cannot already do, and by\ndefault it only reads.",
+    "Your application keeps its own key; the assistant's can be revoked without touching it.",
+    "never\nin a file you commit.",
+    "Requires Node.js 20 or newer.",
+    "Lists return 20 items by default and 50 at most",
+    "With `YOON_MCP_WRITES=true`, and only then, three tools appear:",
+    "Each requires an `idempotency_key`: retrying with the same key does the action once.",
+    "There is no\ntool that sends money out or ends a customer's access",
+    "**Phone numbers and e-mails are masked**",
+    "**The API key is never sent:** every result is scrubbed of it.",
+    "Descriptions, names, metadata and provider messages come back\n  under `untrusted_text`.",
+    "That is why no tool can move money out.",
+    "| `explain_payment` | The payment, its status history, and a one-line summary |",
+    "| `create_portal_session` | A private, expiring portal link for one customer — view and pay only |",
+  ],
   // Payment links docs page (/docs/payment-links): Yoon 0.5.
   "docs/payment-links.md": [
     "A payment link is a URL (and a QR code) you share anywhere",

@@ -31,6 +31,7 @@ export type DocsContent = {
   navProviders: string;
   navBilling: string;
   navPaymentLinks: string;
+  navMcp: string;
   /** Label before the gateway file a snippet is copied from. */
   sourceLabel: string;
   index: {
@@ -42,6 +43,7 @@ export type DocsContent = {
     providersBody: string;
     billingBody: string;
     paymentLinksBody: string;
+    mcpBody: string;
     apiLabel: string;
   };
   quickstart: {
@@ -135,6 +137,23 @@ export type DocsContent = {
     customer: { title: string; body: string };
     money: { title: string; items: string[]; singleUse: string };
     stop: { title: string; body: string };
+    guideLabel: string;
+  };
+  /** AI assistants (Yoon 0.7, coming), from the gateway's docs/mcp.md. */
+  mcp: {
+    title: string;
+    description: string;
+    badge: string;
+    intro: string;
+    safety: string;
+    key: { title: string; body: string; after: string };
+    setup: { title: string; desktop: string; claudeCode: string; after: string };
+    read: { title: string; intro: string; after: string };
+    write: { title: string; intro: string; after: string };
+    leaves: { title: string; items: string[] };
+    columns: { tool: string; meaning: string };
+    readRows: { tool: string; meaning: string }[];
+    writeRows: { tool: string; meaning: string }[];
     guideLabel: string;
   };
   providers: {

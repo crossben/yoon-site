@@ -358,6 +358,7 @@ export const en: Content = {
     navProviders: "Providers",
     navBilling: "Billing",
     navPaymentLinks: "Payment links",
+    navMcp: "AI assistants",
     sourceLabel: "From",
     index: {
       title: "Documentation",
@@ -372,6 +373,8 @@ export const en: Content = {
       billingBody: "Prepaid subscriptions for SaaS, since Yoon 0.3.0.",
       paymentLinksBody:
         "No-code links and QR codes to get paid over WhatsApp or at the counter. Since Yoon 0.5.",
+      mcpBody:
+        "Let Claude, Cursor or any MCP client read your payments and subscriptions. Yoon 0.7, coming.",
       apiLabel: "API contract (OpenAPI)",
     },
     quickstart: {
@@ -640,6 +643,71 @@ export const en: Content = {
         body: 'Archive it in the dashboard, with PATCH /v1/payment_links/{id} and {"active": false}, or with POST /admin/v1/applications/{app}/payment_links/{id}/archive. Payments already made are kept.',
       },
       guideLabel: "Full payment links guide (docs/payment-links.md)",
+    },
+    mcp: {
+      title: "AI assistants (MCP)",
+      description:
+        "Let Claude, Cursor or any MCP client answer questions from your Yoon data — read-only by default, never moving money out.",
+      badge: "Yoon 0.7 — coming",
+      intro:
+        "@yoonpay/mcp lets an AI assistant answer questions from your Yoon data: why did order 1042 fail, who is past due, how much came in on Wave this week. It speaks the Model Context Protocol, so it works with Claude Desktop, Claude Code, Cursor and other MCP clients.",
+      safety:
+        "It runs next to your assistant, on your machine, and calls your gateway's /v1 API with one application's API key. It can do nothing that key cannot already do, and by default it only reads.",
+      key: {
+        title: "Give the assistant its own key",
+        body: "Issue a key just for the assistant, and revoke it alone later:",
+        after:
+          "Your application keeps its own key. The assistant's configuration file holds the key in plain text: keep it in your user settings, never in a file you commit.",
+      },
+      setup: {
+        title: "Add it to your assistant",
+        desktop:
+          "Requires Node.js 20 or newer. Claude Desktop (Settings → Developer → Edit Config) and Cursor (~/.cursor/mcp.json) use the same configuration:",
+        claudeCode: "Claude Code, stored in your user settings for this project, not in the repository:",
+        after:
+          "Restart the assistant and ask it what the Yoon about tool says. YOON_MCP_WRITES=true allows the three write tools below; YOON_MCP_SHOW_CONTACTS=true sends phone numbers and e-mails unmasked.",
+      },
+      read: {
+        title: "What it can read",
+        intro: "Every tool below is read-only.",
+        after:
+          "Lists return 20 items by default and 50 at most, with a cursor to continue. Amounts are in the currency's minor unit, and each object says how many decimals it has (XOF has none: 5000 is 5 000 XOF).",
+      },
+      write: {
+        title: "What it can do — only if you allow it",
+        intro: "With YOON_MCP_WRITES=true, and only then, three tools appear:",
+        after:
+          "Each requires an idempotency key: retrying with the same key does the action once. No tool sends money out or ends a customer's access — no refund, payout, cancellation, free period or coupon. Do those in the dashboard, the CLI or your application.",
+      },
+      leaves: {
+        title: "What leaves your machine",
+        items: [
+          "What a tool returns is sent to your assistant's provider, like anything else in the conversation.",
+          "Phone numbers and e-mails are masked (+22177***67, a***@example.com) unless you turn that off. Names, amounts and your metadata are sent as they are.",
+          "The API key is never sent: every result is scrubbed of it.",
+          "Free text — descriptions, names, metadata, provider messages — comes back marked as untrusted data. A customer can type anything in a description, including instructions to the assistant; that is why no tool can move money out.",
+        ],
+      },
+      columns: { tool: "Tool", meaning: "What it returns" },
+      readRows: [
+        { tool: "about", meaning: "Yoon version, configured providers and methods" },
+        { tool: "get_payment, list_payments", meaning: "Filters: status, method, provider, your reference, dates" },
+        { tool: "explain_payment", meaning: "The payment, its status history, and a one-line summary" },
+        { tool: "get_refund, list_refunds", meaning: "All refunds, or one payment's" },
+        { tool: "get_payout, list_payouts", meaning: "needs_review=true: outcome unknown, a human must check" },
+        { tool: "get_customer, list_customers", meaning: "By id, or by your external_id" },
+        { tool: "get_subscription, list_subscriptions", meaning: "With status history; filter by customer or status" },
+        { tool: "get_invoice, list_invoices", meaning: "Filter by customer, subscription or status" },
+        { tool: "get_payment_link, list_payment_links", meaning: "Payment count and amount collected" },
+        { tool: "get_balances, list_ledger_entries", meaning: "Yoon's double-entry ledger" },
+        { tool: "get_event, list_events", meaning: "Webhooks to your application and their delivery status" },
+      ],
+      writeRows: [
+        { tool: "create_payment_link", meaning: "A link and QR code to share — money comes in" },
+        { tool: "create_portal_session", meaning: "A private, expiring portal link for one customer — view and pay only" },
+        { tool: "redeliver_event", meaning: "Re-sends one webhook to your own application" },
+      ],
+      guideLabel: "Full guide (docs/mcp.md)",
     },
     providers: {
       title: "Providers",
