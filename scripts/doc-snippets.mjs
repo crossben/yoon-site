@@ -156,28 +156,28 @@ export const DOC_SNIPPETS = {
   // Prompts for AI coding agents: one `text` block per client README.
   "php.agent": {
     file: "clients/php/README.md",
-    marker: "Integrate Yoon payments (yoonpay/yoon-php 0.6.x) into this Laravel app.",
+    marker: "Integrate Yoon payments (yoonpay/yoon-php 0.7.x) into this Laravel app.",
   },
   "symfony.agent": {
     file: "clients/php/README.md",
     marker:
-      "Integrate Yoon payments (yoonpay/yoon-php 0.6.x, Symfony bundle) into this Symfony app.",
+      "Integrate Yoon payments (yoonpay/yoon-php 0.7.x, Symfony bundle) into this Symfony app.",
   },
   "java.agent": {
     file: "clients/java/README.md",
-    marker: "Integrate Yoon payments (io.github.crossben:yoon-java 0.6.x) into this Java app.",
+    marker: "Integrate Yoon payments (io.github.crossben:yoon-java 0.7.x) into this Java app.",
   },
   "spring.agent": {
     file: "clients/java-spring-boot-starter/README.md",
     marker:
-      "Integrate Yoon payments (io.github.crossben:yoon-spring-boot-starter 0.6.x) into this Spring Boot app.",
+      "Integrate Yoon payments (io.github.crossben:yoon-spring-boot-starter 0.7.x) into this Spring Boot app.",
   },
   "js.agent": {
     file: "clients/js/README.md",
-    marker: "Integrate Yoon payments (@yoonpay/yoon 0.6.x) into this Node.js / TypeScript app.",
+    marker: "Integrate Yoon payments (@yoonpay/yoon 0.7.x) into this Node.js / TypeScript app.",
   },
   "python.agent": {
     file: "clients/python/README.md",
-    marker: "Integrate Yoon payments (yoonpay 0.6.x) into this Python app.",
+    marker: "Integrate Yoon payments (yoonpay 0.7.x) into this Python app.",
   },
 };

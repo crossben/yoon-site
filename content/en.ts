@@ -374,7 +374,7 @@ export const en: Content = {
       paymentLinksBody:
         "No-code links and QR codes to get paid over WhatsApp or at the counter. Since Yoon 0.5.",
       mcpBody:
-        "Let Claude, Codex, Gemini CLI, Cursor or any MCP client read your payments and subscriptions. Yoon 0.7, coming.",
+        "Let Claude, Codex, Gemini CLI, Cursor or any MCP client read your payments and subscriptions. Since Yoon 0.7.",
       apiLabel: "API contract (OpenAPI)",
     },
     quickstart: {
@@ -648,7 +648,7 @@ export const en: Content = {
       title: "AI assistants (MCP)",
       description:
         "Let Claude, Codex, Gemini CLI, Cursor, OpenCode, VS Code or any MCP client answer questions from your Yoon data — read-only by default, never moving money out.",
-      badge: "Yoon 0.7 — coming",
+      badge: "Since Yoon 0.7",
       intro:
         "@yoonpay/mcp lets an AI assistant answer questions from your Yoon data: why did order 1042 fail, who is past due, how much came in on Wave this week. It speaks the Model Context Protocol, so it works with Claude, OpenAI Codex, Gemini CLI, Cursor, OpenCode, GitHub Copilot in VS Code and other MCP clients.",
       safety:

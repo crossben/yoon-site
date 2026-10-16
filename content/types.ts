@@ -139,7 +139,7 @@ export type DocsContent = {
     stop: { title: string; body: string };
     guideLabel: string;
   };
-  /** AI assistants (Yoon 0.7, coming), from the gateway's docs/mcp.md. */
+  /** AI assistants (since Yoon 0.7), from the gateway's docs/mcp.md. */
   mcp: {
     title: string;
     description: string;

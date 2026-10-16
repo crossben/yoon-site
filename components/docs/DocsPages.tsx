@@ -618,7 +618,7 @@ export function PaymentLinksDoc({ content }: { content: Content }) {
   );
 }
 
-// ---------------------------------------------------------------- AI assistants (0.7, coming)
+// ---------------------------------------------------------------- AI assistants (since 0.7)
 
 function ToolTable({
   m,
