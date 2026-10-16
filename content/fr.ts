@@ -478,7 +478,7 @@ export const fr: Content = {
       description:
         "Abonnements prépayés avec Yoon 0.3.0 : offres et tarifs, clients, paiement hébergé, accès piloté par les webhooks, factures et reçus.",
       intro:
-        "Yoon 0.3.0 facture des abonnements prépayés : le client règle chaque période (un mois, un an…) sur la page de paiement hébergée par Yoon, par mobile money, PI-SPI ou carte, et votre application ouvre l'accès à partir des webhooks de Yoon. Rien n'est prélevé automatiquement : le mobile money ne connaît pas le prélèvement à la manière des cartes, chaque période est donc un paiement fait par le client. Le prélèvement automatique, Stripe en premier, est prévu pour la 0.5.0.",
+        "Yoon 0.3.0 facture des abonnements prépayés : le client règle chaque période (un mois, un an…) sur la page de paiement hébergée par Yoon, par mobile money, PI-SPI ou carte, et votre application ouvre l'accès à partir des webhooks de Yoon. Rien n'est prélevé automatiquement : le mobile money ne connaît pas le prélèvement à la manière des cartes, chaque période est donc un paiement fait par le client. Le prélèvement automatique, Stripe en premier, est sur la feuille de route.",
       settings: {
         title: "Réglages",
         body: "Le paiement hébergé a besoin de YOON_PUBLIC_URL. La facturation se règle par application ; <APP> est le nom de l'application en majuscules.",
@@ -594,7 +594,7 @@ export const fr: Content = {
       },
       portal: {
         title: "Portail client",
-        badge: "Yoon 0.6 — à venir",
+        badge: "Depuis Yoon 0.6",
         body: "Une page où votre client gère lui-même son abonnement, sans que vous ayez à la construire : formule, statut, date de fin de période payée, factures et reçus, un bouton Payer et — si vous l'autorisez — résiliation et reprise, changement de formule et coupons.",
         code: "Votre bouton « Gérer mon abonnement » demande à Yoon une session pour le client de l'utilisateur connecté, puis redirige vers son URL :",
         js: "En JavaScript (route handler Next.js) : portalRedirect(yoon, customerId, { returnUrl, allow }) depuis @yoonpay/yoon/next. Depuis n'importe quel langage : POST /v1/customers/{id}/portal_sessions.",
@@ -609,7 +609,7 @@ export const fr: Content = {
     paymentLinks: {
       title: "Liens de paiement",
       description:
-        "Yoon 0.5 (à venir) : encaisser sans écrire de code — un lien et un QR code à partager sur WhatsApp ou au comptoir, payés sur le checkout hébergé de Yoon.",
+        "Encaisser sans écrire de code — un lien et un QR code à partager sur WhatsApp ou au comptoir, payés sur le checkout hébergé de Yoon.",
       badge: "Depuis Yoon 0.5",
       intro:
         "Un lien de paiement, c'est une URL (et un QR code) que vous partagez où vous voulez : WhatsApp, Instagram, un SMS, une affiche au comptoir. Le client l'ouvre, appuie sur Payer et règle sur le checkout hébergé de Yoon, par Wave, Orange Money, carte ou tout autre moyen proposé par vos fournisseurs. Aucun code à écrire.",

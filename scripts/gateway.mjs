@@ -74,6 +74,7 @@ export const REQUIRED_STRINGS = {
     "## [0.3.0]",
     "## [0.4.0]",
     "## [0.5.0]",
+    "## [0.6.0]",
     "### Billing",
     "**PI-SPI** (`pispi`, BCEAO instant payments",
     "PayDunya, DexPay and NabooPay: Senegal (XOF) only and no refund API (refund by payout).",
@@ -94,9 +95,9 @@ export const REQUIRED_STRINGS = {
     "printable\npayment receipt (French/English)",
     "Each period is an invoice numbered without gaps.",
     "without payment or ledger posting",
-    "Automatic charging, Stripe first,\nis planned for 0.5.0.",
+    "Automatic charging, Stripe first,\nis on the roadmap",
     "Hosted checkout needs `YOON_PUBLIC_URL`.",
-    // Free trials and coupons (Yoon 0.4, not released yet).
+    // Free trials and coupons (Yoon 0.4).
     "## 6. Free trials (0.4)",
     "The subscription starts `trialing`: entitled, no\ninvoice, nothing to pay.",
     "Each customer gets one trial per plan.",
@@ -105,8 +106,8 @@ export const REQUIRED_STRINGS = {
     "**Upgrade your Yoon client to 0.4 before using trials**",
     "the 0.3 helpers treat `trialing` as not\nentitled",
     "## 7. Coupons (0.4)",
-    // Customer portal (Yoon 0.6, not released yet).
-    "## 12. Customer portal (0.6)",
+    // Customer portal (Yoon 0.6).
+    "## 12. Customer portal (since 0.6.0)",
     "plan,\nstatus, paid-until date, invoices and receipts, a **Pay** button",
     "from yoonpay.fastapi import redirect_to_portal",
     "`portalRedirect(yoon, customerId, { returnUrl, allow })` from\n`@yoonpay/yoon/next`",
@@ -145,7 +146,7 @@ export const REQUIRED_STRINGS = {
     "`GET /v1/exports/subscriptions.csv`, `GET /v1/exports/invoices.csv`",
     "The subscription shows `comp: true`",
   ],
-  // Payment links docs page (/docs/payment-links): Yoon 0.5, not released yet.
+  // Payment links docs page (/docs/payment-links): Yoon 0.5.
   "docs/payment-links.md": [
     "A payment link is a URL (and a QR code) you share anywhere",
     "WhatsApp, Instagram, an SMS, a\nprinted sign at the counter.",

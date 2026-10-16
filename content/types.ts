@@ -115,7 +115,7 @@ export type DocsContent = {
     comp: { title: string; body: string; after: string };
     guideLabel: string;
   };
-  /** Payment links (Yoon 0.5, not released yet), from the gateway's docs/payment-links.md. */
+  /** Payment links (since Yoon 0.5), from the gateway's docs/payment-links.md. */
   paymentLinks: {
     title: string;
     description: string;

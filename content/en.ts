@@ -457,7 +457,7 @@ export const en: Content = {
       description:
         "Prepaid subscriptions with Yoon 0.3.0: plans and prices, customers, hosted checkout, access from webhooks, invoices and receipts.",
       intro:
-        "Yoon 0.3.0 bills prepaid subscriptions: the customer pays each period (a month, a year…) on Yoon's hosted checkout, by mobile money, PI-SPI or card, and your application grants access from Yoon's webhooks. Nothing is charged automatically: mobile money has no card-style auto-debit, so every period is a payment the customer makes. Automatic charging, Stripe first, is planned for 0.5.0.",
+        "Yoon 0.3.0 bills prepaid subscriptions: the customer pays each period (a month, a year…) on Yoon's hosted checkout, by mobile money, PI-SPI or card, and your application grants access from Yoon's webhooks. Nothing is charged automatically: mobile money has no card-style auto-debit, so every period is a payment the customer makes. Automatic charging, Stripe first, is on the roadmap.",
       settings: {
         title: "Settings",
         body: "Hosted checkout needs YOON_PUBLIC_URL. Billing is configured per application; <APP> is the application name upper-cased.",
@@ -570,7 +570,7 @@ export const en: Content = {
       },
       portal: {
         title: "Customer portal",
-        badge: "Yoon 0.6 — coming",
+        badge: "Since Yoon 0.6",
         body: "A page where your customer manages their own subscription, so you do not build one: plan, status, paid-until date, invoices and receipts, a Pay button, and — if you allow them — cancel and resume, change plan and coupons.",
         code: "Your \"Manage my subscription\" button asks Yoon for a session for the signed-in user's customer and redirects to its URL:",
         js: "In JavaScript (Next.js route handler): portalRedirect(yoon, customerId, { returnUrl, allow }) from @yoonpay/yoon/next. From any language: POST /v1/customers/{id}/portal_sessions.",
@@ -585,7 +585,7 @@ export const en: Content = {
     paymentLinks: {
       title: "Payment links",
       description:
-        "Yoon 0.5 (coming): get paid without writing code — a link and a QR code to share on WhatsApp or at the counter, paid on Yoon's hosted checkout.",
+        "Get paid without writing code — a link and a QR code to share on WhatsApp or at the counter, paid on Yoon's hosted checkout.",
       badge: "Since Yoon 0.5",
       intro:
         "A payment link is a URL (and a QR code) you share anywhere: WhatsApp, Instagram, an SMS, a printed sign at the counter. The customer opens it, presses Pay, and completes Yoon's hosted checkout with Wave, Orange Money, a card or any method your providers offer. No code needed.",
