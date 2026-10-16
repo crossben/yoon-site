@@ -374,7 +374,7 @@ export const en: Content = {
       paymentLinksBody:
         "No-code links and QR codes to get paid over WhatsApp or at the counter. Since Yoon 0.5.",
       mcpBody:
-        "Let Claude, Cursor or any MCP client read your payments and subscriptions. Yoon 0.7, coming.",
+        "Let Claude, Codex, Gemini CLI, Cursor or any MCP client read your payments and subscriptions. Yoon 0.7, coming.",
       apiLabel: "API contract (OpenAPI)",
     },
     quickstart: {
@@ -647,10 +647,10 @@ export const en: Content = {
     mcp: {
       title: "AI assistants (MCP)",
       description:
-        "Let Claude, Cursor or any MCP client answer questions from your Yoon data — read-only by default, never moving money out.",
+        "Let Claude, Codex, Gemini CLI, Cursor, OpenCode, VS Code or any MCP client answer questions from your Yoon data — read-only by default, never moving money out.",
       badge: "Yoon 0.7 — coming",
       intro:
-        "@yoonpay/mcp lets an AI assistant answer questions from your Yoon data: why did order 1042 fail, who is past due, how much came in on Wave this week. It speaks the Model Context Protocol, so it works with Claude Desktop, Claude Code, Cursor and other MCP clients.",
+        "@yoonpay/mcp lets an AI assistant answer questions from your Yoon data: why did order 1042 fail, who is past due, how much came in on Wave this week. It speaks the Model Context Protocol, so it works with Claude, OpenAI Codex, Gemini CLI, Cursor, OpenCode, GitHub Copilot in VS Code and other MCP clients.",
       safety:
         "It runs next to your assistant, on your machine, and calls your gateway's /v1 API with one application's API key. It can do nothing that key cannot already do, and by default it only reads.",
       key: {
@@ -661,9 +661,17 @@ export const en: Content = {
       },
       setup: {
         title: "Add it to your assistant",
-        desktop:
-          "Requires Node.js 20 or newer. Claude Desktop (Settings → Developer → Edit Config) and Cursor (~/.cursor/mcp.json) use the same configuration:",
-        claudeCode: "Claude Code, stored in your user settings for this project, not in the repository:",
+        intro:
+          "Requires Node.js 20 or newer. Every client starts the same program, npx -y @yoonpay/mcp, with YOON_URL and YOON_API_KEY in its environment; each saves it in its own format. Use the user-level configuration, as below, so the key never lands in a project's files.",
+        clients: [
+          { name: "Claude Desktop and Cursor", note: "Claude Desktop: Settings → Developer → Edit Config. Cursor: ~/.cursor/mcp.json.", snippet: "mcp.json" },
+          { name: "Claude Code", note: "Stored in your user settings for this project, not in the repository.", snippet: "mcp.claudeCode" },
+          { name: "OpenAI Codex CLI", note: "Saved in ~/.codex/config.toml.", snippet: "mcp.codex" },
+          { name: "Gemini CLI", note: "--scope user saves it in ~/.gemini/settings.json; the default would write it inside the repository. Do not add --trust: it skips the confirmation before each tool call.", snippet: "mcp.gemini" },
+          { name: "OpenCode", note: "In ~/.config/opencode/opencode.json.", snippet: "mcp.opencode" },
+          { name: "VS Code (GitHub Copilot)", note: "Command Palette → MCP: Open User Configuration. VS Code asks for the key when the server first starts, so it is not written in the file.", snippet: "mcp.vscode" },
+        ],
+        other: "Any other MCP client: give it the command npx, the arguments -y @yoonpay/mcp and the two variables, in its own format.",
         after:
           "Restart the assistant and ask it what the Yoon about tool says. YOON_MCP_WRITES=true allows the three write tools below; YOON_MCP_SHOW_CONTACTS=true sends phone numbers and e-mails unmasked.",
       },

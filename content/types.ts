@@ -147,7 +147,23 @@ export type DocsContent = {
     intro: string;
     safety: string;
     key: { title: string; body: string; after: string };
-    setup: { title: string; desktop: string; claudeCode: string; after: string };
+    setup: {
+      title: string;
+      intro: string;
+      clients: {
+        name: string;
+        note: string;
+        snippet:
+          | "mcp.json"
+          | "mcp.claudeCode"
+          | "mcp.codex"
+          | "mcp.gemini"
+          | "mcp.opencode"
+          | "mcp.vscode";
+      }[];
+      other: string;
+      after: string;
+    };
     read: { title: string; intro: string; after: string };
     write: { title: string; intro: string; after: string };
     leaves: { title: string; items: string[] };

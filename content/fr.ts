@@ -395,7 +395,7 @@ export const fr: Content = {
       paymentLinksBody:
         "Des liens et QR codes sans code, pour encaisser sur WhatsApp ou au comptoir. Depuis Yoon 0.5.",
       mcpBody:
-        "Laissez Claude, Cursor ou tout client MCP lire vos paiements et abonnements. Yoon 0.7, à venir.",
+        "Laissez Claude, Codex, Gemini CLI, Cursor ou tout client MCP lire vos paiements et abonnements. Yoon 0.7, à venir.",
       apiLabel: "Contrat d'API (OpenAPI)",
     },
     quickstart: {
@@ -675,10 +675,10 @@ export const fr: Content = {
     mcp: {
       title: "Assistants IA (MCP)",
       description:
-        "Laissez Claude, Cursor ou tout client MCP répondre à partir de vos données Yoon — en lecture seule par défaut, sans jamais faire sortir d'argent.",
+        "Laissez Claude, Codex, Gemini CLI, Cursor, OpenCode, VS Code ou tout client MCP répondre à partir de vos données Yoon — en lecture seule par défaut, sans jamais faire sortir d'argent.",
       badge: "Yoon 0.7 — à venir",
       intro:
-        "@yoonpay/mcp permet à un assistant IA de répondre à partir de vos données Yoon : pourquoi la commande 1042 a échoué, qui est en retard de paiement, combien est entré par Wave cette semaine. Il parle le Model Context Protocol : il fonctionne avec Claude Desktop, Claude Code, Cursor et les autres clients MCP.",
+        "@yoonpay/mcp permet à un assistant IA de répondre à partir de vos données Yoon : pourquoi la commande 1042 a échoué, qui est en retard de paiement, combien est entré par Wave cette semaine. Il parle le Model Context Protocol : il fonctionne avec Claude, OpenAI Codex, Gemini CLI, Cursor, OpenCode, GitHub Copilot dans VS Code et les autres clients MCP.",
       safety:
         "Il tourne à côté de votre assistant, sur votre machine, et appelle l'API /v1 de votre passerelle avec la clé d'une application. Il ne peut rien faire que cette clé ne puisse déjà faire, et par défaut il ne fait que lire.",
       key: {
@@ -689,10 +689,42 @@ export const fr: Content = {
       },
       setup: {
         title: "Ajoutez-le à votre assistant",
-        desktop:
-          "Node.js 20 ou plus récent. Claude Desktop (Settings → Developer → Edit Config) et Cursor (~/.cursor/mcp.json) utilisent la même configuration :",
-        claudeCode:
-          "Claude Code, enregistré dans vos réglages utilisateur pour ce projet, pas dans le dépôt :",
+        intro:
+          "Node.js 20 ou plus récent. Chaque client lance le même programme, npx -y @yoonpay/mcp, avec YOON_URL et YOON_API_KEY dans son environnement ; chacun l'enregistre dans son propre format. Utilisez la configuration au niveau utilisateur, comme ci-dessous, pour que la clé n'atterrisse jamais dans les fichiers d'un projet.",
+        clients: [
+          {
+            name: "Claude Desktop et Cursor",
+            note: "Claude Desktop : Settings → Developer → Edit Config. Cursor : ~/.cursor/mcp.json.",
+            snippet: "mcp.json",
+          },
+          {
+            name: "Claude Code",
+            note: "Enregistré dans vos réglages utilisateur pour ce projet, pas dans le dépôt.",
+            snippet: "mcp.claudeCode",
+          },
+          {
+            name: "OpenAI Codex CLI",
+            note: "Enregistré dans ~/.codex/config.toml.",
+            snippet: "mcp.codex",
+          },
+          {
+            name: "Gemini CLI",
+            note: "--scope user l'enregistre dans ~/.gemini/settings.json ; par défaut il l'écrirait dans le dépôt. N'ajoutez pas --trust : il supprime la confirmation avant chaque appel d'outil.",
+            snippet: "mcp.gemini",
+          },
+          {
+            name: "OpenCode",
+            note: "Dans ~/.config/opencode/opencode.json.",
+            snippet: "mcp.opencode",
+          },
+          {
+            name: "VS Code (GitHub Copilot)",
+            note: "Palette de commandes → MCP: Open User Configuration. VS Code demande la clé au premier démarrage du serveur : elle n'est pas écrite dans le fichier.",
+            snippet: "mcp.vscode",
+          },
+        ],
+        other:
+          "Tout autre client MCP : donnez-lui la commande npx, les arguments -y @yoonpay/mcp et les deux variables, dans son propre format.",
         after:
           "Redémarrez l'assistant et demandez-lui ce que dit l'outil about de Yoon. YOON_MCP_WRITES=true autorise les trois outils d'écriture ci-dessous ; YOON_MCP_SHOW_CONTACTS=true envoie les numéros et e-mails en clair.",
       },

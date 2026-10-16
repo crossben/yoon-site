@@ -679,10 +679,15 @@ export function McpDoc({ content }: { content: Content }) {
         <P>{m.key.after}</P>
       </Step>
       <Step n={2} id="setup" title={m.setup.title}>
-        <P>{m.setup.desktop}</P>
-        <Snippet content={content} id="mcp.json" />
-        <P>{m.setup.claudeCode}</P>
-        <Snippet content={content} id="mcp.claudeCode" />
+        <P>{m.setup.intro}</P>
+        {m.setup.clients.map((client) => (
+          <div key={client.snippet} className="mt-6">
+            <h3 className="font-semibold">{client.name}</h3>
+            <P>{client.note}</P>
+            <Snippet content={content} id={client.snippet} />
+          </div>
+        ))}
+        <P>{m.setup.other}</P>
         <P>{m.setup.after}</P>
       </Step>
       <Step n={3} id="read" title={m.read.title}>

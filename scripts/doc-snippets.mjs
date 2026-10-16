@@ -148,6 +148,10 @@ export const DOC_SNIPPETS = {
   "mcp.key": { file: "docs/mcp.md", marker: "docker compose run --rm yoon apps add-key <app>" },
   "mcp.json": { file: "docs/mcp.md", marker: '"mcpServers"' },
   "mcp.claudeCode": { file: "docs/mcp.md", marker: "claude mcp add yoon" },
+  "mcp.codex": { file: "docs/mcp.md", marker: "codex mcp add yoon" },
+  "mcp.gemini": { file: "docs/mcp.md", marker: "gemini mcp add --scope user" },
+  "mcp.opencode": { file: "docs/mcp.md", marker: '"type": "local"' },
+  "mcp.vscode": { file: "docs/mcp.md", marker: '"promptString"' },
 
   // Prompts for AI coding agents: one `text` block per client README.
   "php.agent": {
