@@ -514,6 +514,20 @@ export function BillingDoc({ content }: { content: Content }) {
         <Snippet content={content} id="billing.comp" />
         <P>{b.comp.after}</P>
       </Step>
+      <Step n={11} id="portal" title={b.portal.title}>
+        <p className="mt-3 inline-block rounded-full border border-line px-3 py-1 text-xs font-medium">
+          {b.portal.badge}
+        </p>
+        <P>{b.portal.body}</P>
+        <P>{b.portal.code}</P>
+        <Snippet content={content} id="billing.portal" />
+        <P>{b.portal.js}</P>
+        <ul className="mt-3 list-disc space-y-2 pl-5 leading-relaxed">
+          {b.portal.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </Step>
       <p className="text-sm">
         <a href={`${repo.blob}/docs/billing.md`} className={linkClass}>
           {b.guideLabel} <ExternalArrow />

@@ -592,6 +592,18 @@ export const fr: Content = {
         after:
           "L'abonnement porte comp: true jusqu'à ce que le client paie une période. L'API d'administration fait la même chose, et c'est aussi ce qui sert à migrer depuis votre propre facturation — voir le guide complet.",
       },
+      portal: {
+        title: "Portail client",
+        badge: "Yoon 0.6 — à venir",
+        body: "Une page où votre client gère lui-même son abonnement, sans que vous ayez à la construire : formule, statut, date de fin de période payée, factures et reçus, un bouton Payer et — si vous l'autorisez — résiliation et reprise, changement de formule et coupons.",
+        code: "Votre bouton « Gérer mon abonnement » demande à Yoon une session pour le client de l'utilisateur connecté, puis redirige vers son URL :",
+        js: "En JavaScript (route handler Next.js) : portalRedirect(yoon, customerId, { returnUrl, allow }) depuis @yoonpay/yoon/next. Depuis n'importe quel langage : POST /v1/customers/{id}/portal_sessions.",
+        items: [
+          "L'URL n'ouvre que le portail de ce client et expire au bout d'une heure. Créez une nouvelle session à chaque clic ; ne stockez et ne journalisez jamais l'URL : elle contient un jeton secret.",
+          "Sans allow, le client peut seulement consulter et payer. Vous choisissez, session par session : cancel (en fin de période, avec reprise possible), change_prices (les prix vers lesquels il peut basculer ; une montée en gamme se paie tout de suite, une formule moins chère attend la fin de la période) et coupons.",
+          "Chaque action suit les mêmes règles que l'API et envoie les événements habituels. L'historique de l'abonnement indique que le client l'a faite depuis le portail (cause portal).",
+        ],
+      },
       guideLabel: "Guide complet de la facturation (docs/billing.md, en anglais)",
     },
     paymentLinks: {

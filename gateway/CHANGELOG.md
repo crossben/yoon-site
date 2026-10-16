@@ -5,6 +5,27 @@ never changes incompatibly.
 
 ## [Unreleased]
 
+### Customer portal
+- `POST /v1/customers/{id}/portal_sessions` (ADR-0031): a URL that opens one customer's portal,
+  valid for `YOON_APPS_<APP>_BILLING_PORTAL_TTL` (1 hour by default, at most 24 hours). Only the
+  token's SHA-256 is stored. `allow` adds actions beyond viewing and paying (cancel and resume,
+  change to listed prices, coupons); without it the customer may view and pay only. Status
+  history gains the cause `portal`. Migration `V10`.
+- The portal page `/checkout/portal/<id>?t=…` (French/English, phone-sized): the customer's
+  subscriptions (plan, status, paid until, trial end, pending change, coupon), a **Pay** button
+  for an open invoice, the invoices with their receipts, and a Back link. Nothing of the
+  merchant's own data (metadata, external ids) or of another customer. Same rules as the checkout
+  (strict CSP, no cache, rate limit, identical 404s).
+- Portal actions: **renew** (always; to the hosted checkout), and only if the session allows them
+  **cancel at period end / resume**, **change plan** to one of the session's prices (an upgrade
+  goes to the checkout, a cheaper plan waits for the period end) and **redeem a coupon**. Same
+  rules and code as the API; recorded in the subscription's history with cause `portal`; a
+  double click acts once; another customer's subscription is not found; a disallowed action is
+  `403 action_not_allowed`. Cancelling asks for a second tap, never a browser dialog.
+- Clients: Python `yoon.create_portal_session(customer_id, return_url=…, allow=…)` and
+  `yoonpay.fastapi.redirect_to_portal(…)`; JS `yoon.createPortalSession(…)` and `portalRedirect(…)`
+  in `@yoonpay/yoon/next`. Guide: "Customer portal" in [docs/billing.md](docs/billing.md).
+
 ## [0.5.0] - 2026-10-15
 
 Payment links: a shareable link and QR code that opens Yoon's hosted checkout, created from the

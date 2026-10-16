@@ -104,6 +104,14 @@ export type DocsContent = {
     invoices: { title: string; body: string };
     trials: { title: string; badge: string; body: string; upgrade: string };
     coupons: { title: string; badge: string; body: string; after: string };
+    portal: {
+      title: string;
+      badge: string;
+      body: string;
+      code: string;
+      js: string;
+      items: string[];
+    };
     comp: { title: string; body: string; after: string };
     guideLabel: string;
   };

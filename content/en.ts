@@ -568,6 +568,18 @@ export const en: Content = {
         after:
           "The subscription shows comp: true until the customer pays a period. The admin API does the same, and migrating from your own billing uses it too — see the full guide.",
       },
+      portal: {
+        title: "Customer portal",
+        badge: "Yoon 0.6 — coming",
+        body: "A page where your customer manages their own subscription, so you do not build one: plan, status, paid-until date, invoices and receipts, a Pay button, and — if you allow them — cancel and resume, change plan and coupons.",
+        code: "Your \"Manage my subscription\" button asks Yoon for a session for the signed-in user's customer and redirects to its URL:",
+        js: "In JavaScript (Next.js route handler): portalRedirect(yoon, customerId, { returnUrl, allow }) from @yoonpay/yoon/next. From any language: POST /v1/customers/{id}/portal_sessions.",
+        items: [
+          "The URL opens only that customer's portal and expires after an hour. Create a new session on every click; never store or log the URL — it carries a secret token.",
+          "Without allow, the customer may view and pay only. You choose per session: cancel (at period end, and resume), change_prices (the prices they may switch to; an upgrade is paid now, a cheaper plan waits for the period end) and coupons.",
+          "Every action follows the same rules as the API and sends the usual events. The subscription's history shows the customer did it from the portal (cause portal).",
+        ],
+      },
       guideLabel: "Full billing guide (docs/billing.md)",
     },
     paymentLinks: {

@@ -131,6 +131,10 @@ export const DOC_SNIPPETS = {
     marker: "def yoon_events(event: Event = Depends(yoon_event)) -> None:",
   },
   "billing.coupon": { file: "docs/billing.md", marker: "POST /v1/coupons" },
+  "billing.portal": {
+    file: "docs/billing.md",
+    marker: "from yoonpay.fastapi import redirect_to_portal",
+  },
   "billing.comp": { file: "docs/billing.md", marker: "docker compose run --rm yoon billing comp" },
 
   // Payment links (Yoon 0.5, not released yet) — docs/payment-links.md
